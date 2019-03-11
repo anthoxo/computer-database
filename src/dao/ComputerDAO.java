@@ -3,19 +3,17 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-import model.Company;
 import model.Computer;
-import persistence.ConnexionDB;
 
 public class ComputerDAO implements DAOInterface<Computer> {
 	
-	private ConnexionDB connexionDB;
+	private DAOFactory daoFactory = DAOFactory.getInstance();
 	private static ComputerDAO INSTANCE = null;
 	
-	private ComputerDAO() {
-		this.connexionDB = ConnexionDB.getInstance();
-	}
+	private ComputerDAO() { }
 	
 	public static ComputerDAO getInstance() {
 		if (INSTANCE == null) {
@@ -28,7 +26,7 @@ public class ComputerDAO implements DAOInterface<Computer> {
 	public void create(Computer obj) {
 		String request = "INSERT INTO computer VALUES (?,?,?,?,?)";
 		try {
-			PreparedStatement stmt = this.connexionDB
+			PreparedStatement stmt = this.daoFactory
 					.getConnection().prepareStatement(request);
 			
 			stmt.setInt(1, obj.getId());
@@ -48,7 +46,7 @@ public class ComputerDAO implements DAOInterface<Computer> {
 		Computer computer = null;
 		try {
 			String request = "SELECT * FROM computer WHERE id = ?";
-			PreparedStatement stmt = this.connexionDB
+			PreparedStatement stmt = this.daoFactory
 					.getConnection().prepareStatement(request);
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
@@ -75,7 +73,7 @@ public class ComputerDAO implements DAOInterface<Computer> {
 				+ "company_id = ? "
 				+ "WHERE id = ?";
 		try {
-			PreparedStatement stmt = this.connexionDB
+			PreparedStatement stmt = this.daoFactory
 					.getConnection().prepareStatement(request);
 			
 			stmt.setString(1, obj.getName());
@@ -94,7 +92,7 @@ public class ComputerDAO implements DAOInterface<Computer> {
 	public void delete(Computer obj) {
 		String request = "DELETE FROM computer WHERE id = ?";
 		try {
-			PreparedStatement stmt = this.connexionDB
+			PreparedStatement stmt = this.daoFactory
 					.getConnection().prepareStatement(request);
 			
 			stmt.setInt(1, obj.getId());
@@ -104,5 +102,53 @@ public class ComputerDAO implements DAOInterface<Computer> {
 			e.printStackTrace();
 		}
 	}
+	
+	public List<Computer> getAll() {
+		ArrayList<Computer> listComputers = new ArrayList<Computer>();
+		
+		String request = "SELECT * FROM computer";
+		PreparedStatement stmt;
+		try {
+			stmt = this.daoFactory
+					.getConnection().prepareStatement(request);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				Computer computer = new Computer();
+				computer.setId(rs.getInt("id"));
+				computer.setName(rs.getString("name"));
+				computer.setIntroduced(rs.getDate("introduced"));
+				computer.setDiscontinued(rs.getDate("discontinued"));
+				computer.setCompanyId(rs.getInt("company_id"));
+				listComputers.add(computer);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return listComputers;
+	}
+	
+	public Computer get(String name) {
+		Computer computer = null;
+		try {
+			String request = "SELECT * FROM computer WHERE name = ?";
+			PreparedStatement stmt = this.daoFactory
+					.getConnection().prepareStatement(request);
+			stmt.setString(1, name);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				computer = new Computer();
+				computer.setId(rs.getInt("id"));
+				computer.setName(rs.getString("name"));
+				computer.setIntroduced(rs.getDate("introduced"));
+				computer.setDiscontinued(rs.getDate("discontinued"));
+				computer.setCompanyId(rs.getInt("company_id"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return computer;
+	}
+
 
 }

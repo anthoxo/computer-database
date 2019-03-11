@@ -3,19 +3,17 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.Company;
-import persistence.ConnexionDB;
 
 public class CompanyDAO implements DAOInterface<Company> {
 	
-	private ConnexionDB connexionDB;
+	private DAOFactory daoFactory = DAOFactory.getInstance();
 	private static CompanyDAO INSTANCE = null;
 	
-	private CompanyDAO() {
-		this.connexionDB = ConnexionDB.getInstance();
-	}
+	private CompanyDAO() { }
 	
 	public static CompanyDAO getInstance() {
 		if (INSTANCE == null) {
@@ -34,7 +32,7 @@ public class CompanyDAO implements DAOInterface<Company> {
 		Company company = null;
 		try {
 			String request = "SELECT * FROM company WHERE id = ?";
-			PreparedStatement stmt = this.connexionDB
+			PreparedStatement stmt = this.daoFactory
 					.getConnection().prepareStatement(request);
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
@@ -48,7 +46,7 @@ public class CompanyDAO implements DAOInterface<Company> {
 		}
 		return company;
 	}
-
+	
 	@Override
 	public void update(Company obj) {
 		System.out.println("IMPOSSIBLE TO UPDATE COMPANIES");
@@ -58,5 +56,43 @@ public class CompanyDAO implements DAOInterface<Company> {
 	public void delete(Company obj) {
 		System.out.println("IMPOSSIBLE TO DELETE COMPANIES");
 	}
-
+	
+	public List<Company> getAll() {
+		List<Company> listCompanies = new ArrayList<Company>();
+		String request = "SELECT * FROM company";
+		PreparedStatement stmt;
+		try {
+			stmt = this.daoFactory
+					.getConnection().prepareStatement(request);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				Company company = new Company();
+				company.setId(rs.getInt("id"));
+				company.setName(rs.getString("name"));
+				listCompanies.add(company);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return listCompanies;
+	}
+	
+	public Company get(String name) {
+		Company company = null;
+		try {
+			String request = "SELECT * FROM company WHERE name = ?";
+			PreparedStatement stmt = this.daoFactory
+					.getConnection().prepareStatement(request);
+			stmt.setString(1, name);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				company = new Company();
+				company.setId(rs.getInt("id"));
+				company.setName(rs.getString("name"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return company;
+	}
 }
