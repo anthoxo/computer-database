@@ -14,9 +14,11 @@ public class Utils {
 		if (dateStr.length != 3) {
 			return null;
 		} else {
-			return new Timestamp(
-					Integer.valueOf(dateStr[0]) - 1900, Integer.valueOf(dateStr[1]) - 1,
-					Integer.valueOf(dateStr[2]), 0, 0, 0, 0);
+			return Timestamp.valueOf(
+					java.time.LocalDate.of(
+							Integer.valueOf(dateStr[0]), 
+							Integer.valueOf(dateStr[1]),
+							Integer.valueOf(dateStr[2])).atStartOfDay());
 		}
 	}
 }
