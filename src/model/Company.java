@@ -35,7 +35,7 @@ public class Company {
 			return false;
 		} else {
 			Company company = (Company)obj;
-			return this.id == company.id && this.name == company.name;
+			return this.id == company.id && this.name.equals(company.name);
 		}
 	}
 }

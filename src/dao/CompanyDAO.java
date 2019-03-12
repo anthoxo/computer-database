@@ -60,9 +60,8 @@ public class CompanyDAO implements DAOInterface<Company> {
 	public List<Company> getAll() {
 		List<Company> listCompanies = new ArrayList<Company>();
 		String request = "SELECT * FROM company";
-		PreparedStatement stmt;
 		try {
-			stmt = this.daoFactory
+			PreparedStatement stmt = this.daoFactory
 					.getConnection().prepareStatement(request);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {

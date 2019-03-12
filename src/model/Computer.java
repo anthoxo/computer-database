@@ -8,6 +8,7 @@ public class Computer {
 	Timestamp introduced;
 	Timestamp discontinued;
 	int companyId;
+	Company company;
 	
 	public Computer() { }
 	
@@ -31,6 +32,10 @@ public class Computer {
 		return this.companyId;
 	}
 	
+	public Company getCompany() {
+		return this.company;
+	}
+	
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -51,12 +56,19 @@ public class Computer {
 		this.companyId = companyId;
 	}
 	
+	public void setCompany(Company company) {
+		this.company = company;
+	}
+	
 	@Override
 	public String toString() {
-		return "Name: " + this.getName() + 
+		String result = "Name: " + this.getName() + 
 				"\nIntroduced in: " + this.getIntroduced() +
-				"\nDiscountinued in: " + this.getDiscontinued() +
-				"\nCompany Id: " + this.getCompanyId();
+				"\nDiscountinued in: " + this.getDiscontinued();
+		if (this.getCompany() != null) {
+			result += "\nCompany: " + this.getCompany().toString();
+		}
+		return result;
 	}
 	
 	@Override
@@ -69,9 +81,10 @@ public class Computer {
 			Computer computer = (Computer)obj;
 			return this.id == computer.id && 
 					this.companyId == computer.companyId &&
-					this.name == computer.name &&
+					this.name.equals(computer.name) &&
 					this.introduced.equals(computer.introduced) &&
-					this.discontinued.equals(computer.discontinued);
+					this.discontinued.equals(computer.discontinued) &&
+					this.company.equals(computer.company);
 		}
 	}
  
