@@ -8,7 +8,7 @@ public class Main {
 		DAOFactory dao = DAOFactory.getInstance();
 		
 		MainView.chooseDatabase();
-		
+			
 		dao.closeConnection();
 	}
 }

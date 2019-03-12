@@ -25,7 +25,18 @@ public class ComputerDAO implements DAOInterface<Computer> {
 
 	@Override
 	public void create(Computer obj) {
-		if (daoFactory.getCompanyDAO().get(obj.getCompanyId()) != null) {
+		boolean validComputer = true;
+		
+		if (daoFactory.getCompanyDAO().get(obj.getCompanyId()) == null) {
+			validComputer = false;
+		}
+		if (obj.getIntroduced() != null && obj.getDiscontinued() != null) {
+			if (obj.getDiscontinued().getTime() - obj.getIntroduced().getTime() < 0) {
+				validComputer = false;
+			}
+		}
+		
+		if (validComputer) {
 			String request = "INSERT INTO computer VALUES (?,?,?,?,?)";
 			try {
 				PreparedStatement stmt = this.daoFactory
@@ -70,9 +81,21 @@ public class ComputerDAO implements DAOInterface<Computer> {
 
 	@Override
 	public void update(Computer obj) {
+		
 		Computer computer = this.get(obj.getId());
 		Company company = daoFactory.getCompanyDAO().get(computer.getCompanyId());
-		if (computer != null && company != null) {
+		boolean validComputer = true;
+		
+		if (computer == null || company == null) {
+			validComputer = false;
+		}
+		if (obj.getIntroduced() != null && obj.getDiscontinued() != null) {
+			if (obj.getDiscontinued().getTime() - obj.getIntroduced().getTime() < 0) {
+				validComputer = false;
+			}
+		}
+		
+		if (validComputer) {
 			String request = "UPDATE computer "
 					+ "SET name = ?, "
 					+ "introduced = ?, "
