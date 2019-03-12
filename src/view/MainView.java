@@ -12,7 +12,7 @@ public class MainView {
 		String prompt = sc.nextLine();
 		switch (prompt) {
 		case "company":
-			CompanyView.chooseCompany();
+			CompanyView.chooseCompany(sc);
 			chooseDatabase();
 			break;
 		case "computer":

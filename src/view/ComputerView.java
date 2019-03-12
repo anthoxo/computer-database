@@ -6,6 +6,7 @@ import java.util.Scanner;
 import dao.DAOFactory;
 import model.Company;
 import model.Computer;
+import model.Page;
 import utils.Utils;
 
 public class ComputerView {
@@ -21,7 +22,7 @@ public class ComputerView {
 		String prompt = sc.nextLine();
 		switch (prompt) {
 		case "get-all":
-			chooseGetAll();
+			chooseGetAll(sc);
 			break;
 		case "get-name":
 			chooseComputerName(sc);
@@ -47,10 +48,31 @@ public class ComputerView {
 		MainView.chooseDatabase();
 	}
 	
-	public static void chooseGetAll() {
+	public static void chooseGetAll(Scanner sc) {
 		System.out.println("Voici la liste des companies :");
 		List<Computer> listComputers = dao.getComputerDAO().getAll();
-		listComputers.forEach((Computer computer) -> System.out.println(computer));
+		Page<Computer> computerPage = new Page<Computer>(listComputers);
+		boolean stop = false;
+		while (!stop) {
+			computerPage.getEntitiesPage().forEach((Computer computer) -> System.out.println(computer));
+			System.out.println("next // previous // back ?");
+			String prompt = sc.nextLine();
+			switch (prompt) {
+			case "next":
+				computerPage.next();
+				break;
+			case "previous":
+				computerPage.previous();
+				break;
+			case "back":
+				stop = true;
+				break;
+			default:
+				System.out.println("Mauvaise commande... Retour au menu...");
+				stop = true;
+				break;
+			}
+		}
 	}
 
 
@@ -84,7 +106,7 @@ public class ComputerView {
 				
 		System.out.println("Discontinued ? (yyyy/mm/dd)");
 		prompt = sc.nextLine();
-		computer.setIntroduced(Utils.computeTimestamp(prompt));
+		computer.setDiscontinued(Utils.computeTimestamp(prompt));
 		
 		System.out.println("Name of Company ?");
 		prompt = sc.nextLine();
@@ -125,7 +147,7 @@ public class ComputerView {
 			computer.setDiscontinued(Utils.computeTimestamp(prompt));
 		}
 
-		System.out.println("Name of Company? Previous: " + computer.getCompanyId());
+		System.out.println("Name of Company? Previous: " + computer.getCompany().getName());
 		prompt = sc.nextLine();
 		
 		Company company = dao.getCompanyDAO().get(prompt);
