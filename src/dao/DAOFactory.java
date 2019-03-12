@@ -5,8 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DAOFactory {
-	private static CompanyDAO COMPANY_DAO;
-	private static ComputerDAO COMPUTER_DAO;
+	private CompanyDAO companyDAO;
+	private ComputerDAO computerDAO;
 	
 	private static DAOFactory INSTANCE = null;
 	
@@ -15,8 +15,6 @@ public class DAOFactory {
 	public final static String USER_TABLE = "admincdb";
 	public final static String PASSWORD_TABLE = "qwerty1234";
 	public final static String TABLE_NAME = "computer-database-db";
-	
-	
 	
 	private DAOFactory() {
 		try {
@@ -37,21 +35,33 @@ public class DAOFactory {
 	public static DAOFactory getInstance() {
 		if (INSTANCE == null) {
 			INSTANCE = new DAOFactory();
-			COMPANY_DAO = CompanyDAO.getInstance();
-			COMPUTER_DAO = ComputerDAO.getInstance();
 		}
 		return INSTANCE;
 	}
 	
-	public static CompanyDAO getCompanyDAO() {
-		return COMPANY_DAO;
+	public CompanyDAO getCompanyDAO() {
+		if (this.companyDAO == null) {
+			this.companyDAO = CompanyDAO.getInstance();
+		}
+		return this.companyDAO;
 	}
 	
-	public static ComputerDAO getComputerDAO() {
-		return COMPUTER_DAO;
+	public ComputerDAO getComputerDAO() {
+		if (this.computerDAO == null) {
+			this.computerDAO = ComputerDAO.getInstance();
+		}
+		return this.computerDAO;
 	}
 	
 	public Connection getConnection() {
 		return this.connection;
+	}
+	
+	public void closeConnection() {
+		try {
+			this.connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

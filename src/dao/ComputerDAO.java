@@ -31,8 +31,8 @@ public class ComputerDAO implements DAOInterface<Computer> {
 			
 			stmt.setInt(1, obj.getId());
 			stmt.setString(2, obj.getName());
-			stmt.setDate(3, obj.getIntroduced());
-			stmt.setDate(4, obj.getDiscontinued());
+			stmt.setTimestamp(3, obj.getIntroduced());
+			stmt.setTimestamp(4, obj.getDiscontinued());
 			stmt.setInt(5, obj.getCompanyId());
 			
 			stmt.executeUpdate();
@@ -54,8 +54,8 @@ public class ComputerDAO implements DAOInterface<Computer> {
 				computer = new Computer();
 				computer.setId(id);
 				computer.setName(rs.getString("name"));
-				computer.setIntroduced(rs.getDate("introduced"));
-				computer.setDiscontinued(rs.getDate("discontinued"));
+				computer.setIntroduced(rs.getTimestamp("introduced"));
+				computer.setDiscontinued(rs.getTimestamp("discontinued"));
 				computer.setCompanyId(rs.getInt("company_id"));
 			}
 		} catch (SQLException e) {
@@ -66,25 +66,28 @@ public class ComputerDAO implements DAOInterface<Computer> {
 
 	@Override
 	public void update(Computer obj) {
-		String request = "UPDATE computer "
-				+ "SET name = ?, "
-				+ "introduced = ?, "
-				+ "discontinued = ?, "
-				+ "company_id = ? "
-				+ "WHERE id = ?";
-		try {
-			PreparedStatement stmt = this.daoFactory
-					.getConnection().prepareStatement(request);
-			
-			stmt.setString(1, obj.getName());
-			stmt.setDate(2, obj.getIntroduced());
-			stmt.setDate(3, obj.getDiscontinued());
-			stmt.setInt(4, obj.getCompanyId());
-			stmt.setInt(5, obj.getId());
+		Computer computer = this.get(obj.getId());
+		if (computer != null) {
+			String request = "UPDATE computer "
+					+ "SET name = ?, "
+					+ "introduced = ?, "
+					+ "discontinued = ?, "
+					+ "company_id = ? "
+					+ "WHERE id = ?";
+			try {
+				PreparedStatement stmt = this.daoFactory
+						.getConnection().prepareStatement(request);
+				
+				stmt.setString(1, obj.getName());
+				stmt.setTimestamp(2, obj.getIntroduced());
+				stmt.setTimestamp(3, obj.getDiscontinued());
+				stmt.setInt(4, obj.getCompanyId());
+				stmt.setInt(5, obj.getId());
 
-			stmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
+				stmt.executeUpdate();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -116,8 +119,8 @@ public class ComputerDAO implements DAOInterface<Computer> {
 				Computer computer = new Computer();
 				computer.setId(rs.getInt("id"));
 				computer.setName(rs.getString("name"));
-				computer.setIntroduced(rs.getDate("introduced"));
-				computer.setDiscontinued(rs.getDate("discontinued"));
+				computer.setIntroduced(rs.getTimestamp("introduced"));
+				computer.setDiscontinued(rs.getTimestamp("discontinued"));
 				computer.setCompanyId(rs.getInt("company_id"));
 				listComputers.add(computer);
 			}
@@ -140,8 +143,8 @@ public class ComputerDAO implements DAOInterface<Computer> {
 				computer = new Computer();
 				computer.setId(rs.getInt("id"));
 				computer.setName(rs.getString("name"));
-				computer.setIntroduced(rs.getDate("introduced"));
-				computer.setDiscontinued(rs.getDate("discontinued"));
+				computer.setIntroduced(rs.getTimestamp("introduced"));
+				computer.setDiscontinued(rs.getTimestamp("discontinued"));
 				computer.setCompanyId(rs.getInt("company_id"));
 			}
 		} catch (SQLException e) {

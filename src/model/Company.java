@@ -21,4 +21,21 @@ public class Company {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	@Override
+	public String toString() {
+		return this.getName();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj == null || this.getClass() != obj.getClass()) {
+			return false;
+		} else {
+			Company company = (Company)obj;
+			return this.id == company.id && this.name == company.name;
+		}
+	}
 }
