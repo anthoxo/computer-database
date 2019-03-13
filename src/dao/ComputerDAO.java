@@ -50,7 +50,7 @@ public class ComputerDAO implements DAOInterface<Computer> {
 				
 				stmt.executeUpdate();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				this.daoFactory.getLogger().error(e.getMessage());
 			}
 		}
 	}
@@ -74,7 +74,7 @@ public class ComputerDAO implements DAOInterface<Computer> {
 				computer.setCompany(daoFactory.getCompanyDAO().get(computer.getCompanyId()));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			this.daoFactory.getLogger().error(e.getMessage());
 		}
 		return computer;
 	}
@@ -114,7 +114,7 @@ public class ComputerDAO implements DAOInterface<Computer> {
 
 				stmt.executeUpdate();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				this.daoFactory.getLogger().error(e.getMessage());
 			}
 		}
 	}
@@ -130,7 +130,7 @@ public class ComputerDAO implements DAOInterface<Computer> {
 
 			stmt.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			this.daoFactory.getLogger().error(e.getMessage());
 		}
 	}
 	
@@ -153,7 +153,7 @@ public class ComputerDAO implements DAOInterface<Computer> {
 				listComputers.add(computer);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			this.daoFactory.getLogger().error(e.getMessage());
 		}
 
 		return listComputers;
@@ -177,7 +177,7 @@ public class ComputerDAO implements DAOInterface<Computer> {
 				computer.setCompany(daoFactory.getCompanyDAO().get(computer.getCompanyId()));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			this.daoFactory.getLogger().error(e.getMessage());
 		}
 		return computer;
 	}

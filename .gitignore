@@ -1,4 +1,5 @@
 /bin/
+/logs/
 
 # eclipse project file
 .settings/

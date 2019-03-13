@@ -24,7 +24,7 @@ public class CompanyDAO implements DAOInterface<Company> {
 
 	@Override
 	public void create(Company obj) {
-		System.out.println("IMPOSSIBLE TO CREATE NEW COMPANY");
+		daoFactory.getLogger().warn("IMPOSSIBLE TO CREATE NEW COMPANY");
 	}
 
 	@Override
@@ -42,19 +42,19 @@ public class CompanyDAO implements DAOInterface<Company> {
 				company.setName(rs.getString("name"));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			this.daoFactory.getLogger().error(e.getMessage());
 		}
 		return company;
 	}
 	
 	@Override
 	public void update(Company obj) {
-		System.out.println("IMPOSSIBLE TO UPDATE COMPANIES");
+		this.daoFactory.getLogger().warn("IMPOSSIBLE TO UPDATE COMPANIES");
 	}
 
 	@Override
 	public void delete(Company obj) {
-		System.out.println("IMPOSSIBLE TO DELETE COMPANIES");
+		this.daoFactory.getLogger().warn("IMPOSSIBLE TO DELETE COMPANIES");
 	}
 	
 	public List<Company> getAll() {
@@ -71,7 +71,7 @@ public class CompanyDAO implements DAOInterface<Company> {
 				listCompanies.add(company);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			this.daoFactory.getLogger().error(e.getMessage());
 		}
 		return listCompanies;
 	}
@@ -90,7 +90,7 @@ public class CompanyDAO implements DAOInterface<Company> {
 				company.setName(rs.getString("name"));
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			this.daoFactory.getLogger().error(e.getMessage());
 		}
 		return company;
 	}

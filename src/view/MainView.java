@@ -2,14 +2,19 @@ package view;
 
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class MainView {
 	static Scanner sc = new Scanner(System.in);
+	private static Logger logger = LoggerFactory.getLogger(MainView.class);
 	
 	public static void chooseDatabase() {
-		System.out.println("Quelle base voulez-vous traiter? (company / computer)");
-		System.out.println("Pour quitter : quit");
+		logger.info("Quelle base voulez-vous traiter? (company / computer)");
+		logger.info("Pour quitter : quit");
 
 		String prompt = sc.nextLine();
+		
 		switch (prompt) {
 		case "company":
 			CompanyView.chooseCompany(sc);
@@ -19,10 +24,10 @@ public class MainView {
 			ComputerView.chooseComputer(sc);
 			break;
 		case "quit":
-			System.out.println("Bye.");
+			logger.info("Bye.");
 			break;
 		default:
-			System.out.println("Mauvaise base de donnée...");
+			logger.warn("Mauvaise base de donnée...");
 			chooseDatabase();
 			break;
 		}

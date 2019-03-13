@@ -7,7 +7,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import main.Main;
+
 public class DAOFactory {
+	
 	private CompanyDAO companyDAO;
 	private ComputerDAO computerDAO;
 	
@@ -22,6 +28,8 @@ public class DAOFactory {
 	private String user;
 	private String password;
 	private String table;
+	
+	private Logger logger = LoggerFactory.getLogger(DAOFactory.class);
 	
 	private DAOFactory() {
 		Properties properties = new Properties();
@@ -73,6 +81,10 @@ public class DAOFactory {
 	
 	public Connection getConnection() {
 		return this.connection;
+	}
+	
+	public Logger getLogger() {
+		return this.logger;
 	}
 	
 	public void closeConnection() {
