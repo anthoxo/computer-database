@@ -9,7 +9,7 @@ import controller.MainController;
 
 public class MainView {
 	
-	private static Logger logger = LoggerFactory.getLogger(MainView.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(MainView.class);
 	private MainController mainController;
 	private Scanner sc;
 	
@@ -27,8 +27,8 @@ public class MainView {
 		boolean stop = false;
 		
 		while (!stop) {
-			logger.info("Quelle base voulez-vous traiter? (company / computer)");
-			logger.info("Pour quitter : quit");
+			LOGGER.info("Quelle base voulez-vous traiter? (company / computer)");
+			LOGGER.info("Pour quitter : quit");
 
 			String prompt = sc.nextLine();
 			
@@ -45,9 +45,9 @@ public class MainView {
 				}
 			} else {
 				if (!this.mainController.isLeaving()) {
-					logger.warn("Mauvaise base de donnée...");
+					LOGGER.warn("Mauvaise base de donnée...");
 				} else {
-					logger.info("Bye");
+					LOGGER.info("Bye");
 				}
 			}
 			stop = this.mainController.isLeaving();

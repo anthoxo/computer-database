@@ -11,7 +11,7 @@ import model.Company;
 
 public class CompanyView {
 	
-	private static Logger logger = LoggerFactory.getLogger(CompanyView.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(CompanyView.class);
 	private CompanyController companyController;
 	
 	public CompanyView() {
@@ -19,22 +19,22 @@ public class CompanyView {
 	}
 	
 	public void printCompanies(Scanner sc) {
-		logger.info("Voici la liste des companies :");
+		LOGGER.info("Voici la liste des companies :");
 		boolean stop = false;
 		
 		while (!stop) {
 			List<Company> listCompanies = this.companyController.getCompanies();
 			listCompanies.forEach(
-					(Company company) -> logger.info(company == null ? "" : company.toString())
+					(Company company) -> LOGGER.info(company == null ? "" : company.toString())
 			);
 			
-			logger.info("next // previous // back ?");
+			LOGGER.info("next // previous // back ?");
 			String prompt = sc.nextLine();
 			
 			boolean choice = this.companyController.selectAction(prompt);
 			
 			if (!choice) {
-				logger.warn("Mauvaise commande...");
+				LOGGER.warn("Mauvaise commande...");
 			}
 			stop = this.companyController.isGoingBack();
 		}

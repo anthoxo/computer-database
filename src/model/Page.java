@@ -8,7 +8,7 @@ public class Page<T> {
 	int index;
 	int length;
 	
-	int nb_pages = 10;
+	static int NB_PAGES = 10;
 	
 	public Page() {
 		this.index = 0;
@@ -46,15 +46,15 @@ public class Page<T> {
 	}
 
 	public List<T> getEntitiesPage() {
-		return data.subList(index, Math.min(index + this.nb_pages, length));
+		return data.subList(index, Math.min(index + NB_PAGES, length));
 	}
 	
 	public void next() {
-		this.index = Math.min(this.index + this.nb_pages, this.length - 1);
+		this.index = Math.min(this.index + NB_PAGES, this.length - 1);
 	}
 	
 	public void previous() {
-		this.index = Math.max(this.index - this.nb_pages, 0);
+		this.index = Math.max(this.index - NB_PAGES, 0);
 	}
 	
 }

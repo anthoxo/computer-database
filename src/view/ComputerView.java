@@ -11,7 +11,7 @@ import model.Computer;
 
 public class ComputerView {
 	
-	private static Logger logger = LoggerFactory.getLogger(ComputerView.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(ComputerView.class);
 	
 	ComputerController computerController;
 	
@@ -20,9 +20,9 @@ public class ComputerView {
 	}
 
 	public void chooseAction(Scanner sc) {
-		logger.info("Quelle option voulez-vous utiliser sur la base de donnée Computer ?");
-		logger.info("get-all // get-name // get-id // create // update // delete");
-		logger.info("Pour revenir en arrière : back");
+		LOGGER.info("Quelle option voulez-vous utiliser sur la base de donnée Computer ?");
+		LOGGER.info("get-all // get-name // get-id // create // update // delete");
+		LOGGER.info("Pour revenir en arrière : back");
 		
 		String prompt = sc.nextLine();
 		
@@ -48,29 +48,29 @@ public class ComputerView {
 		case "back":
 			break;
 		default:
-			logger.warn("Mauvaise option... Retour au menu...");
+			LOGGER.warn("Mauvaise option... Retour au menu...");
 			break;
 		}
 	}
 	
 	public void chooseGetAll(Scanner sc) {
-		logger.info("Voici la liste des computers :");
+		LOGGER.info("Voici la liste des computers :");
 		
 		boolean stop = false;
 		
 		while (!stop) {
 			List<Computer> listComputers = this.computerController.getComputers();
 			listComputers.forEach(
-					(Computer computer) -> logger.info(computer == null ? "null" : computer.toString())
+					(Computer computer) -> LOGGER.info(computer == null ? "null" : computer.toString())
 			);
-			logger.info("next // previous // back ?");
+			LOGGER.info("next // previous // back ?");
 			
 			String prompt = sc.nextLine();
 			
 			boolean choice = this.computerController.selectAction(prompt);
 			
 			if (!choice) {
-				logger.warn("Mauvaise commande...");
+				LOGGER.warn("Mauvaise commande...");
 			}
 			stop = this.computerController.isGoingBack();
 		}
@@ -78,80 +78,80 @@ public class ComputerView {
 
 
 	public void chooseComputerName(Scanner sc) {
-		logger.info("Quel nom de Computer voulez-vous chercher ?");
+		LOGGER.info("Quel nom de Computer voulez-vous chercher ?");
 		String prompt = sc.nextLine();
 		Computer computer = this.computerController.getComputerByName(prompt);
-		logger.info(computer == null ? "null" : computer.toString());
+		LOGGER.info(computer == null ? "null" : computer.toString());
 	}
 	
 	public void chooseComputerId(Scanner sc) {
-		logger.info("Quel id de Computer voulez-vous chercher ?");
+		LOGGER.info("Quel id de Computer voulez-vous chercher ?");
 		
 		String prompt = sc.nextLine();
 		int id = Integer.valueOf(prompt);
 		
 		Computer computer = this.computerController.getComputerById(id);
-		logger.info(computer == null ? "null" : computer.toString());
+		LOGGER.info(computer == null ? "null" : computer.toString());
 	}
 
 	public void chooseCreate(Scanner sc) {
 		String name,introduced,discontinued,companyName;
 		
-		logger.info("Name ?");
+		LOGGER.info("Name ?");
 		name = sc.nextLine();
 		
-		logger.info("Introduced ? (yyyy/mm/dd)");
+		LOGGER.info("Introduced ? (yyyy/mm/dd)");
 		introduced = sc.nextLine();
 				
-		logger.info("Discontinued ? (yyyy/mm/dd)");
+		LOGGER.info("Discontinued ? (yyyy/mm/dd)");
 		discontinued = sc.nextLine();
 		
-		logger.info("Name of Company ?");
+		LOGGER.info("Name of Company ?");
 		companyName = sc.nextLine();
 		
 		boolean res = this.computerController.createComputer(name, introduced, discontinued, companyName);
 		if (res) {
-			logger.info("Done !");
+			LOGGER.info("Done !");
 		} else {
-			logger.warn("Impossible to create this computer...");
+			LOGGER.warn("Impossible to create this computer...");
 		}
 	}
 	
 	public void chooseUpdate(Scanner sc) {
-		logger.info("Quel id de Computer voulez-vous modifier ?");
+		LOGGER.info("Quel id de Computer voulez-vous modifier ?");
 		String prompt = sc.nextLine();
 		int id = Integer.valueOf(prompt);
 		
 		Computer computer = this.computerController.getComputerById(id);
 		
 		if (computer == null) {
-			logger.warn("Computer introuvable...");
+			LOGGER.warn("Computer introuvable...");
 		} else {
 			String name,introduced,discontinued,companyName;
 
-			logger.info("Name ? Previous: " + computer.getName());
+			LOGGER.info("Name ? Previous: " + computer.getName());
 			name = sc.nextLine();
 			
-			logger.info("Introduced (yyyy/mm/dd)? Previous: {}", computer.getIntroduced());
+			LOGGER.info("Introduced (yyyy/mm/dd)? Previous: {}", computer.getIntroduced());
 			introduced = sc.nextLine();
 						
-			logger.info("Discontinued (yyyy/mm/dd)? Previous: {}", computer.getDiscontinued());
+			LOGGER.info("Discontinued (yyyy/mm/dd)? Previous: {}", computer.getDiscontinued());
 			discontinued = sc.nextLine();
 			
-			logger.info("Name of Company? Previous: {}", computer.getCompany().getName());
+			LOGGER.info("Name of Company? Previous: {}", computer.getCompany().getName());
 			companyName = sc.nextLine();
 			
 			boolean res = this.computerController.updateComputer(computer, name, introduced, discontinued, companyName);
 			if (res) {
-				logger.info("Done !");
+				LOGGER.info("Done !");
 			} else {
-				logger.warn("Impossible to update this computer...");
+				LOGGER.warn("Impossible to update this computer...");
 			}
 		}
 	}
 	
 	public void chooseDelete(Scanner sc) {
-		logger.info("Quel id de Computer voulez-vous détruire ?");
+		LOGGER.info("Quel id de Computer voulez-vous détruire ?");
 		
 		String prompt = sc.nextLine();
 		int id = Integer.valueOf(prompt);
@@ -159,19 +159,19 @@ public class ComputerView {
 		Computer computer = this.computerController.getComputerById(id);
 		
 		if (computer == null) {
-			logger.warn("Computer introuvable...");
+			LOGGER.warn("Computer introuvable...");
 		} else {
-			logger.info(computer == null ? "null" : computer.toString());
-			logger.info("Voulez-vous vraiment détruire cet objet ? (y/n)");
+			LOGGER.info(computer == null ? "null" : computer.toString());
+			LOGGER.info("Voulez-vous vraiment détruire cet objet ? (y/n)");
 			
 			prompt = sc.nextLine();
 			
 			if (prompt.equals("y")) {
 				boolean res = this.computerController.deleteComputer(computer);
 				if (res) {
-					logger.info("Computer deleted !");
+					LOGGER.info("Computer deleted !");
 				} else {
-					logger.warn("Impossible to delete this computer...");
+					LOGGER.warn("Impossible to delete this computer...");
 				}
 				
 			}

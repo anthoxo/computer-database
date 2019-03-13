@@ -10,7 +10,7 @@ import utils.Utils;
 
 public class ComputerController {
 	
-	private static DAOFactory dao = DAOFactory.getInstance();
+	private static DAOFactory DAO = DAOFactory.getInstance();
 	
 	private Page<Computer> page;
 	private boolean isGoingBack;
@@ -20,7 +20,7 @@ public class ComputerController {
 	}
 	
 	public void refreshCompanyPage() {
-		List<Computer> listComputers = dao.getComputerDAO().getAll();
+		List<Computer> listComputers = DAO.getComputerDAO().getAll();
 		this.page = new Page<Computer>(listComputers);
 	}
 
@@ -52,11 +52,11 @@ public class ComputerController {
 	}
 	
 	public Computer getComputerByName(String name) {
-		return dao.getComputerDAO().get(name);
+		return DAO.getComputerDAO().get(name);
 	}
 	
 	public Computer getComputerById(int id) {
-		return dao.getComputerDAO().get(id);
+		return DAO.getComputerDAO().get(id);
 	}
 	
 	public boolean createComputer(String name, String introduced, String discontinued, String companyName) {
@@ -65,12 +65,12 @@ public class ComputerController {
 		computer.setIntroduced(Utils.computeTimestamp(introduced));
 		computer.setDiscontinued(Utils.computeTimestamp(discontinued));
 		
-		Company company = dao.getCompanyDAO().get(companyName);
+		Company company = DAO.getCompanyDAO().get(companyName);
 		if (company != null) {
 			computer.setCompanyId(company.getId());
 		}
 		
-		boolean res = dao.getComputerDAO().create(computer);
+		boolean res = DAO.getComputerDAO().create(computer);
 		return res;
 	}
 	
@@ -88,18 +88,18 @@ public class ComputerController {
 		}
 		
 		if (!companyName.equals("")) {
-			Company company = dao.getCompanyDAO().get(companyName);
+			Company company = DAO.getCompanyDAO().get(companyName);
 			if (company != null) {
 				computer.setCompanyId(company.getId());
 			}
 		}
 		
-		boolean res = dao.getComputerDAO().update(computer);
+		boolean res = DAO.getComputerDAO().update(computer);
 		return res;
 	}
 	
 	public boolean deleteComputer(Computer computer) {
-		boolean res = dao.getComputerDAO().delete(computer);
+		boolean res = DAO.getComputerDAO().delete(computer);
 		return res;
 	}
 

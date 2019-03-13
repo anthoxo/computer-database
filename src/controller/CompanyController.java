@@ -8,7 +8,7 @@ import model.Page;
 
 public class CompanyController {
 	
-	static DAOFactory dao = DAOFactory.getInstance();
+	static DAOFactory DAO = DAOFactory.getInstance();
 	
 	Page<Company> page;
 	boolean isGoingBack;
@@ -19,7 +19,7 @@ public class CompanyController {
 	}
 	
 	public void refreshCompanyPage() {
-		List<Company> listCompanies = dao.getCompanyDAO().getAll();
+		List<Company> listCompanies = DAO.getCompanyDAO().getAll();
 		this.page = new Page<Company>(listCompanies);
 	}
 	
