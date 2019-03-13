@@ -10,8 +10,6 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import main.Main;
-
 public class DAOFactory {
 	
 	private CompanyDAO companyDAO;
@@ -38,7 +36,7 @@ public class DAOFactory {
 		try {
 			properties.load(fichierProperties);
 		} catch (IOException e1) {
-			e1.printStackTrace();
+			logger.error(e1.getMessage());
 		}
 
 		this.user = properties.getProperty( USER_TABLE );
@@ -48,13 +46,13 @@ public class DAOFactory {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		try {
 			connection = DriverManager.getConnection(
 					"jdbc:mysql://localhost/" + this.table, this.user, this.password);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 	
@@ -91,7 +89,7 @@ public class DAOFactory {
 		try {
 			this.connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 }

@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Company;
 import model.Computer;
 
 public class ComputerDAO implements DAOInterface<Computer> {
@@ -89,10 +88,9 @@ public class ComputerDAO implements DAOInterface<Computer> {
 	public boolean update(Computer obj) {
 		
 		Computer computer = this.get(obj.getId());
-		Company company = daoFactory.getCompanyDAO().get(computer.getCompanyId());
 		boolean validComputer = true;
 		
-		if (computer == null || company == null) {
+		if (computer == null) {
 			validComputer = false;
 		}
 		if (obj.getIntroduced() != null && obj.getDiscontinued() != null) {
@@ -115,7 +113,13 @@ public class ComputerDAO implements DAOInterface<Computer> {
 				stmt.setString(1, obj.getName());
 				stmt.setTimestamp(2, obj.getIntroduced());
 				stmt.setTimestamp(3, obj.getDiscontinued());
-				stmt.setInt(4, obj.getCompanyId());
+				
+				if (daoFactory.getCompanyDAO().get(obj.getCompanyId()) == null) {
+					stmt.setObject(4, null);
+				} else {
+					stmt.setInt(4, obj.getCompanyId());
+				}
+
 				stmt.setInt(5, obj.getId());
 
 				stmt.executeUpdate();
