@@ -7,7 +7,8 @@ public class Main {
 	public static void main(String args[]) {
 		DAOFactory dao = DAOFactory.getInstance();
 		
-		MainView.chooseDatabase();
+		MainView mainView = new MainView();
+		mainView.chooseDatabase();
 								
 		dao.closeConnection();
 	}

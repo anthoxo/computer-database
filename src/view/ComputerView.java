@@ -6,19 +6,20 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dao.DAOFactory;
-import model.Company;
+import controller.ComputerController;
 import model.Computer;
-import model.Page;
-import utils.Utils;
 
 public class ComputerView {
 	
-	static DAOFactory dao = DAOFactory.getInstance();
 	private static Logger logger = LoggerFactory.getLogger(ComputerView.class);
-
 	
-	public static void chooseComputer(Scanner sc) {
+	ComputerController computerController;
+	
+	public ComputerView() {
+		computerController = new ComputerController();
+	}
+
+	public void chooseAction(Scanner sc) {
 		logger.info("Quelle option voulez-vous utiliser sur la base de donnée Computer ?");
 		logger.info("get-all // get-name // get-id // create // update // delete");
 		logger.info("Pour revenir en arrière : back");
@@ -50,137 +51,106 @@ public class ComputerView {
 			logger.warn("Mauvaise option... Retour au menu...");
 			break;
 		}
-		MainView.chooseDatabase();
 	}
 	
-	public static void chooseGetAll(Scanner sc) {
+	public void chooseGetAll(Scanner sc) {
 		logger.info("Voici la liste des computers :");
-		List<Computer> listComputers = dao.getComputerDAO().getAll();
-		Page<Computer> computerPage = new Page<Computer>(listComputers);
+		
 		boolean stop = false;
+		
 		while (!stop) {
-			computerPage.getEntitiesPage().forEach(
+			List<Computer> listComputers = this.computerController.getComputers();
+			listComputers.forEach(
 					(Computer computer) -> logger.info(computer == null ? "null" : computer.toString())
 			);
 			logger.info("next // previous // back ?");
 			
 			String prompt = sc.nextLine();
 			
-			switch (prompt) {
-			case "next":
-				computerPage.next();
-				break;
-			case "previous":
-				computerPage.previous();
-				break;
-			case "back":
-				stop = true;
-				break;
-			default:
-				logger.warn("Mauvaise commande... Retour au menu...");
-				stop = true;
-				break;
+			boolean choice = this.computerController.selectAction(prompt);
+			
+			if (!choice) {
+				logger.warn("Mauvaise commande...");
 			}
+			stop = this.computerController.isGoingBack();
 		}
 	}
 
 
-	public static void chooseComputerName(Scanner sc) {
+	public void chooseComputerName(Scanner sc) {
 		logger.info("Quel nom de Computer voulez-vous chercher ?");
-		
 		String prompt = sc.nextLine();
-		
-		Computer computer = dao.getComputerDAO().get(prompt);	
+		Computer computer = this.computerController.getComputerByName(prompt);
 		logger.info(computer == null ? "null" : computer.toString());
 	}
 	
-	public static void chooseComputerId(Scanner sc) {
+	public void chooseComputerId(Scanner sc) {
 		logger.info("Quel id de Computer voulez-vous chercher ?");
 		
 		String prompt = sc.nextLine();
 		int id = Integer.valueOf(prompt);
 		
-		Computer computer = dao.getComputerDAO().get(id);
+		Computer computer = this.computerController.getComputerById(id);
 		logger.info(computer == null ? "null" : computer.toString());
 	}
 
-	public static void chooseCreate(Scanner sc) {
-		Computer computer = new Computer();
+	public void chooseCreate(Scanner sc) {
+		String name,introduced,discontinued,companyName;
 		
 		logger.info("Name ?");
-		String prompt = sc.nextLine();
-		computer.setName(prompt);
+		name = sc.nextLine();
 		
 		logger.info("Introduced ? (yyyy/mm/dd)");
-		prompt = sc.nextLine();
-		computer.setIntroduced(Utils.computeTimestamp(prompt));
+		introduced = sc.nextLine();
 				
 		logger.info("Discontinued ? (yyyy/mm/dd)");
-		prompt = sc.nextLine();
-		computer.setDiscontinued(Utils.computeTimestamp(prompt));
+		discontinued = sc.nextLine();
 		
 		logger.info("Name of Company ?");
-		prompt = sc.nextLine();
+		companyName = sc.nextLine();
 		
-		Company company = dao.getCompanyDAO().get(prompt);
-		if (company != null) {
-			computer.setCompanyId(company.getId());
-		}
-		
-		dao.getComputerDAO().create(computer);
+		this.computerController.createComputer(name, introduced, discontinued, companyName);
+
 		logger.info("Done !");
 	}
 	
-	public static void chooseUpdate(Scanner sc) {
+	public void chooseUpdate(Scanner sc) {
 		logger.info("Quel id de Computer voulez-vous modifier ?");
 		String prompt = sc.nextLine();
 		int id = Integer.valueOf(prompt);
 		
-		Computer computer = dao.getComputerDAO().get(id);
+		Computer computer = this.computerController.getComputerById(id);
 		
 		if (computer == null) {
 			logger.warn("Computer introuvable...");
 		} else {
+			String name,introduced,discontinued,companyName;
+
 			logger.info("Name ? Previous: " + computer.getName());
-			prompt = sc.nextLine();
-			if (!prompt.equals("")) {
-				computer.setName(prompt);
-			}
+			name = sc.nextLine();
 			
 			logger.info("Introduced (yyyy/mm/dd)? Previous: {}", computer.getIntroduced());
-			prompt = sc.nextLine();
-			
-			if (!prompt.equals("")) {
-				computer.setIntroduced(Utils.computeTimestamp(prompt));
-			}
-			
+			introduced = sc.nextLine();
+						
 			logger.info("Discontinued (yyyy/mm/dd)? Previous: {}", computer.getDiscontinued());
-			prompt = sc.nextLine();
+			discontinued = sc.nextLine();
 			
-			if (!prompt.equals("")) {
-				computer.setDiscontinued(Utils.computeTimestamp(prompt));
-			}
-
 			logger.info("Name of Company? Previous: {}", computer.getCompany().getName());
-			prompt = sc.nextLine();
+			companyName = sc.nextLine();
 			
-			Company company = dao.getCompanyDAO().get(prompt);
-			if (company != null) {
-				computer.setCompanyId(company.getId());
-			}
+			this.computerController.updateComputer(computer, name, introduced, discontinued, companyName);
 			
-			dao.getComputerDAO().update(computer);
 			logger.info("Done !");
 		}
 	}
 	
-	public static void chooseDelete(Scanner sc) {
+	public void chooseDelete(Scanner sc) {
 		logger.info("Quel id de Computer voulez-vous détruire ?");
 		
 		String prompt = sc.nextLine();
 		int id = Integer.valueOf(prompt);
 		
-		Computer computer = dao.getComputerDAO().get(id);
+		Computer computer = this.computerController.getComputerById(id);
 		
 		if (computer == null) {
 			logger.warn("Computer introuvable...");
@@ -191,7 +161,7 @@ public class ComputerView {
 			prompt = sc.nextLine();
 			
 			if (prompt.equals("y")) {
-				dao.getComputerDAO().delete(computer);
+				this.computerController.deleteComputer(computer);
 				logger.info("Computer détruit !");
 			}
 		}	

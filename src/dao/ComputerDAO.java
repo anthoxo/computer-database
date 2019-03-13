@@ -27,9 +27,6 @@ public class ComputerDAO implements DAOInterface<Computer> {
 	public void create(Computer obj) {
 		boolean validComputer = true;
 		
-		if (daoFactory.getCompanyDAO().get(obj.getCompanyId()) == null) {
-			validComputer = false;
-		}
 		if (obj.getIntroduced() != null && obj.getDiscontinued() != null) {
 			if (obj.getDiscontinued().getTime() - obj.getIntroduced().getTime() < 0) {
 				validComputer = false;
@@ -46,8 +43,13 @@ public class ComputerDAO implements DAOInterface<Computer> {
 				stmt.setString(2, obj.getName());
 				stmt.setTimestamp(3, obj.getIntroduced());
 				stmt.setTimestamp(4, obj.getDiscontinued());
-				stmt.setInt(5, obj.getCompanyId());
 				
+				if (daoFactory.getCompanyDAO().get(obj.getCompanyId()) == null) {
+					stmt.setObject(5, null);
+				} else {
+					stmt.setInt(5, obj.getCompanyId());
+				}
+
 				stmt.executeUpdate();
 			} catch (SQLException e) {
 				this.daoFactory.getLogger().error(e.getMessage());
