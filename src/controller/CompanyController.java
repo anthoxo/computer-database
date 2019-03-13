@@ -10,7 +10,7 @@ public class CompanyController {
 	
 	static DAOFactory DAO = DAOFactory.getInstance();
 	
-	Page<Company> page;
+	Page<Company> companyPage;
 	boolean isGoingBack;
 	
 	public CompanyController() {
@@ -20,21 +20,21 @@ public class CompanyController {
 	
 	public void refreshCompanyPage() {
 		List<Company> listCompanies = DAO.getCompanyDAO().getAll();
-		this.page = new Page<Company>(listCompanies);
+		this.companyPage = new Page<Company>(listCompanies);
 	}
 	
-	public List<Company> getCompanies() {
-		return this.page.getEntitiesPage();
+	public List<Company> getCompanyPageList() {
+		return this.companyPage.getEntitiesPage();
 	}
 	
 	public boolean selectAction(String action) {
 		boolean badAction = true;
 		switch (action) {
 		case "next":
-			this.page.next();
+			this.companyPage.next();
 			break;
 		case "previous":
-			this.page.previous();
+			this.companyPage.previous();
 			break;
 		case "back":
 			this.isGoingBack = true;

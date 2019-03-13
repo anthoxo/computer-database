@@ -59,7 +59,7 @@ public class ComputerView {
 		boolean stop = false;
 		
 		while (!stop) {
-			List<Computer> listComputers = this.computerController.getComputers();
+			List<Computer> listComputers = this.computerController.getComputerPageList();
 			listComputers.forEach(
 					(Computer computer) -> LOGGER.info(computer == null ? "null" : computer.toString())
 			);

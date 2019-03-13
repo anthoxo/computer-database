@@ -12,7 +12,7 @@ public class ComputerController {
 	
 	private static DAOFactory DAO = DAOFactory.getInstance();
 	
-	private Page<Computer> page;
+	private Page<Computer> computerPage;
 	private boolean isGoingBack;
 	
 	public ComputerController() {
@@ -21,21 +21,21 @@ public class ComputerController {
 	
 	public void refreshCompanyPage() {
 		List<Computer> listComputers = DAO.getComputerDAO().getAll();
-		this.page = new Page<Computer>(listComputers);
+		this.computerPage = new Page<Computer>(listComputers);
 	}
 
-	public List<Computer> getComputers() {
-		return this.page.getEntitiesPage();
+	public List<Computer> getComputerPageList() {
+		return this.computerPage.getEntitiesPage();
 	}
 	
 	public boolean selectAction(String action) {
 		boolean badAction = true;
 		switch (action) {
 		case "next":
-			this.page.next();
+			this.computerPage.next();
 			break;
 		case "previous":
-			this.page.previous();
+			this.computerPage.previous();
 			break;
 		case "back":
 			this.isGoingBack = true;

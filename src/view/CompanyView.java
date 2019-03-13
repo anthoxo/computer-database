@@ -23,7 +23,7 @@ public class CompanyView {
 		boolean stop = false;
 		
 		while (!stop) {
-			List<Company> listCompanies = this.companyController.getCompanies();
+			List<Company> listCompanies = this.companyController.getCompanyPageList();
 			listCompanies.forEach(
 					(Company company) -> LOGGER.info(company == null ? "" : company.toString())
 			);
