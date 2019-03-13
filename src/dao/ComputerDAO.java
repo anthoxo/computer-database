@@ -24,7 +24,7 @@ public class ComputerDAO implements DAOInterface<Computer> {
 	}
 
 	@Override
-	public void create(Computer obj) {
+	public boolean create(Computer obj) {
 		boolean validComputer = true;
 		
 		if (obj.getIntroduced() != null && obj.getDiscontinued() != null) {
@@ -53,7 +53,11 @@ public class ComputerDAO implements DAOInterface<Computer> {
 				stmt.executeUpdate();
 			} catch (SQLException e) {
 				this.daoFactory.getLogger().error(e.getMessage());
+				return false;
 			}
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -82,7 +86,7 @@ public class ComputerDAO implements DAOInterface<Computer> {
 	}
 
 	@Override
-	public void update(Computer obj) {
+	public boolean update(Computer obj) {
 		
 		Computer computer = this.get(obj.getId());
 		Company company = daoFactory.getCompanyDAO().get(computer.getCompanyId());
@@ -117,12 +121,16 @@ public class ComputerDAO implements DAOInterface<Computer> {
 				stmt.executeUpdate();
 			} catch (SQLException e) {
 				this.daoFactory.getLogger().error(e.getMessage());
+				return false;
 			}
+			return true;
+		} else {
+			return false;
 		}
 	}
 
 	@Override
-	public void delete(Computer obj) {
+	public boolean delete(Computer obj) {
 		String request = "DELETE FROM computer WHERE id = ?";
 		try {
 			PreparedStatement stmt = this.daoFactory
@@ -133,7 +141,9 @@ public class ComputerDAO implements DAOInterface<Computer> {
 			stmt.executeUpdate();
 		} catch (SQLException e) {
 			this.daoFactory.getLogger().error(e.getMessage());
+			return false;
 		}
+		return true;
 	}
 	
 	public List<Computer> getAll() {

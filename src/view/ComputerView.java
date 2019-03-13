@@ -109,9 +109,12 @@ public class ComputerView {
 		logger.info("Name of Company ?");
 		companyName = sc.nextLine();
 		
-		this.computerController.createComputer(name, introduced, discontinued, companyName);
-
-		logger.info("Done !");
+		boolean res = this.computerController.createComputer(name, introduced, discontinued, companyName);
+		if (res) {
+			logger.info("Done !");
+		} else {
+			logger.warn("Impossible to create this computer...");
+		}
 	}
 	
 	public void chooseUpdate(Scanner sc) {
@@ -138,9 +141,12 @@ public class ComputerView {
 			logger.info("Name of Company? Previous: {}", computer.getCompany().getName());
 			companyName = sc.nextLine();
 			
-			this.computerController.updateComputer(computer, name, introduced, discontinued, companyName);
-			
-			logger.info("Done !");
+			boolean res = this.computerController.updateComputer(computer, name, introduced, discontinued, companyName);
+			if (res) {
+				logger.info("Done !");
+			} else {
+				logger.warn("Impossible to update this computer...");
+			}
 		}
 	}
 	
@@ -161,8 +167,13 @@ public class ComputerView {
 			prompt = sc.nextLine();
 			
 			if (prompt.equals("y")) {
-				this.computerController.deleteComputer(computer);
-				logger.info("Computer détruit !");
+				boolean res = this.computerController.deleteComputer(computer);
+				if (res) {
+					logger.info("Computer deleted !");
+				} else {
+					logger.warn("Impossible to delete this computer...");
+				}
+				
 			}
 		}	
 	}

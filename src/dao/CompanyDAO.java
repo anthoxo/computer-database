@@ -23,8 +23,9 @@ public class CompanyDAO implements DAOInterface<Company> {
 	}
 
 	@Override
-	public void create(Company obj) {
+	public boolean create(Company obj) {
 		daoFactory.getLogger().warn("IMPOSSIBLE TO CREATE NEW COMPANY");
+		return false;
 	}
 
 	@Override
@@ -48,13 +49,15 @@ public class CompanyDAO implements DAOInterface<Company> {
 	}
 	
 	@Override
-	public void update(Company obj) {
+	public boolean update(Company obj) {
 		this.daoFactory.getLogger().warn("IMPOSSIBLE TO UPDATE COMPANIES");
+		return false;
 	}
 
 	@Override
-	public void delete(Company obj) {
+	public boolean delete(Company obj) {
 		this.daoFactory.getLogger().warn("IMPOSSIBLE TO DELETE COMPANIES");
+		return false;
 	}
 	
 	public List<Company> getAll() {

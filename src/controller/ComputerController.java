@@ -59,7 +59,7 @@ public class ComputerController {
 		return dao.getComputerDAO().get(id);
 	}
 	
-	public void createComputer(String name, String introduced, String discontinued, String companyName) {
+	public boolean createComputer(String name, String introduced, String discontinued, String companyName) {
 		Computer computer = new Computer();
 		computer.setName(name);
 		computer.setIntroduced(Utils.computeTimestamp(introduced));
@@ -70,10 +70,11 @@ public class ComputerController {
 			computer.setCompanyId(company.getId());
 		}
 		
-		dao.getComputerDAO().create(computer);
+		boolean res = dao.getComputerDAO().create(computer);
+		return res;
 	}
 	
-	public void updateComputer(Computer computer, String name, String introduced, String discontinued, String companyName) {
+	public boolean updateComputer(Computer computer, String name, String introduced, String discontinued, String companyName) {
 		if (!name.equals("")) {
 			computer.setName(name);
 		}
@@ -93,11 +94,13 @@ public class ComputerController {
 			}
 		}
 		
-		dao.getComputerDAO().update(computer);
+		boolean res = dao.getComputerDAO().update(computer);
+		return res;
 	}
 	
-	public void deleteComputer(Computer computer) {
-		dao.getComputerDAO().delete(computer);
+	public boolean deleteComputer(Computer computer) {
+		boolean res = dao.getComputerDAO().delete(computer);
+		return res;
 	}
 
 }
