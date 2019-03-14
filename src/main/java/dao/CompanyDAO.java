@@ -1,20 +1,23 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import mapper.CompanyMapper;
 import model.Company;
 
 public class CompanyDAO implements DAOInterface<Company> {
-	
+
 	private DAOFactory daoFactory = DAOFactory.getInstance();
 	private static CompanyDAO INSTANCE = null;
-	
-	private CompanyDAO() { }
-	
+
+	private CompanyDAO() {
+	}
+
 	public static CompanyDAO getInstance() {
 		if (INSTANCE == null) {
 			INSTANCE = new CompanyDAO();
@@ -31,23 +34,20 @@ public class CompanyDAO implements DAOInterface<Company> {
 	@Override
 	public Company get(int id) {
 		Company company = null;
-		try {
-			String request = "SELECT * FROM company WHERE id = ?";
-			PreparedStatement stmt = this.daoFactory
-					.getConnection().prepareStatement(request);
+		String request = "SELECT * FROM company WHERE id = ?";
+		try (Connection conn = this.daoFactory.getConnection()) {
+			PreparedStatement stmt = conn.prepareStatement(request);
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				company = new Company();
-				company.setId(id);
-				company.setName(rs.getString("name"));
+				company = CompanyMapper.map(rs);
 			}
 		} catch (SQLException e) {
 			this.daoFactory.getLogger().error(e.getMessage());
 		}
 		return company;
 	}
-	
+
 	@Override
 	public boolean update(Company obj) {
 		this.daoFactory.getLogger().warn("IMPOSSIBLE TO UPDATE COMPANIES");
@@ -59,18 +59,15 @@ public class CompanyDAO implements DAOInterface<Company> {
 		this.daoFactory.getLogger().warn("IMPOSSIBLE TO DELETE COMPANIES");
 		return false;
 	}
-	
+
 	public List<Company> getAll() {
 		List<Company> listCompanies = new ArrayList<Company>();
 		String request = "SELECT * FROM company";
-		try {
-			PreparedStatement stmt = this.daoFactory
-					.getConnection().prepareStatement(request);
+		try (Connection conn = this.daoFactory.getConnection()) {
+			PreparedStatement stmt = conn.prepareStatement(request);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
-				Company company = new Company();
-				company.setId(rs.getInt("id"));
-				company.setName(rs.getString("name"));
+				Company company = CompanyMapper.map(rs);
 				listCompanies.add(company);
 			}
 		} catch (SQLException e) {
@@ -78,19 +75,16 @@ public class CompanyDAO implements DAOInterface<Company> {
 		}
 		return listCompanies;
 	}
-	
+
 	public Company get(String name) {
 		Company company = null;
-		try {
-			String request = "SELECT * FROM company WHERE name = ?";
-			PreparedStatement stmt = this.daoFactory
-					.getConnection().prepareStatement(request);
+		String request = "SELECT * FROM company WHERE name = ?";
+		try (Connection conn = this.daoFactory.getConnection()) {
+			PreparedStatement stmt = conn.prepareStatement(request);
 			stmt.setString(1, name);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				company = new Company();
-				company.setId(rs.getInt("id"));
-				company.setName(rs.getString("name"));
+				company = CompanyMapper.map(rs);
 			}
 		} catch (SQLException e) {
 			this.daoFactory.getLogger().error(e.getMessage());

@@ -1,23 +1,25 @@
 package controller;
 
+import utils.Utils;
+
 public class MainController {
-	
-	String database;
+
+	Utils.ChoiceDatabase database;
 	boolean isLeaving;
-	
+
 	public MainController() {
 		this.isLeaving = false;
 	}
-	
+
 	public boolean selectDatabase(String database) {
-		switch (database) {
-		case "company":
-			this.database = database;
+		Utils.ChoiceDatabase choiceDatabase = Utils.stringToEnum(Utils.ChoiceDatabase.class, database);
+		this.database = choiceDatabase;
+		switch (choiceDatabase) {
+		case COMPANY:
 			break;
-		case "computer":
-			this.database = database;
+		case COMPUTER:
 			break;
-		case "quit":
+		case QUIT:
 			this.isLeaving = true;
 			return false;
 		default:
@@ -25,11 +27,11 @@ public class MainController {
 		}
 		return true;
 	}
-	
-	public String getDatabase() {
+
+	public Utils.ChoiceDatabase getDatabase() {
 		return this.database;
 	}
-	
+
 	public boolean isLeaving() {
 		return isLeaving;
 	}
