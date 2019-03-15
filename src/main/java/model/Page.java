@@ -35,6 +35,7 @@ public class Page<T> {
 
 	public void setData(List<T> data) {
 		this.data = data;
+		this.setLength(data.size());
 	}
 
 	public void setIndex(int index) {
@@ -50,11 +51,19 @@ public class Page<T> {
 	}
 
 	public void next() {
-		this.index = Math.min(this.index + NB_PAGES, this.length - 1);
+		if (this.length == 0) {
+			this.index = 0;
+		} else {
+			this.index = Math.min(this.index + NB_PAGES, this.length - 1);
+		}
 	}
 
 	public void previous() {
-		this.index = Math.max(this.index - NB_PAGES, 0);
+		if (this.length == 0) {
+			this.index = 0;
+		} else {
+			this.index = Math.max(this.index - NB_PAGES, 0);
+		}
 	}
 
 }
