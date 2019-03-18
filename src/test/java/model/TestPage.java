@@ -81,4 +81,14 @@ public class TestPage {
 		assertEquals(length, 0);
 		assertEquals(nextIndex, 0);
 	}
+
+	@Test
+	public void testGetEntitiesPage() {
+		List<Integer> l = this.page.getEntitiesPage();
+		assertEquals(l.size(), Page.NB_PAGES);
+		for (int i = 0; i < Page.NB_PAGES; ++i) {
+			assertEquals(l.get(i), 50 + i);
+		}
+	}
+
 }

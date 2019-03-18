@@ -21,7 +21,7 @@ public class MainController {
 			break;
 		case QUIT:
 			this.isLeaving = true;
-			return false;
+			break;
 		default:
 			return false;
 		}

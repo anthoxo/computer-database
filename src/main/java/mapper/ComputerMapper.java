@@ -6,13 +6,13 @@ import java.sql.SQLException;
 import model.Computer;
 
 public class ComputerMapper {
-	
+
 	private static ComputerMapper INSTANCE = null;
 
 	private ComputerMapper() {
 
 	}
-	
+
 	public static ComputerMapper getInstance() {
 		if (INSTANCE == null) {
 			INSTANCE = new ComputerMapper();

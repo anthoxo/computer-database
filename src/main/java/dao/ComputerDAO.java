@@ -12,8 +12,17 @@ import model.Computer;
 
 public class ComputerDAO implements DAOInterface<Computer> {
 
-	private DAOFactory daoFactory = DAOFactory.getInstance();
 	private static ComputerDAO INSTANCE = null;
+
+	DAOFactory daoFactory = DAOFactory.getInstance();
+	ComputerMapper computerMapper = ComputerMapper.getInstance();
+
+	static final String REQUEST_CREATE = "INSERT INTO computer VALUES (?,?,?,?,?)";
+	static final String REQUEST_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
+	static final String REQUEST_DELETE = "DELETE FROM computer WHERE id = ?";
+	static final String REQUEST_GET_ALL = "SELECT * FROM computer";
+	static final String REQUEST_GET_BY_ID = "SELECT * FROM computer WHERE id = ?";
+	static final String REQUEST_GET_BY_NAME = "SELECT * FROM computer WHERE name = ?";
 
 	private ComputerDAO() {
 	}
@@ -36,9 +45,8 @@ public class ComputerDAO implements DAOInterface<Computer> {
 		}
 
 		if (validComputer) {
-			String request = "INSERT INTO computer VALUES (?,?,?,?,?)";
 			try (Connection conn = this.daoFactory.getConnection()) {
-				PreparedStatement stmt = conn.prepareStatement(request);
+				PreparedStatement stmt = conn.prepareStatement(REQUEST_CREATE);
 
 				stmt.setInt(1, obj.getId());
 				stmt.setString(2, obj.getName());
@@ -65,13 +73,12 @@ public class ComputerDAO implements DAOInterface<Computer> {
 	@Override
 	public Computer get(int id) {
 		Computer computer = null;
-		String request = "SELECT * FROM computer WHERE id = ?";
 		try (Connection conn = this.daoFactory.getConnection()) {
-			PreparedStatement stmt = conn.prepareStatement(request);
+			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_ID);
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				computer = ComputerMapper.map(rs);
+				computer = computerMapper.map(rs);
 				computer.setCompany(daoFactory.getCompanyDAO().get(computer.getCompanyId()));
 			}
 		} catch (SQLException e) {
@@ -96,10 +103,8 @@ public class ComputerDAO implements DAOInterface<Computer> {
 		}
 
 		if (validComputer) {
-			String request = "UPDATE computer " + "SET name = ?, " + "introduced = ?, " + "discontinued = ?, "
-					+ "company_id = ? " + "WHERE id = ?";
 			try (Connection conn = this.daoFactory.getConnection()) {
-				PreparedStatement stmt = conn.prepareStatement(request);
+				PreparedStatement stmt = conn.prepareStatement(REQUEST_UPDATE);
 
 				stmt.setString(1, obj.getName());
 				stmt.setTimestamp(2, obj.getIntroduced());
@@ -126,9 +131,8 @@ public class ComputerDAO implements DAOInterface<Computer> {
 
 	@Override
 	public boolean delete(Computer obj) {
-		String request = "DELETE FROM computer WHERE id = ?";
 		try (Connection conn = this.daoFactory.getConnection()) {
-			PreparedStatement stmt = conn.prepareStatement(request);
+			PreparedStatement stmt = conn.prepareStatement(REQUEST_DELETE);
 
 			stmt.setInt(1, obj.getId());
 
@@ -143,12 +147,11 @@ public class ComputerDAO implements DAOInterface<Computer> {
 	public List<Computer> getAll() {
 		ArrayList<Computer> listComputers = new ArrayList<Computer>();
 
-		String request = "SELECT * FROM computer";
 		try (Connection conn = this.daoFactory.getConnection()) {
-			PreparedStatement stmt = conn.prepareStatement(request);
+			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_ALL);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
-				Computer computer = ComputerMapper.map(rs);
+				Computer computer = computerMapper.map(rs);
 				computer.setCompany(daoFactory.getCompanyDAO().get(computer.getCompanyId()));
 				listComputers.add(computer);
 			}
@@ -161,13 +164,12 @@ public class ComputerDAO implements DAOInterface<Computer> {
 
 	public Computer get(String name) {
 		Computer computer = null;
-		String request = "SELECT * FROM computer WHERE name = ?";
 		try (Connection conn = this.daoFactory.getConnection()) {
-			PreparedStatement stmt = conn.prepareStatement(request);
+			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_NAME);
 			stmt.setString(1, name);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				computer = ComputerMapper.map(rs);
+				computer = computerMapper.map(rs);
 				computer.setCompany(daoFactory.getCompanyDAO().get(computer.getCompanyId()));
 			}
 		} catch (SQLException e) {

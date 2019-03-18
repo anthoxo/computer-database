@@ -17,28 +17,38 @@ import model.Computer;
 
 @ExtendWith(MockitoExtension.class)
 public class TestComputerMapper {
-	
+
 	@Mock
 	ResultSet rs;
-	
+
 	ComputerMapper computerMapper;
-	
+
 	@BeforeEach
 	public void init() throws SQLException {
 		computerMapper = ComputerMapper.getInstance();
-		
-		Mockito.when(rs.getInt("id")).thenReturn(1);
-		Mockito.when(rs.getString("name")).thenReturn("Macbook Air");
-		Mockito.when(rs.getTimestamp("introduced")).thenReturn(new Timestamp(0));
-		Mockito.when(rs.getTimestamp("discontinued")).thenReturn(new Timestamp(0));
-		Mockito.when(rs.getInt("company_id")).thenReturn(1);
+
+		Mockito.doReturn(1).when(rs).getInt("id");
+		Mockito.doReturn("Macbook Air").when(rs).getString("name");
+		Mockito.doReturn(1).when(rs).getInt("company_id");
 	}
-	
+
 	@Test
 	public void testMap() throws SQLException {
+		Mockito.doReturn(new Timestamp(0)).when(rs).getTimestamp("introduced");
+		Mockito.doReturn(new Timestamp(1000)).when(rs).getTimestamp("discontinued");
 		Computer computer = computerMapper.map(rs);
-		assertEquals(computer.getId(),1);
-		assertEquals(computer.getName(),"Macbook Air");
-		assertEquals(computer.getCompanyId(),1);
+		assertEquals(computer.getId(), 1);
+		assertEquals(computer.getName(), "Macbook Air");
+		assertEquals(computer.getCompanyId(), 1);
+	}
+
+	@Test
+	public void testMapWithNullDate() throws SQLException {
+		Mockito.doReturn(null).when(rs).getTimestamp("introduced");
+		Mockito.doReturn(null).when(rs).getTimestamp("discontinued");
+		Computer computer = computerMapper.map(rs);
+		assertEquals(computer.getId(), 1);
+		assertEquals(computer.getName(), "Macbook Air");
+		assertEquals(computer.getCompanyId(), 1);
 	}
 }

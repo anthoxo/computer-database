@@ -40,16 +40,14 @@ public class MainView {
 				if (database.equals(Utils.ChoiceDatabase.COMPANY)) {
 					CompanyView companyView = new CompanyView();
 					companyView.printCompanies(sc);
-				} else {
+				} else if (database.equals(Utils.ChoiceDatabase.COMPUTER)) {
 					ComputerView computerView = new ComputerView();
 					computerView.chooseAction(sc);
-				}
-			} else {
-				if (!this.mainController.isLeaving()) {
-					LOGGER.warn("Mauvaise base de donnée...");
 				} else {
 					LOGGER.info("Bye");
 				}
+			} else {
+				LOGGER.warn("Mauvaise base de donnée...");
 			}
 			stop = this.mainController.isLeaving();
 		}

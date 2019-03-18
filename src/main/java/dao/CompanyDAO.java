@@ -12,8 +12,14 @@ import model.Company;
 
 public class CompanyDAO implements DAOInterface<Company> {
 
-	private DAOFactory daoFactory = DAOFactory.getInstance();
 	private static CompanyDAO INSTANCE = null;
+
+	DAOFactory daoFactory = DAOFactory.getInstance();
+	CompanyMapper companyMapper = CompanyMapper.getInstance();
+
+	static final String REQUEST_GET_BY_ID = "SELECT * FROM company WHERE id = ?";
+	static final String REQUEST_GET_ALL = "SELECT * FROM company";
+	static final String REQUEST_GET_BY_NAME = "SELECT * FROM company WHERE name = ?";
 
 	private CompanyDAO() {
 	}
@@ -34,13 +40,12 @@ public class CompanyDAO implements DAOInterface<Company> {
 	@Override
 	public Company get(int id) {
 		Company company = null;
-		String request = "SELECT * FROM company WHERE id = ?";
 		try (Connection conn = this.daoFactory.getConnection()) {
-			PreparedStatement stmt = conn.prepareStatement(request);
+			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_ID);
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				company = CompanyMapper.map(rs);
+				company = companyMapper.map(rs);
 			}
 		} catch (SQLException e) {
 			this.daoFactory.getLogger().error(e.getMessage());
@@ -61,30 +66,34 @@ public class CompanyDAO implements DAOInterface<Company> {
 	}
 
 	public List<Company> getAll() {
+
 		List<Company> listCompanies = new ArrayList<Company>();
-		String request = "SELECT * FROM company";
+
 		try (Connection conn = this.daoFactory.getConnection()) {
-			PreparedStatement stmt = conn.prepareStatement(request);
+
+			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_ALL);
 			ResultSet rs = stmt.executeQuery();
+
 			while (rs.next()) {
-				Company company = CompanyMapper.map(rs);
+				Company company = companyMapper.map(rs);
 				listCompanies.add(company);
 			}
+
 		} catch (SQLException e) {
 			this.daoFactory.getLogger().error(e.getMessage());
 		}
+
 		return listCompanies;
 	}
 
 	public Company get(String name) {
 		Company company = null;
-		String request = "SELECT * FROM company WHERE name = ?";
 		try (Connection conn = this.daoFactory.getConnection()) {
-			PreparedStatement stmt = conn.prepareStatement(request);
+			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_NAME);
 			stmt.setString(1, name);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				company = CompanyMapper.map(rs);
+				company = companyMapper.map(rs);
 			}
 		} catch (SQLException e) {
 			this.daoFactory.getLogger().error(e.getMessage());

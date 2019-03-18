@@ -35,7 +35,7 @@ public class DAOFactory {
 		Properties properties = new Properties();
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		InputStream fichierProperties = classLoader.getResourceAsStream("dao.properties");
-		
+
 		try {
 			properties.load(fichierProperties);
 		} catch (IOException e1) {
@@ -77,8 +77,7 @@ public class DAOFactory {
 	}
 
 	public Connection getConnection() throws SQLException {
-		Connection conn = DriverManager.getConnection(this.urlDatabase + this.table, this.user, this.password);
-		return conn;
+		return DriverManager.getConnection(this.urlDatabase + this.table, this.user, this.password);
 	}
 
 	public Logger getLogger() {

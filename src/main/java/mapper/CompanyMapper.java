@@ -3,7 +3,6 @@ package mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import dao.CompanyDAO;
 import model.Company;
 
 public class CompanyMapper {
@@ -13,7 +12,7 @@ public class CompanyMapper {
 	private CompanyMapper() {
 
 	}
-	
+
 	public static CompanyMapper getInstance() {
 		if (INSTANCE == null) {
 			INSTANCE = new CompanyMapper();

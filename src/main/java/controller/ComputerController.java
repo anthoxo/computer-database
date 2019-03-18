@@ -11,10 +11,10 @@ import utils.Utils.ChoiceActionPage;
 
 public class ComputerController {
 
-	private static DAOFactory DAO = DAOFactory.getInstance();
+	DAOFactory DAO = DAOFactory.getInstance();
 
-	private Page<Computer> computerPage;
-	private boolean isGoingBack;
+	Page<Computer> computerPage;
+	boolean isGoingBack;
 
 	public ComputerController() {
 		this.isGoingBack = false;
@@ -23,7 +23,7 @@ public class ComputerController {
 	/**
 	 * Fetch computer list and fill controller field.
 	 */
-	public void refreshCompanyPage() {
+	public void refreshComputerPage() {
 		List<Computer> listComputers = DAO.getComputerDAO().getAll();
 		this.computerPage = new Page<Computer>(listComputers);
 	}
@@ -34,9 +34,13 @@ public class ComputerController {
 	 */
 	public List<Computer> getComputerPageList() {
 		if (this.computerPage == null) {
-			this.refreshCompanyPage();
+			this.refreshComputerPage();
 		}
 		return this.computerPage.getEntitiesPage();
+	}
+
+	public Page<Computer> getComputerPage() {
+		return this.computerPage;
 	}
 
 	/**
@@ -143,5 +147,4 @@ public class ComputerController {
 		boolean res = DAO.getComputerDAO().delete(computer);
 		return res;
 	}
-
 }

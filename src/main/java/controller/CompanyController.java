@@ -10,7 +10,7 @@ import utils.Utils.ChoiceActionPage;
 
 public class CompanyController {
 
-	static DAOFactory DAO = DAOFactory.getInstance();
+	DAOFactory DAO = DAOFactory.getInstance();
 
 	Page<Company> companyPage;
 	boolean isGoingBack;
