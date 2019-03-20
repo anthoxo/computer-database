@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import dto.CompanyDTO;
 import mapper.CompanyMapper;
 import model.Company;
 
@@ -45,8 +46,8 @@ public class TestCompanyDAO {
 	List<Company> listCompanies;
 
 	@BeforeEach
-	public void init() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException,
-			IllegalAccessException {
+	public void init()
+			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		this.companyDAO = CompanyDAO.getInstance();
 
 		listCompanies = new ArrayList<Company>();
@@ -64,7 +65,9 @@ public class TestCompanyDAO {
 		field = CompanyDAO.class.getDeclaredField("companyMapper");
 		field.setAccessible(true);
 		field.set(companyDAO, companyMapper);
+	}
 
+	public void initSQL() throws SQLException {
 		Mockito.when(dao.getConnection()).thenReturn(connection);
 		Mockito.when(stmt.executeQuery()).thenReturn(rs);
 		Mockito.when(rs.next()).thenReturn(Boolean.TRUE).thenReturn(Boolean.TRUE).thenReturn(Boolean.TRUE)
@@ -74,6 +77,7 @@ public class TestCompanyDAO {
 
 	@Test
 	public void testGetById() throws SQLException {
+		initSQL();
 		Mockito.when(connection.prepareStatement(CompanyDAO.REQUEST_GET_BY_ID)).thenReturn(stmt);
 		Company company = this.companyDAO.get(0);
 		assertEquals(company.getId(), 1);
@@ -82,6 +86,7 @@ public class TestCompanyDAO {
 
 	@Test
 	public void testGetByName() throws SQLException {
+		initSQL();
 		Mockito.when(connection.prepareStatement(CompanyDAO.REQUEST_GET_BY_NAME)).thenReturn(stmt);
 		Company company = this.companyDAO.get("Company_1");
 		assertEquals(company.getId(), 1);
@@ -90,8 +95,27 @@ public class TestCompanyDAO {
 
 	@Test
 	public void testGetAll() throws SQLException {
+		initSQL();
 		Mockito.when(connection.prepareStatement(CompanyDAO.REQUEST_GET_ALL)).thenReturn(stmt);
 		List<Company> listCompany = this.companyDAO.getAll();
 		assertEquals(listCompany.size(), 3);
+	}
+
+	@Test
+	public void testCreateDTO() {
+		Company c = listCompanies.get(0);
+		CompanyDTO cDTO = companyDAO.createDTO(c);
+		assertEquals(c.getId(), cDTO.getId());
+		assertEquals(c.getName(), cDTO.getName());
+	}
+
+	@Test
+	public void testCreateBean() {
+		CompanyDTO cDTO = new CompanyDTO();
+		cDTO.setId(0);
+		cDTO.setName("Apple");
+		Company c = companyDAO.createBean(cDTO);
+		assertEquals(c.getId(), cDTO.getId());
+		assertEquals(c.getName(), cDTO.getName());
 	}
 }

@@ -185,10 +185,14 @@ public class ComputerDAO implements DAOInterface<Computer> {
 	 * @return A company DTO.
 	 */
 	public ComputerDTO createDTO(Computer computer) {
-		ComputerDTO cDTO = new ComputerDTO();
-		cDTO.setId(computer.getId());
-		cDTO.setName(computer.getName());
-		return cDTO;
+		if (computer == null) {
+			return null;
+		} else {
+			ComputerDTO cDTO = new ComputerDTO();
+			cDTO.setId(computer.getId());
+			cDTO.setName(computer.getName());
+			return cDTO;
+		}
 	}
 
 	/**
@@ -198,16 +202,20 @@ public class ComputerDAO implements DAOInterface<Computer> {
 	 * @return A Company model.
 	 */
 	public Computer createBean(ComputerDTO cDTO) {
-		Computer computer = new Computer();
-		Company company = this.daoFactory.getCompanyDAO().get(cDTO.getCompanyName());
-		computer.setId(cDTO.getId());
-		computer.setName(cDTO.getName());
-		computer.setIntroduced(Utils.computeTimestamp(cDTO.getIntroducedDate()));
-		computer.setDiscontinued(Utils.computeTimestamp(cDTO.getDiscontinuedDate()));
-		if (company != null) {
-			computer.setCompanyId(company.getId());
-			computer.setCompany(company);
+		if (cDTO == null) {
+			return null;
+		} else {
+			Computer computer = new Computer();
+			Company company = this.daoFactory.getCompanyDAO().get(cDTO.getCompanyName());
+			computer.setId(cDTO.getId());
+			computer.setName(cDTO.getName());
+			computer.setIntroduced(Utils.computeTimestamp(cDTO.getIntroducedDate()));
+			computer.setDiscontinued(Utils.computeTimestamp(cDTO.getDiscontinuedDate()));
+			if (company != null) {
+				computer.setCompanyId(company.getId());
+				computer.setCompany(company);
+			}
+			return computer;
 		}
-		return computer;
 	}
 }

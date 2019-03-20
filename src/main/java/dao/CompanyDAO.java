@@ -127,10 +127,14 @@ public class CompanyDAO implements DAOInterface<Company> {
 	 * @return A company DTO.
 	 */
 	public CompanyDTO createDTO(Company company) {
-		CompanyDTO cDTO = new CompanyDTO();
-		cDTO.setId(company.getId());
-		cDTO.setName(company.getName());
-		return cDTO;
+		if (company == null) {
+			return null;
+		} else {
+			CompanyDTO cDTO = new CompanyDTO();
+			cDTO.setId(company.getId());
+			cDTO.setName(company.getName());
+			return cDTO;
+		}
 	}
 
 	/**
@@ -140,9 +144,13 @@ public class CompanyDAO implements DAOInterface<Company> {
 	 * @return A Company model.
 	 */
 	public Company createBean(CompanyDTO cDTO) {
-		Company company = new Company();
-		company.setId(cDTO.getId());
-		company.setName(cDTO.getName());
-		return company;
+		if (cDTO == null) {
+			return null;
+		} else {
+			Company company = new Company();
+			company.setId(cDTO.getId());
+			company.setName(cDTO.getName());
+			return company;
+		}
 	}
 }

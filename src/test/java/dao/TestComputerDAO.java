@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import dto.ComputerDTO;
 import mapper.ComputerMapper;
 import model.Computer;
 import utils.Utils;
@@ -91,6 +92,10 @@ public class TestComputerDAO {
 	public void initDelete() throws SQLException {
 		Mockito.when(dao.getConnection()).thenReturn(connection);
 		Mockito.when(connection.prepareStatement(ComputerDAO.REQUEST_DELETE)).thenReturn(stmt);
+	}
+
+	public void initCreateBean() {
+		Mockito.when(dao.getCompanyDAO()).thenReturn(companyDAO);
 	}
 
 	@Test
@@ -179,4 +184,28 @@ public class TestComputerDAO {
 		boolean t = this.computerDAO.delete(computer);
 		assertTrue(t);
 	}
+
+	@Test
+	public void testCreateDTO() {
+		Computer c = listComputers.get(0);
+		ComputerDTO cDTO = computerDAO.createDTO(c);
+		assertEquals(c.getId(), cDTO.getId());
+		assertEquals(c.getName(), cDTO.getName());
+	}
+
+	@Test
+	public void testCreateBean() throws SQLException {
+		initCreateBean();
+		ComputerDTO cDTO = new ComputerDTO();
+		cDTO.setId(0);
+		cDTO.setName("MacBook");
+		cDTO.setIntroducedDate("2010/01/01");
+		cDTO.setDiscontinuedDate("2020/01/01");
+		Computer c = computerDAO.createBean(cDTO);
+		assertEquals(c.getId(), cDTO.getId());
+		assertEquals(c.getName(), cDTO.getName());
+		assertEquals(c.getIntroduced(), Utils.computeTimestamp(cDTO.getIntroducedDate()));
+		assertEquals(c.getDiscontinued(), Utils.computeTimestamp(cDTO.getDiscontinuedDate()));
+	}
+
 }
