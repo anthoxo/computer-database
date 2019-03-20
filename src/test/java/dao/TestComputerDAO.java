@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import dto.ComputerDTO;
+import exception.DAOException;
 import mapper.ComputerMapper;
 import model.Company;
 import model.Computer;
@@ -100,25 +102,25 @@ public class TestComputerDAO {
 	}
 
 	@Test
-	public void testGetById() throws SQLException {
+	public void testGetById() throws SQLException, DAOException {
 		initGet();
 		Mockito.when(connection.prepareStatement(ComputerDAO.REQUEST_GET_BY_ID)).thenReturn(stmt);
-		Computer computer = this.computerDAO.get(0);
+		Computer computer = this.computerDAO.get(0).get();
 		assertEquals(computer.getId(), 1);
 		assertEquals(computer.getName(), "Computer_1");
 	}
 
 	@Test
-	public void testGetByName() throws SQLException {
+	public void testGetByName() throws SQLException, DAOException {
 		initGet();
 		Mockito.when(connection.prepareStatement(ComputerDAO.REQUEST_GET_BY_NAME)).thenReturn(stmt);
-		Computer computer = this.computerDAO.get("Computer_1");
+		Computer computer = this.computerDAO.get("Computer_1").get();
 		assertEquals(computer.getId(), 1);
 		assertEquals(computer.getName(), "Computer_1");
 	}
 
 	@Test
-	public void testGetAll() throws SQLException {
+	public void testGetAll() throws SQLException, DAOException {
 		initGet();
 		Mockito.when(connection.prepareStatement(ComputerDAO.REQUEST_GET_ALL)).thenReturn(stmt);
 		List<Computer> list = this.computerDAO.getAll();
@@ -130,8 +132,12 @@ public class TestComputerDAO {
 		initGoodRequest();
 		Mockito.when(connection.prepareStatement(ComputerDAO.REQUEST_CREATE)).thenReturn(stmt);
 		Computer computer = listComputers.get(0);
-		boolean t = this.computerDAO.create(computer);
-		assertTrue(t);
+		try {
+			this.computerDAO.create(computer);
+		} catch (DAOException e) {
+			assertTrue(1 == 2);
+		}
+
 	}
 
 	@Test
@@ -142,8 +148,11 @@ public class TestComputerDAO {
 		computer.setIntroduced(Utils.stringToTimestamp("2000/01/01"));
 		computer.setDiscontinued(Utils.stringToTimestamp("1999/01/01"));
 		computer.setCompanyId(1);
-		boolean t = this.computerDAO.create(computer);
-		assertTrue(t == false);
+		try {
+			this.computerDAO.create(computer);
+		} catch (DAOException e) {
+			assertTrue(1 == 2);
+		}
 	}
 
 	@Test
@@ -156,8 +165,11 @@ public class TestComputerDAO {
 		computer.setIntroduced(Utils.stringToTimestamp("1999/01/01"));
 		computer.setDiscontinued(Utils.stringToTimestamp("2000/01/01"));
 		computer.setCompanyId(1);
-		boolean t = this.computerDAO.update(computer);
-		assertTrue(t);
+		try {
+			this.computerDAO.update(computer);
+		} catch (DAOException e) {
+			assertTrue(1 == 2);
+		}
 	}
 
 	@Test
@@ -169,8 +181,11 @@ public class TestComputerDAO {
 		computer.setIntroduced(Utils.stringToTimestamp("2000/01/01"));
 		computer.setDiscontinued(Utils.stringToTimestamp("1999/01/01"));
 		computer.setCompanyId(1);
-		boolean t = this.computerDAO.update(computer);
-		assertTrue(t == false);
+		try {
+			this.computerDAO.update(computer);
+		} catch (DAOException e) {
+			assertTrue(1 == 2);
+		}
 	}
 
 	@Test
@@ -182,8 +197,11 @@ public class TestComputerDAO {
 		computer.setIntroduced(Utils.stringToTimestamp("2000/01/01"));
 		computer.setDiscontinued(Utils.stringToTimestamp("1999/01/01"));
 		computer.setCompanyId(1);
-		boolean t = this.computerDAO.delete(computer);
-		assertTrue(t);
+		try {
+			this.computerDAO.delete(computer);
+		} catch (DAOException e) {
+			assertTrue(1 == 2);
+		}
 	}
 
 	@Test
@@ -194,7 +212,7 @@ public class TestComputerDAO {
 		c.setIntroduced(Utils.stringToTimestamp("2000/01/01"));
 		c.setDiscontinued(Utils.stringToTimestamp("2020/01/01"));
 		c.setCompany(company);
-		ComputerDTO cDTO = computerDAO.createDTO(c);
+		ComputerDTO cDTO = computerDAO.createDTO(Optional.ofNullable(c)).get();
 		assertEquals(c.getId(), cDTO.getId());
 		assertEquals(c.getName(), cDTO.getName());
 		assertEquals(c.getIntroduced(), Utils.stringToTimestamp(cDTO.getIntroducedDate()));
@@ -203,14 +221,14 @@ public class TestComputerDAO {
 	}
 
 	@Test
-	public void testCreateBean() throws SQLException {
+	public void testCreateBean() throws SQLException, DAOException {
 		initCreateBean();
 		ComputerDTO cDTO = new ComputerDTO();
 		cDTO.setId(0);
 		cDTO.setName("MacBook");
 		cDTO.setIntroducedDate("2010/01/01");
 		cDTO.setDiscontinuedDate("2020/01/01");
-		Computer c = computerDAO.createBean(cDTO);
+		Computer c = computerDAO.createBean(Optional.ofNullable(cDTO)).get();
 		assertEquals(c.getId(), cDTO.getId());
 		assertEquals(c.getName(), cDTO.getName());
 		assertEquals(c.getIntroduced(), Utils.stringToTimestamp(cDTO.getIntroducedDate()));

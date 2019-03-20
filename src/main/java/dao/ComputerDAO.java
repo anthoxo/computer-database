@@ -6,14 +6,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import dto.ComputerDTO;
+import exception.DAOException;
 import mapper.ComputerMapper;
 import model.Company;
 import model.Computer;
 import utils.Utils;
 
-public class ComputerDAO implements DAOInterface<Computer> {
+public class ComputerDAO {
 
 	private static ComputerDAO instance = null;
 
@@ -23,9 +25,9 @@ public class ComputerDAO implements DAOInterface<Computer> {
 	static final String REQUEST_CREATE = "INSERT INTO computer VALUES (?,?,?,?,?)";
 	static final String REQUEST_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
 	static final String REQUEST_DELETE = "DELETE FROM computer WHERE id = ?";
-	static final String REQUEST_GET_ALL = "SELECT * FROM computer";
-	static final String REQUEST_GET_BY_ID = "SELECT * FROM computer WHERE id = ?";
-	static final String REQUEST_GET_BY_NAME = "SELECT * FROM computer WHERE name = ?";
+	static final String REQUEST_GET_ALL = "SELECT id,name,introduced,discontinued,company_id FROM computer";
+	static final String REQUEST_GET_BY_ID = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE id = ?";
+	static final String REQUEST_GET_BY_NAME = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE name = ?";
 
 	/**
 	 * Default constructor.
@@ -45,8 +47,7 @@ public class ComputerDAO implements DAOInterface<Computer> {
 		return instance;
 	}
 
-	@Override
-	public boolean create(Computer obj) {
+	public void create(Computer obj) throws DAOException {
 		boolean validComputer = obj.isValidComputer();
 		if (validComputer) {
 			try (Connection conn = this.daoFactory.getConnection()) {
@@ -55,24 +56,21 @@ public class ComputerDAO implements DAOInterface<Computer> {
 				stmt.setString(2, obj.getName());
 				stmt.setTimestamp(3, obj.getIntroduced());
 				stmt.setTimestamp(4, obj.getDiscontinued());
-				if (daoFactory.getCompanyDAO().get(obj.getCompanyId()) == null) {
-					stmt.setObject(5, null);
-				} else {
+				if (daoFactory.getCompanyDAO().get(obj.getCompanyId()).isPresent()) {
 					stmt.setInt(5, obj.getCompanyId());
+				} else {
+					stmt.setObject(5, null);
 				}
 				stmt.executeUpdate();
 			} catch (SQLException e) {
-				this.daoFactory.getLogger().error(e.getMessage());
-				return false;
+				throw new DAOException(e);
 			}
-			return true;
 		} else {
-			return false;
+			// TODO throw new ValidatorException
 		}
 	}
 
-	@Override
-	public Computer get(int id) {
+	public Optional<Computer> get(int id) throws DAOException {
 		Computer computer = null;
 		try (Connection conn = this.daoFactory.getConnection()) {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_ID);
@@ -80,46 +78,43 @@ public class ComputerDAO implements DAOInterface<Computer> {
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				computer = computerMapper.map(rs);
-				computer.setCompany(daoFactory.getCompanyDAO().get(computer.getCompanyId()));
+				Optional<Company> company = daoFactory.getCompanyDAO().get(computer.getCompanyId());
+				if (company.isPresent()) {
+					computer.setCompany(company.get());
+				}
 			}
 		} catch (SQLException e) {
-			this.daoFactory.getLogger().error(e.getMessage());
+			throw new DAOException(e);
 		}
-		return computer;
+		return Optional.ofNullable(computer);
 	}
 
-	@Override
-	public boolean update(Computer obj) {
-		Computer computer = this.get(obj.getId());
-		boolean validComputer = obj.isValidComputer();
-		if (computer == null) {
-			validComputer = false;
-		}
-		if (validComputer) {
+	public void update(Computer obj) throws DAOException {
+		Optional<Computer> computer = this.get(obj.getId());
+
+		if (obj.isValidComputer() && computer.isPresent()) {
+
 			try (Connection conn = this.daoFactory.getConnection()) {
 				PreparedStatement stmt = conn.prepareStatement(REQUEST_UPDATE);
 				stmt.setString(1, obj.getName());
 				stmt.setTimestamp(2, obj.getIntroduced());
 				stmt.setTimestamp(3, obj.getDiscontinued());
-				if (daoFactory.getCompanyDAO().get(obj.getCompanyId()) == null) {
-					stmt.setObject(4, null);
-				} else {
+				if (daoFactory.getCompanyDAO().get(obj.getCompanyId()).isPresent()) {
 					stmt.setInt(4, obj.getCompanyId());
+				} else {
+					stmt.setObject(4, null);
 				}
 				stmt.setInt(5, obj.getId());
 				stmt.executeUpdate();
 			} catch (SQLException e) {
-				this.daoFactory.getLogger().error(e.getMessage());
-				return false;
+				throw new DAOException(e);
 			}
-			return true;
 		} else {
-			return false;
+			// TODO throw new validator exception
 		}
 	}
 
-	@Override
-	public boolean delete(Computer obj) {
+	public void delete(Computer obj) throws DAOException {
 		try (Connection conn = this.daoFactory.getConnection()) {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_DELETE);
 
@@ -127,18 +122,17 @@ public class ComputerDAO implements DAOInterface<Computer> {
 
 			stmt.executeUpdate();
 		} catch (SQLException e) {
-			this.daoFactory.getLogger().error(e.getMessage());
-			return false;
+			throw new DAOException(e);
 		}
-		return true;
 	}
 
 	/**
 	 * Retrieve all computers.
 	 *
 	 * @return A list of all computers.
+	 * @throws DAOException
 	 */
-	public List<Computer> getAll() {
+	public List<Computer> getAll() throws DAOException {
 		ArrayList<Computer> listComputers = new ArrayList<Computer>();
 
 		try (Connection conn = this.daoFactory.getConnection()) {
@@ -146,11 +140,14 @@ public class ComputerDAO implements DAOInterface<Computer> {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				Computer computer = computerMapper.map(rs);
-				computer.setCompany(daoFactory.getCompanyDAO().get(computer.getCompanyId()));
+				Optional<Company> company = daoFactory.getCompanyDAO().get(computer.getCompanyId());
+				if (company.isPresent()) {
+					computer.setCompany(company.get());
+				}
 				listComputers.add(computer);
 			}
 		} catch (SQLException e) {
-			this.daoFactory.getLogger().error(e.getMessage());
+			throw new DAOException(e);
 		}
 
 		return listComputers;
@@ -161,8 +158,9 @@ public class ComputerDAO implements DAOInterface<Computer> {
 	 *
 	 * @param name The name of the computer.
 	 * @return A computer that has the same name
+	 * @throws DAOException
 	 */
-	public Computer get(String name) {
+	public Optional<Computer> get(String name) throws DAOException {
 		Computer computer = null;
 		try (Connection conn = this.daoFactory.getConnection()) {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_NAME);
@@ -170,12 +168,15 @@ public class ComputerDAO implements DAOInterface<Computer> {
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				computer = computerMapper.map(rs);
-				computer.setCompany(daoFactory.getCompanyDAO().get(computer.getCompanyId()));
+				Optional<Company> company = daoFactory.getCompanyDAO().get(computer.getCompanyId());
+				if (company.isPresent()) {
+					computer.setCompany(company.get());
+				}
 			}
 		} catch (SQLException e) {
-			this.daoFactory.getLogger().error(e.getMessage());
+			throw new DAOException(e);
 		}
-		return computer;
+		return Optional.ofNullable(computer);
 	}
 
 	/**
@@ -184,20 +185,20 @@ public class ComputerDAO implements DAOInterface<Computer> {
 	 * @param computer The computer we want to transform.
 	 * @return A computer DTO.
 	 */
-	public ComputerDTO createDTO(Computer computer) {
-		if (computer == null) {
-			return null;
-		} else {
-			ComputerDTO cDTO = new ComputerDTO();
-			cDTO.setId(computer.getId());
-			cDTO.setName(computer.getName());
-			cDTO.setIntroducedDate(Utils.timestampToString(computer.getIntroduced()));
-			cDTO.setDiscontinuedDate(Utils.timestampToString(computer.getDiscontinued()));
-			if (computer.getCompany() != null) {
-				cDTO.setCompanyName(computer.getCompany().getName());
+	public Optional<ComputerDTO> createDTO(Optional<Computer> computer) {
+		ComputerDTO cDTO = null;
+		if (computer.isPresent()) {
+			Computer c = computer.get();
+			cDTO = new ComputerDTO();
+			cDTO.setId(c.getId());
+			cDTO.setName(c.getName());
+			cDTO.setIntroducedDate(Utils.timestampToString(c.getIntroduced()));
+			cDTO.setDiscontinuedDate(Utils.timestampToString(c.getDiscontinued()));
+			if (c.getCompany() != null) {
+				cDTO.setCompanyName(c.getCompany().getName());
 			}
-			return cDTO;
 		}
+		return Optional.ofNullable(cDTO);
 	}
 
 	/**
@@ -205,22 +206,23 @@ public class ComputerDAO implements DAOInterface<Computer> {
 	 *
 	 * @param cDTO The DTO we want to transform.
 	 * @return A Company model.
+	 * @throws DAOException
 	 */
-	public Computer createBean(ComputerDTO cDTO) {
-		if (cDTO == null) {
-			return null;
-		} else {
-			Computer computer = new Computer();
-			Company company = this.daoFactory.getCompanyDAO().get(cDTO.getCompanyName());
-			computer.setId(cDTO.getId());
-			computer.setName(cDTO.getName());
-			computer.setIntroduced(Utils.stringToTimestamp(cDTO.getIntroducedDate()));
-			computer.setDiscontinued(Utils.stringToTimestamp(cDTO.getDiscontinuedDate()));
-			if (company != null) {
-				computer.setCompanyId(company.getId());
-				computer.setCompany(company);
+	public Optional<Computer> createBean(Optional<ComputerDTO> cDTO) throws DAOException {
+		Computer computer = null;
+		if (cDTO.isPresent()) {
+			ComputerDTO c = cDTO.get();
+			computer = new Computer();
+			computer.setId(c.getId());
+			computer.setName(c.getName());
+			computer.setIntroduced(Utils.stringToTimestamp(c.getIntroducedDate()));
+			computer.setDiscontinued(Utils.stringToTimestamp(c.getDiscontinuedDate()));
+			Optional<Company> company = this.daoFactory.getCompanyDAO().get(c.getCompanyName());
+			if (company.isPresent()) {
+				computer.setCompanyId(company.get().getId());
+				computer.setCompany(company.get());
 			}
-			return computer;
 		}
+		return Optional.ofNullable(computer);
 	}
 }

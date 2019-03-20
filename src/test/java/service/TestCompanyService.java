@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import dao.CompanyDAO;
+import exception.DAOException;
 
 @ExtendWith(MockitoExtension.class)
 public class TestCompanyService {
@@ -30,7 +31,7 @@ public class TestCompanyService {
 	}
 
 	@Test
-	public void testGetAll() {
+	public void testGetAll() throws DAOException {
 		this.companyService.getAllCompanies();
 		Mockito.verify(companyDAO).getAll();
 	}

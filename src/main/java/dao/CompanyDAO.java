@@ -6,21 +6,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import dto.CompanyDTO;
+import exception.DAOException;
 import mapper.CompanyMapper;
 import model.Company;
 
-public class CompanyDAO implements DAOInterface<Company> {
+public class CompanyDAO {
 
 	private static CompanyDAO instance = null;
 
 	DAOFactory daoFactory = DAOFactory.getInstance();
 	CompanyMapper companyMapper = CompanyMapper.getInstance();
 
-	static final String REQUEST_GET_BY_ID = "SELECT * FROM company WHERE id = ?";
-	static final String REQUEST_GET_ALL = "SELECT * FROM company";
-	static final String REQUEST_GET_BY_NAME = "SELECT * FROM company WHERE name = ?";
+	static final String REQUEST_GET_BY_ID = "SELECT id,name FROM company WHERE id = ?";
+	static final String REQUEST_GET_ALL = "SELECT id,name FROM company";
+	static final String REQUEST_GET_BY_NAME = "SELECT id,name FROM company WHERE name = ?";
 
 	/**
 	 * Default constructor.
@@ -40,14 +42,7 @@ public class CompanyDAO implements DAOInterface<Company> {
 		return instance;
 	}
 
-	@Override
-	public boolean create(Company obj) {
-		daoFactory.getLogger().warn("IMPOSSIBLE TO CREATE NEW COMPANY");
-		return false;
-	}
-
-	@Override
-	public Company get(int id) {
+	public Optional<Company> get(int id) throws DAOException {
 		Company company = null;
 		try (Connection conn = this.daoFactory.getConnection()) {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_ID);
@@ -57,29 +52,18 @@ public class CompanyDAO implements DAOInterface<Company> {
 				company = companyMapper.map(rs);
 			}
 		} catch (SQLException e) {
-			this.daoFactory.getLogger().error(e.getMessage());
+			throw new DAOException(e);
 		}
-		return company;
-	}
-
-	@Override
-	public boolean update(Company obj) {
-		this.daoFactory.getLogger().warn("IMPOSSIBLE TO UPDATE COMPANIES");
-		return false;
-	}
-
-	@Override
-	public boolean delete(Company obj) {
-		this.daoFactory.getLogger().warn("IMPOSSIBLE TO DELETE COMPANIES");
-		return false;
+		return Optional.ofNullable(company);
 	}
 
 	/**
 	 * Retrieve all companies.
 	 *
 	 * @return The list of all companies.
+	 * @throws DAOException
 	 */
-	public List<Company> getAll() {
+	public List<Company> getAll() throws DAOException {
 
 		List<Company> listCompanies = new ArrayList<Company>();
 
@@ -94,7 +78,7 @@ public class CompanyDAO implements DAOInterface<Company> {
 			}
 
 		} catch (SQLException e) {
-			this.daoFactory.getLogger().error(e.getMessage());
+			throw new DAOException(e);
 		}
 		return listCompanies;
 	}
@@ -104,8 +88,9 @@ public class CompanyDAO implements DAOInterface<Company> {
 	 *
 	 * @param name The name (in String) of the company.
 	 * @return The company object.
+	 * @throws DAOException
 	 */
-	public Company get(String name) {
+	public Optional<Company> get(String name) throws DAOException {
 		Company company = null;
 		try (Connection conn = this.daoFactory.getConnection()) {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_NAME);
@@ -115,9 +100,9 @@ public class CompanyDAO implements DAOInterface<Company> {
 				company = companyMapper.map(rs);
 			}
 		} catch (SQLException e) {
-			this.daoFactory.getLogger().error(e.getMessage());
+			throw new DAOException(e);
 		}
-		return company;
+		return Optional.ofNullable(company);
 	}
 
 	/**
@@ -126,15 +111,15 @@ public class CompanyDAO implements DAOInterface<Company> {
 	 * @param company The company we want to transform.
 	 * @return A company DTO.
 	 */
-	public CompanyDTO createDTO(Company company) {
-		if (company == null) {
-			return null;
-		} else {
-			CompanyDTO cDTO = new CompanyDTO();
-			cDTO.setId(company.getId());
-			cDTO.setName(company.getName());
-			return cDTO;
+	public Optional<CompanyDTO> createDTO(Optional<Company> company) {
+		CompanyDTO cDTO = null;
+		if (company.isPresent()) {
+			Company c = company.get();
+			cDTO = new CompanyDTO();
+			cDTO.setId(c.getId());
+			cDTO.setName(c.getName());
 		}
+		return Optional.ofNullable(cDTO);
 	}
 
 	/**
@@ -143,14 +128,15 @@ public class CompanyDAO implements DAOInterface<Company> {
 	 * @param cDTO The DTO we want to transform.
 	 * @return A Company model.
 	 */
-	public Company createBean(CompanyDTO cDTO) {
-		if (cDTO == null) {
-			return null;
-		} else {
-			Company company = new Company();
-			company.setId(cDTO.getId());
-			company.setName(cDTO.getName());
-			return company;
+	public Optional<Company> createBean(Optional<CompanyDTO> cDTO) {
+		Company company = null;
+		if (cDTO.isPresent()) {
+			CompanyDTO c = cDTO.get();
+			company = new Company();
+			company.setId(c.getId());
+			company.setName(c.getName());
+
 		}
+		return Optional.ofNullable(company);
 	}
 }

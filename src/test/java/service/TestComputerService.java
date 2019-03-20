@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import dao.ComputerDAO;
+import exception.DAOException;
 
 @ExtendWith(MockitoExtension.class)
 public class TestComputerService {
@@ -29,13 +30,13 @@ public class TestComputerService {
 	}
 
 	@Test
-	public void testGetAll() {
+	public void testGetAll() throws DAOException {
 		this.computerService.getAllComputers();
 		Mockito.verify(computerDAO).getAll();
 	}
 
 	@Test
-	public void testGetByName() {
+	public void testGetByName() throws DAOException {
 		this.computerService.getComputerByName("ouais");
 		Mockito.verify(computerDAO).get(Mockito.anyString());
 	}

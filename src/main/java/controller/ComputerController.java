@@ -1,11 +1,10 @@
 package controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import dao.DAOFactory;
 import dto.ComputerDTO;
-import model.Company;
-import model.Computer;
 import model.Page;
 import service.ComputerService;
 import utils.Utils;
@@ -86,7 +85,7 @@ public class ComputerController {
 	 * @param name Name of the wanted computer.
 	 * @return The computer that we want.
 	 */
-	public ComputerDTO getComputerByName(String name) {
+	public Optional<ComputerDTO> getComputerByName(String name) {
 		return computerService.getComputerByName(name);
 	}
 
@@ -95,8 +94,8 @@ public class ComputerController {
 	 * @param id The id of the wanted computer.
 	 * @return The computer that we want.
 	 */
-	public Computer getComputerById(int id) {
-		return DAO.getComputerDAO().get(id);
+	public Optional<ComputerDTO> getComputerById(int id) {
+		return computerService.getComputerById(id);
 	}
 
 	/**
@@ -107,19 +106,13 @@ public class ComputerController {
 	 * @param companyName  Name of the company.
 	 * @return true if computer has been created else false.
 	 */
-	public boolean createComputer(String name, String introduced, String discontinued, String companyName) {
-		Computer computer = new Computer();
-		computer.setName(name);
-		computer.setIntroduced(Utils.stringToTimestamp(introduced));
-		computer.setDiscontinued(Utils.stringToTimestamp(discontinued));
-
-		Company company = DAO.getCompanyDAO().get(companyName);
-		if (company != null) {
-			computer.setCompanyId(company.getId());
-		}
-
-		boolean res = DAO.getComputerDAO().create(computer);
-		return res;
+	public void createComputer(String name, String introduced, String discontinued, String companyName) {
+		ComputerDTO computerDTO = new ComputerDTO();
+		computerDTO.setName(name);
+		computerDTO.setIntroducedDate(introduced);
+		computerDTO.setDiscontinuedDate(discontinued);
+		computerDTO.setCompanyName(companyName);
+		computerService.createComputer(computerDTO);
 	}
 
 	/**
@@ -131,29 +124,25 @@ public class ComputerController {
 	 * @param companyName  Name of the company.
 	 * @return true if computer has been updated else false.
 	 */
-	public boolean updateComputer(Computer computer, String name, String introduced, String discontinued,
+	public void updateComputer(ComputerDTO cDTO, String name, String introduced, String discontinued,
 			String companyName) {
 		if (!name.equals("")) {
-			computer.setName(name);
+			cDTO.setName(name);
 		}
 
 		if (!introduced.equals("")) {
-			computer.setIntroduced(Utils.stringToTimestamp(introduced));
+			cDTO.setIntroducedDate(introduced);
 		}
 
 		if (!discontinued.equals("")) {
-			computer.setDiscontinued(Utils.stringToTimestamp(discontinued));
+			cDTO.setDiscontinuedDate(discontinued);
 		}
 
 		if (!companyName.equals("")) {
-			Company company = DAO.getCompanyDAO().get(companyName);
-			if (company != null) {
-				computer.setCompanyId(company.getId());
-			}
+			cDTO.setCompanyName(companyName);
 		}
 
-		boolean res = DAO.getComputerDAO().update(computer);
-		return res;
+		computerService.updateComputer(cDTO);
 	}
 
 	/**
@@ -161,8 +150,7 @@ public class ComputerController {
 	 * @param computer Computer to be deleted.
 	 * @return true if computer has been deleted else false.
 	 */
-	public boolean deleteComputer(Computer computer) {
-		boolean res = DAO.getComputerDAO().delete(computer);
-		return res;
+	public void deleteComputer(ComputerDTO computer) {
+		computerService.deleteComputer(computer);
 	}
 }
