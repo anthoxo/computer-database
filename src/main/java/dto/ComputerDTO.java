@@ -7,6 +7,9 @@ public class ComputerDTO {
 	private String discontinuedDate;
 	private String companyName;
 
+	/**
+	 * Default constructor.
+	 */
 	public ComputerDTO() {
 
 	}

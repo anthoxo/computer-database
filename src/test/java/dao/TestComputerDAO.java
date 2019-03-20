@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import dto.ComputerDTO;
 import mapper.ComputerMapper;
+import model.Company;
 import model.Computer;
 import utils.Utils;
 
@@ -138,8 +139,8 @@ public class TestComputerDAO {
 		Computer computer = new Computer();
 		computer.setId(1);
 		computer.setName("Computer");
-		computer.setIntroduced(Utils.computeTimestamp("2000/01/01"));
-		computer.setDiscontinued(Utils.computeTimestamp("1999/01/01"));
+		computer.setIntroduced(Utils.stringToTimestamp("2000/01/01"));
+		computer.setDiscontinued(Utils.stringToTimestamp("1999/01/01"));
 		computer.setCompanyId(1);
 		boolean t = this.computerDAO.create(computer);
 		assertTrue(t == false);
@@ -152,8 +153,8 @@ public class TestComputerDAO {
 		Computer computer = new Computer();
 		computer.setId(1);
 		computer.setName("Computer");
-		computer.setIntroduced(Utils.computeTimestamp("1999/01/01"));
-		computer.setDiscontinued(Utils.computeTimestamp("2000/01/01"));
+		computer.setIntroduced(Utils.stringToTimestamp("1999/01/01"));
+		computer.setDiscontinued(Utils.stringToTimestamp("2000/01/01"));
 		computer.setCompanyId(1);
 		boolean t = this.computerDAO.update(computer);
 		assertTrue(t);
@@ -165,8 +166,8 @@ public class TestComputerDAO {
 		Computer computer = new Computer();
 		computer.setId(1);
 		computer.setName("Computer");
-		computer.setIntroduced(Utils.computeTimestamp("2000/01/01"));
-		computer.setDiscontinued(Utils.computeTimestamp("1999/01/01"));
+		computer.setIntroduced(Utils.stringToTimestamp("2000/01/01"));
+		computer.setDiscontinued(Utils.stringToTimestamp("1999/01/01"));
 		computer.setCompanyId(1);
 		boolean t = this.computerDAO.update(computer);
 		assertTrue(t == false);
@@ -178,8 +179,8 @@ public class TestComputerDAO {
 		Computer computer = new Computer();
 		computer.setId(1);
 		computer.setName("Computer");
-		computer.setIntroduced(Utils.computeTimestamp("2000/01/01"));
-		computer.setDiscontinued(Utils.computeTimestamp("1999/01/01"));
+		computer.setIntroduced(Utils.stringToTimestamp("2000/01/01"));
+		computer.setDiscontinued(Utils.stringToTimestamp("1999/01/01"));
 		computer.setCompanyId(1);
 		boolean t = this.computerDAO.delete(computer);
 		assertTrue(t);
@@ -188,9 +189,17 @@ public class TestComputerDAO {
 	@Test
 	public void testCreateDTO() {
 		Computer c = listComputers.get(0);
+		Company company = new Company();
+		company.setName("Apple Inc.");
+		c.setIntroduced(Utils.stringToTimestamp("2000/01/01"));
+		c.setDiscontinued(Utils.stringToTimestamp("2020/01/01"));
+		c.setCompany(company);
 		ComputerDTO cDTO = computerDAO.createDTO(c);
 		assertEquals(c.getId(), cDTO.getId());
 		assertEquals(c.getName(), cDTO.getName());
+		assertEquals(c.getIntroduced(), Utils.stringToTimestamp(cDTO.getIntroducedDate()));
+		assertEquals(c.getDiscontinued(), Utils.stringToTimestamp(cDTO.getDiscontinuedDate()));
+		assertEquals(c.getCompany().getName(), cDTO.getCompanyName());
 	}
 
 	@Test
@@ -204,8 +213,8 @@ public class TestComputerDAO {
 		Computer c = computerDAO.createBean(cDTO);
 		assertEquals(c.getId(), cDTO.getId());
 		assertEquals(c.getName(), cDTO.getName());
-		assertEquals(c.getIntroduced(), Utils.computeTimestamp(cDTO.getIntroducedDate()));
-		assertEquals(c.getDiscontinued(), Utils.computeTimestamp(cDTO.getDiscontinuedDate()));
+		assertEquals(c.getIntroduced(), Utils.stringToTimestamp(cDTO.getIntroducedDate()));
+		assertEquals(c.getDiscontinued(), Utils.stringToTimestamp(cDTO.getDiscontinuedDate()));
 	}
 
 }

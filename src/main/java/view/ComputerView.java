@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import controller.ComputerController;
+import dto.ComputerDTO;
 import model.Computer;
 import utils.Utils;
 
@@ -75,8 +76,9 @@ public class ComputerView {
 		boolean stop = false;
 
 		while (!stop) {
-			List<Computer> listComputers = this.computerController.getComputerPageList();
-			listComputers.forEach((Computer computer) -> logger.info(computer == null ? "null" : computer.toString()));
+			List<ComputerDTO> listComputers = this.computerController.getComputerPageList();
+			listComputers
+					.forEach((ComputerDTO computer) -> logger.info(computer == null ? "null" : computer.toString()));
 			logger.info("next // previous // back ?");
 
 			String prompt = sc.nextLine();
@@ -98,7 +100,7 @@ public class ComputerView {
 	public void chooseComputerName(Scanner sc) {
 		logger.info("Quel nom de Computer voulez-vous chercher ?");
 		String prompt = sc.nextLine();
-		Computer computer = this.computerController.getComputerByName(prompt);
+		ComputerDTO computer = this.computerController.getComputerByName(prompt);
 		logger.info(computer == null ? "null" : computer.toString());
 	}
 

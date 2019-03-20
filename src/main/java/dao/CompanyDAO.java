@@ -138,7 +138,7 @@ public class CompanyDAO implements DAOInterface<Company> {
 	}
 
 	/**
-	 * Convert a DTO to its model
+	 * Convert a DTO to its model.
 	 *
 	 * @param cDTO The DTO we want to transform.
 	 * @return A Company model.

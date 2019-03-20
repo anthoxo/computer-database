@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import dao.CompanyDAO;
 import dao.ComputerDAO;
 import dao.DAOFactory;
+import dto.ComputerDTO;
 import model.Computer;
 import model.Page;
 
@@ -26,10 +27,10 @@ public class TestComputerController {
 	@Mock
 	private Computer computer;
 
-	private List<Computer> listComputers;
+	private List<ComputerDTO> listComputers;
 
 	@Mock
-	private Page<Computer> pageComputers;
+	private Page<ComputerDTO> pageComputers;
 
 	@Mock
 	private DAOFactory dao;
@@ -48,18 +49,16 @@ public class TestComputerController {
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		DAOFactory.getInstance();
 
-		listComputers = new ArrayList<Computer>();
+		listComputers = new ArrayList<ComputerDTO>();
 		for (int i = 0; i < 40; ++i) {
-			Computer c = new Computer();
+			ComputerDTO c = new ComputerDTO();
 			c.setId(i + 1);
 			c.setName("Computer_" + String.valueOf(i + 1));
-			c.setIntroduced(null);
-			c.setDiscontinued(null);
-			c.setCompanyId(1);
+			c.setCompanyName("Apple_" + String.valueOf(i + 1));
 			listComputers.add(c);
 		}
 
-		pageComputers = new Page<Computer>(listComputers);
+		pageComputers = new Page<ComputerDTO>(listComputers);
 
 		computerController = new ComputerController();
 		computerController.computerPage = pageComputers;

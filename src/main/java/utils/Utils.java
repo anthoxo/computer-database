@@ -30,7 +30,7 @@ public class Utils {
 	 * @param date The date (String) that we want to compute.
 	 * @return The Timestamp object of the desired date.
 	 */
-	public static Timestamp computeTimestamp(String date) {
+	public static Timestamp stringToTimestamp(String date) {
 		String[] dateStr = date.split("/");
 		Timestamp ts;
 		if (dateStr.length != 3) {
@@ -45,6 +45,20 @@ public class Utils {
 				logger.warn(e.getMessage());
 			}
 			return ts;
+		}
+	}
+
+	/**
+	 * Compute Timestamp into string (yyyy/mm/dd).
+	 * @param date The date (Timestamp) that we want to compute.
+	 * @return The string date.
+	 */
+	public static String timestampToString(Timestamp date) {
+		if (date == null) {
+			return "";
+		} else {
+			String result = date.toString().split(" ")[0];
+			return result.replace("-", "/");
 		}
 	}
 

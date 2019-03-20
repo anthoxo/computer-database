@@ -3,45 +3,50 @@ package controller;
 import java.util.List;
 
 import dao.DAOFactory;
+import dto.ComputerDTO;
 import model.Company;
 import model.Computer;
 import model.Page;
+import service.ComputerService;
 import utils.Utils;
 import utils.Utils.ChoiceActionPage;
 
 public class ComputerController {
 
 	DAOFactory DAO = DAOFactory.getInstance();
+	ComputerService computerService;
 
-	Page<Computer> computerPage;
+	Page<ComputerDTO> computerPage;
 	boolean isGoingBack;
 
 	/**
 	 * Default constructor.
 	 */
 	public ComputerController() {
+		computerService = new ComputerService();
 		this.isGoingBack = false;
+		this.refreshComputerPage();
 	}
 
 	/**
 	 * Fetch computer list and fill controller field.
 	 */
 	public void refreshComputerPage() {
-		List<Computer> listComputers = DAO.getComputerDAO().getAll();
-		this.computerPage = new Page<Computer>(listComputers);
+		List<ComputerDTO> listComputers = computerService.getAllComputers();
+		this.computerPage = new Page<ComputerDTO>(listComputers);
 	}
 
 	/**
 	 * @return sublist of computer list (page).
 	 */
-	public List<Computer> getComputerPageList() {
+	public List<ComputerDTO> getComputerPageList() {
 		if (this.computerPage == null) {
 			this.refreshComputerPage();
 		}
 		return this.computerPage.getEntitiesPage();
 	}
 
-	public Page<Computer> getComputerPage() {
+	public Page<ComputerDTO> getComputerPage() {
 		return this.computerPage;
 	}
 
@@ -81,8 +86,8 @@ public class ComputerController {
 	 * @param name Name of the wanted computer.
 	 * @return The computer that we want.
 	 */
-	public Computer getComputerByName(String name) {
-		return DAO.getComputerDAO().get(name);
+	public ComputerDTO getComputerByName(String name) {
+		return computerService.getComputerByName(name);
 	}
 
 	/**
@@ -105,8 +110,8 @@ public class ComputerController {
 	public boolean createComputer(String name, String introduced, String discontinued, String companyName) {
 		Computer computer = new Computer();
 		computer.setName(name);
-		computer.setIntroduced(Utils.computeTimestamp(introduced));
-		computer.setDiscontinued(Utils.computeTimestamp(discontinued));
+		computer.setIntroduced(Utils.stringToTimestamp(introduced));
+		computer.setDiscontinued(Utils.stringToTimestamp(discontinued));
 
 		Company company = DAO.getCompanyDAO().get(companyName);
 		if (company != null) {
@@ -133,11 +138,11 @@ public class ComputerController {
 		}
 
 		if (!introduced.equals("")) {
-			computer.setIntroduced(Utils.computeTimestamp(introduced));
+			computer.setIntroduced(Utils.stringToTimestamp(introduced));
 		}
 
 		if (!discontinued.equals("")) {
-			computer.setDiscontinued(Utils.computeTimestamp(discontinued));
+			computer.setDiscontinued(Utils.stringToTimestamp(discontinued));
 		}
 
 		if (!companyName.equals("")) {

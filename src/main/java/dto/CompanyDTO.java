@@ -4,6 +4,9 @@ public class CompanyDTO {
 	private int id;
 	private String name;
 
+	/**
+	 * Default constructor.
+	 */
 	public CompanyDTO() {
 
 	}

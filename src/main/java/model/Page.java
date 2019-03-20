@@ -93,6 +93,10 @@ public class Page<T> {
 		}
 	}
 
+	/**
+	 * Method that allow us to navigate to a specific item.
+	 * @param itemIndex The item that we want to go.
+	 */
 	public void goTo(int itemIndex) {
 		int n = Math.max(0, itemIndex);
 		n = Math.min(n, this.length - 1);

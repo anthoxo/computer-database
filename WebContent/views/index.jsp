@@ -18,6 +18,7 @@
     
     <div class="container">
         <a class="btn btn-primary" href="/computer-database/company">Company list</a>
+        <a class="btn btn-primary" href="/computer-database/computer">Computer list</a>
     </div>
 </body>
 </html>

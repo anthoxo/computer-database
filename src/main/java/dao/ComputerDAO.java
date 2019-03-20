@@ -181,8 +181,8 @@ public class ComputerDAO implements DAOInterface<Computer> {
 	/**
 	 * Convert a model to its DTO representation.
 	 *
-	 * @param company The company we want to transform.
-	 * @return A company DTO.
+	 * @param computer The computer we want to transform.
+	 * @return A computer DTO.
 	 */
 	public ComputerDTO createDTO(Computer computer) {
 		if (computer == null) {
@@ -191,12 +191,17 @@ public class ComputerDAO implements DAOInterface<Computer> {
 			ComputerDTO cDTO = new ComputerDTO();
 			cDTO.setId(computer.getId());
 			cDTO.setName(computer.getName());
+			cDTO.setIntroducedDate(Utils.timestampToString(computer.getIntroduced()));
+			cDTO.setDiscontinuedDate(Utils.timestampToString(computer.getDiscontinued()));
+			if (computer.getCompany() != null) {
+				cDTO.setCompanyName(computer.getCompany().getName());
+			}
 			return cDTO;
 		}
 	}
 
 	/**
-	 * Convert a DTO to its model
+	 * Convert a DTO to its model.
 	 *
 	 * @param cDTO The DTO we want to transform.
 	 * @return A Company model.
@@ -209,8 +214,8 @@ public class ComputerDAO implements DAOInterface<Computer> {
 			Company company = this.daoFactory.getCompanyDAO().get(cDTO.getCompanyName());
 			computer.setId(cDTO.getId());
 			computer.setName(cDTO.getName());
-			computer.setIntroduced(Utils.computeTimestamp(cDTO.getIntroducedDate()));
-			computer.setDiscontinued(Utils.computeTimestamp(cDTO.getDiscontinuedDate()));
+			computer.setIntroduced(Utils.stringToTimestamp(cDTO.getIntroducedDate()));
+			computer.setDiscontinued(Utils.stringToTimestamp(cDTO.getDiscontinuedDate()));
 			if (company != null) {
 				computer.setCompanyId(company.getId());
 				computer.setCompany(company);
