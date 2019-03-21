@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Edit computer</title>
+<title>Add computer</title>
 <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="/css/font-awesome.css" rel="stylesheet" media="screen">
 <link href="/css/main.css" rel="stylesheet" media="screen">
@@ -19,29 +19,22 @@
 	</header>
 
 	<div class="container">
-		<div id="id" class="form-horizontal">
-			<div class="label label-default pull-right">id: <c:out value="${computer.id}"/></div>
-		</div>
-	</div>
-
-	<div class="container">
-		<h1>Edit computer</h1>
-		<form action="/computer/edit" method="POST">
-			<input type="hidden" value="${computer.id}" id="id" name="id"/>
+		<h1>Add computer</h1>
+		<form action="/computer/add" method="POST">
 			<fieldset>
 				<div class="form-group">
 					<label for="computerName">Computer name</label> <input type="text"
-						value="${computer.name}" class="form-control" id="computerName"
+						class="form-control" id="computerName"
 						name="computerName" placeholder="Computer name">
 				</div>
 				<div class="form-group">
 					<label for="introduced">Introduced date (yyyy/mm/dd)</label> <input type="text"
-						value="${computer.introducedDate}" class="form-control"
+						class="form-control"
 						name="introduced" id="introduced" placeholder="Introduced date">
 				</div>
 				<div class="form-group">
 					<label for="discontinued">Discontinued date (yyyy/mm/dd)</label> <input
-						type="text" value="${computer.discontinuedDate}"
+						type="text"
 						class="form-control" id="discontinued" name="discontinued"
 						placeholder="Discontinued date">
 				</div>
@@ -57,7 +50,7 @@
 				</div>
 			</fieldset>
 			<div class="actions pull-right">
-				<input type="submit" value="Edit" class="btn btn-primary" /> <a
+				<input type="submit" value="Add" class="btn btn-primary" /> <a
 					href="/computer" class="btn btn-default">Cancel</a>
 			</div>
 		</form>

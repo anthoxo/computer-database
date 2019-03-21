@@ -32,7 +32,7 @@
 			<div class="pull-right">
 				<c:choose>
 					<c:when test="${isSearching == false}">
-						<a class="btn btn-success" id="addComputer" href="#">Add
+						<a class="btn btn-success" id="addComputer" href="/computer/add">Add
 							Computer</a>
 					</c:when>
 					<c:otherwise>

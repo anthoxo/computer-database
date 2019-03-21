@@ -110,12 +110,12 @@ public class ComputerController {
 	 * @param companyName  Name of the company.
 	 * @return true if computer has been created else false.
 	 */
-	public void createComputer(String name, String introduced, String discontinued, String companyName) {
+	public void createComputer(String name, String introduced, String discontinued, int companyId) {
 		ComputerDTO computerDTO = new ComputerDTO();
 		computerDTO.setName(name);
 		computerDTO.setIntroducedDate(introduced);
 		computerDTO.setDiscontinuedDate(discontinued);
-		computerDTO.setCompanyName(companyName);
+		computerDTO.setCompanyId(companyId);
 		computerService.createComputer(computerDTO);
 	}
 
