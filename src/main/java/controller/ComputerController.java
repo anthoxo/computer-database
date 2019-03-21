@@ -1,10 +1,10 @@
 package controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import dao.DAOFactory;
 import dto.ComputerDTO;
+import exception.ItemNotFoundException;
 import model.Page;
 import service.ComputerService;
 import utils.Utils;
@@ -88,8 +88,9 @@ public class ComputerController {
 	 *
 	 * @param name Name of the wanted computer.
 	 * @return The computer that we want.
+	 * @throws ItemNotFoundException
 	 */
-	public Optional<ComputerDTO> getComputerByName(String name) {
+	public ComputerDTO getComputerByName(String name) throws ItemNotFoundException {
 		return computerService.getComputerByName(name);
 	}
 
@@ -97,8 +98,9 @@ public class ComputerController {
 	 *
 	 * @param id The id of the wanted computer.
 	 * @return The computer that we want.
+	 * @throws ItemNotFoundException
 	 */
-	public Optional<ComputerDTO> getComputerById(int id) {
+	public ComputerDTO getComputerById(int id) throws ItemNotFoundException {
 		return computerService.getComputerById(id);
 	}
 
@@ -133,8 +135,9 @@ public class ComputerController {
 	 *
 	 * @param computer Computer to be deleted.
 	 * @return true if computer has been deleted else false.
+	 * @throws ItemNotFoundException
 	 */
-	public void deleteComputer(int id) {
+	public void deleteComputer(int id) throws ItemNotFoundException {
 		ComputerDTO cDTO = new ComputerDTO();
 		cDTO.setId(id);
 		computerService.deleteComputer(cDTO);

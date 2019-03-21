@@ -72,22 +72,23 @@ public class ComputerDAO {
 	}
 
 	public Optional<Computer> get(int id) throws DAOException {
-		Computer computer = null;
+		Optional<Computer> computer = Optional.empty();
 		try (Connection conn = this.daoFactory.getConnection()) {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_ID);
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				computer = computerMapper.map(rs);
-				Optional<Company> company = daoFactory.getCompanyDAO().get(computer.getCompanyId());
+				Computer c = computerMapper.map(rs);
+				Optional<Company> company = daoFactory.getCompanyDAO().get(c.getCompanyId());
 				if (company.isPresent()) {
-					computer.setCompany(company.get());
+					c.setCompany(company.get());
 				}
+				computer = Optional.ofNullable(c);
 			}
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		}
-		return Optional.ofNullable(computer);
+		return computer;
 	}
 
 	public void update(Computer obj) throws DAOException {
@@ -162,22 +163,23 @@ public class ComputerDAO {
 	 * @throws DAOException
 	 */
 	public Optional<Computer> get(String name) throws DAOException {
-		Computer computer = null;
+		Optional<Computer> computer = Optional.empty();
 		try (Connection conn = this.daoFactory.getConnection()) {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_NAME);
 			stmt.setString(1, name);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				computer = computerMapper.map(rs);
-				Optional<Company> company = daoFactory.getCompanyDAO().get(computer.getCompanyId());
+				Computer c = computerMapper.map(rs);
+				Optional<Company> company = daoFactory.getCompanyDAO().get(c.getCompanyId());
 				if (company.isPresent()) {
-					computer.setCompany(company.get());
+					c.setCompany(company.get());
 				}
+				computer = Optional.ofNullable(c);
 			}
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		}
-		return Optional.ofNullable(computer);
+		return computer;
 	}
 
 	public List<Computer> getPattern(String pattern) throws DAOException {
@@ -206,21 +208,19 @@ public class ComputerDAO {
 	 * @param computer The computer we want to transform.
 	 * @return A computer DTO.
 	 */
-	public Optional<ComputerDTO> createDTO(Optional<Computer> computer) {
-		ComputerDTO cDTO = null;
-		if (computer.isPresent()) {
-			Computer c = computer.get();
-			cDTO = new ComputerDTO();
-			cDTO.setId(c.getId());
-			cDTO.setName(c.getName());
-			cDTO.setIntroducedDate(Utils.timestampToString(c.getIntroduced()));
-			cDTO.setDiscontinuedDate(Utils.timestampToString(c.getDiscontinued()));
-			if (c.getCompany() != null) {
-				cDTO.setCompanyName(c.getCompany().getName());
-			}
-			cDTO.setCompanyId(c.getCompanyId());
+	public ComputerDTO createDTO(Computer computer) {
+		ComputerDTO cDTO = new ComputerDTO();
+
+		cDTO.setId(computer.getId());
+		cDTO.setName(computer.getName());
+		cDTO.setIntroducedDate(Utils.timestampToString(computer.getIntroduced()));
+		cDTO.setDiscontinuedDate(Utils.timestampToString(computer.getDiscontinued()));
+		cDTO.setCompanyId(computer.getCompanyId());
+		if (computer.getCompany() != null) {
+			cDTO.setCompanyName(computer.getCompany().getName());
 		}
-		return Optional.ofNullable(cDTO);
+
+		return cDTO;
 	}
 
 	/**
@@ -230,21 +230,21 @@ public class ComputerDAO {
 	 * @return A Company model.
 	 * @throws DAOException
 	 */
-	public Optional<Computer> createBean(Optional<ComputerDTO> cDTO) throws DAOException {
-		Computer computer = null;
-		if (cDTO.isPresent()) {
-			ComputerDTO c = cDTO.get();
-			computer = new Computer();
-			computer.setId(c.getId());
-			computer.setName(c.getName());
-			computer.setIntroduced(Utils.stringToTimestamp(c.getIntroducedDate()));
-			computer.setDiscontinued(Utils.stringToTimestamp(c.getDiscontinuedDate()));
-			computer.setCompanyId(c.getCompanyId());
-			Optional<Company> company = this.daoFactory.getCompanyDAO().get(c.getCompanyId());
-			if (company.isPresent()) {
-				computer.setCompany(company.get());
-			}
+	public Computer createBean(ComputerDTO cDTO) throws DAOException {
+		Computer computer = new Computer();
+
+		computer.setId(cDTO.getId());
+		computer.setName(cDTO.getName());
+		computer.setIntroduced(Utils.stringToTimestamp(cDTO.getIntroducedDate()));
+		computer.setDiscontinued(Utils.stringToTimestamp(cDTO.getDiscontinuedDate()));
+		computer.setCompanyId(cDTO.getCompanyId());
+
+		Optional<Company> company = this.daoFactory.getCompanyDAO().get(cDTO.getCompanyId());
+
+		if (company.isPresent()) {
+			computer.setCompany(company.get());
 		}
-		return Optional.ofNullable(computer);
+
+		return computer;
 	}
 }

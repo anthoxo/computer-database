@@ -2,7 +2,6 @@ package servlet;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -15,6 +14,7 @@ import controller.CompanyController;
 import controller.ComputerController;
 import dto.CompanyDTO;
 import dto.ComputerDTO;
+import exception.ItemNotFoundException;
 
 @WebServlet("/computer/edit")
 public class EditComputerServlet extends HttpServlet {
@@ -60,15 +60,18 @@ public class EditComputerServlet extends HttpServlet {
 			id = Integer.valueOf(idString);
 		}
 
-		Optional<ComputerDTO> cDTO = this.computerController.getComputerById(id);
-		List<CompanyDTO> listCompanies = this.companyController.getAllCompanies();
+		try {
+			ComputerDTO cDTO = this.computerController.getComputerById(id);
+			request.setAttribute("computer", cDTO);
+			List<CompanyDTO> listCompanies = this.companyController.getAllCompanies();
 
-		if (cDTO.isPresent()) {
-			request.setAttribute("computer", cDTO.get());
+			request.setAttribute("listCompanies", listCompanies);
+
+			RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/views/editComputer.jsp");
+			rd.forward(request, response);
+		} catch (ItemNotFoundException e) {
+			// print SOMETHING TO SAY NOT FOUND
+			response.sendRedirect("/computer");
 		}
-		request.setAttribute("listCompanies", listCompanies);
-
-		RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/views/editComputer.jsp");
-		rd.forward(request, response);
 	}
 }

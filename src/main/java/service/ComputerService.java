@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import dao.ComputerDAO;
 import dto.ComputerDTO;
 import exception.DAOException;
+import exception.ItemNotFoundException;
 import model.Computer;
 
 public class ComputerService {
@@ -31,8 +32,8 @@ public class ComputerService {
 	 */
 	public void createComputer(ComputerDTO computerDTO) {
 		try {
-			Optional<Computer> c = computerDAO.createBean(Optional.ofNullable(computerDTO));
-			computerDAO.create(c.get());
+			Computer c = computerDAO.createBean(computerDTO);
+			computerDAO.create(c);
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 		}
@@ -43,15 +44,20 @@ public class ComputerService {
 	 *
 	 * @param name Name of computer
 	 * @return Optional computer DTO.
+	 * @throws ItemNotFoundException
 	 */
-	public Optional<ComputerDTO> getComputerByName(String name) {
-		Optional<Computer> c = Optional.ofNullable(null);
+	public ComputerDTO getComputerByName(String name) throws ItemNotFoundException {
 		try {
-			c = computerDAO.get(name);
+			Optional<Computer> c = computerDAO.get(name);
+			if (c.isPresent()) {
+				return this.computerDAO.createDTO(c.get());
+			} else {
+				throw new ItemNotFoundException("getComputerByName");
+			}
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
+			throw new ItemNotFoundException("getComputerByName");
 		}
-		return computerDAO.createDTO(c);
 	}
 
 	/**
@@ -59,15 +65,20 @@ public class ComputerService {
 	 *
 	 * @param name Name of computer
 	 * @return Optional computer DTO.
+	 * @throws ItemNotFoundException
 	 */
-	public Optional<ComputerDTO> getComputerById(int id) {
-		Optional<Computer> c = Optional.ofNullable(null);
+	public ComputerDTO getComputerById(int id) throws ItemNotFoundException {
 		try {
-			c = computerDAO.get(id);
+			Optional<Computer> c = computerDAO.get(id);
+			if (c.isPresent()) {
+				return this.computerDAO.createDTO(c.get());
+			} else {
+				throw new ItemNotFoundException("getComputerById");
+			}
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
+			throw new ItemNotFoundException("getComputerById");
 		}
-		return computerDAO.createDTO(c);
 	}
 
 
@@ -81,8 +92,7 @@ public class ComputerService {
 		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
 		try {
 			l = computerDAO.getAll();
-			l.forEach(computer -> result.add(computerDAO.createDTO(Optional.of(computer)).get()));
-
+			l.forEach(computer -> result.add(computerDAO.createDTO(computer)));
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 		}
@@ -94,7 +104,7 @@ public class ComputerService {
 		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
 		try {
 			l = computerDAO.getPattern(pattern);
-			l.forEach(computer -> result.add(computerDAO.createDTO(Optional.of(computer)).get()));
+			l.forEach(computer -> result.add(computerDAO.createDTO(computer)));
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 		}
@@ -104,29 +114,25 @@ public class ComputerService {
 	public void updateComputer(ComputerDTO cDTO) {
 
 		try {
-			Optional<Computer> c = computerDAO.createBean(Optional.of(cDTO));
-			computerDAO.update(c.get());
+			Computer c = computerDAO.createBean(cDTO);
+			computerDAO.update(c);
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 		}
 
 	}
 
-	public void deleteComputer(ComputerDTO cDTO) {
-
+	public void deleteComputer(ComputerDTO cDTO) throws ItemNotFoundException {
 		try {
 			Optional<Computer> computer = computerDAO.get(cDTO.getId());
 			if (computer.isPresent()) {
-				Optional<Computer> c = computerDAO.createBean(Optional.ofNullable(cDTO));
-				computerDAO.delete(c.get());
+				Computer c = computerDAO.createBean(cDTO);
+				computerDAO.delete(c);
 			} else {
-				// not present, throw an Exception ?
+				throw new ItemNotFoundException("deleteComputer");
 			}
-
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 		}
-
 	}
-
 }

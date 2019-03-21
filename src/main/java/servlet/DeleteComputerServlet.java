@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import controller.ComputerController;
+import exception.ItemNotFoundException;
 
 @WebServlet("/computer/delete")
 public class DeleteComputerServlet extends HttpServlet {
@@ -26,7 +27,11 @@ public class DeleteComputerServlet extends HttpServlet {
 
 		String id = request.getParameter("id_delete");
 
-		this.computerController.deleteComputer(Integer.valueOf(id));
+		try {
+			this.computerController.deleteComputer(Integer.valueOf(id));
+		} catch (ItemNotFoundException e) {
+			// print something to say NOT FOUND
+		}
 
 		response.sendRedirect("/index");
 	}

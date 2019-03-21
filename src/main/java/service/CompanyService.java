@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import dao.CompanyDAO;
 import dto.CompanyDTO;
 import exception.DAOException;
+import exception.ItemNotFoundException;
 import model.Company;
 
 public class CompanyService {
@@ -26,6 +27,7 @@ public class CompanyService {
 
 	/**
 	 * Retrieve all companies and return a list of company dto.
+	 *
 	 * @return List of companies DTO.
 	 */
 	public List<CompanyDTO> getAllCompanies() {
@@ -33,21 +35,25 @@ public class CompanyService {
 		List<Company> l;
 		try {
 			l = companyDAO.getAll();
-			l.forEach(company -> result.add(companyDAO.createDTO(Optional.of(company)).get()));
+			l.forEach(company -> result.add(companyDAO.createDTO(company)));
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 		}
 		return result;
 	}
 
-	public Optional<CompanyDTO> getCompanyByName(String name) {
-		Optional<Company> c = Optional.ofNullable(null);
+	public CompanyDTO getCompanyByName(String name) throws ItemNotFoundException {
 		try {
-			c = companyDAO.get(name);
+			Optional<Company> company = companyDAO.get(name);
+			if (company.isPresent()) {
+				return companyDAO.createDTO(company.get());
+			} else {
+				throw new ItemNotFoundException("getCompanyByName");
+			}
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
+			throw new ItemNotFoundException("getCompanyByName");
 		}
-		return companyDAO.createDTO(c);
 	}
 
 }

@@ -1,7 +1,6 @@
 package view;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -9,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import controller.ComputerController;
 import dto.ComputerDTO;
+import exception.ItemNotFoundException;
 import utils.Utils;
 
 public class ComputerView {
@@ -100,8 +100,13 @@ public class ComputerView {
 	public void chooseComputerName(Scanner sc) {
 		logger.info("Quel nom de Computer voulez-vous chercher ?");
 		String prompt = sc.nextLine();
-		Optional<ComputerDTO> computer = this.computerController.getComputerByName(prompt);
-		logger.info(computer.isPresent() ? computer.get().toString() : "null");
+		ComputerDTO computer;
+		try {
+			computer = this.computerController.getComputerByName(prompt);
+			logger.info(computer.toString());
+		} catch (ItemNotFoundException e) {
+			logger.info("Computer not found.");
+		}
 	}
 
 	/**
@@ -115,8 +120,13 @@ public class ComputerView {
 		String prompt = sc.nextLine();
 		int id = Integer.valueOf(prompt);
 
-		Optional<ComputerDTO> computer = this.computerController.getComputerById(id);
-		logger.info(computer.isPresent() ? computer.get().toString() : "null");
+		ComputerDTO computer;
+		try {
+			computer = this.computerController.getComputerById(id);
+			logger.info(computer.toString());
+		} catch (ItemNotFoundException e) {
+			logger.info("Computer not found.");
+		}
 	}
 
 	/**
@@ -152,10 +162,10 @@ public class ComputerView {
 		logger.info("Quel id de Computer voulez-vous modifier ?");
 		String prompt = sc.nextLine();
 		int id = Integer.valueOf(prompt);
-		Optional<ComputerDTO> computer = this.computerController.getComputerById(id);
-		if (computer.isPresent()) {
+		ComputerDTO c;
+		try {
+			c = this.computerController.getComputerById(id);
 			String name, introduced, discontinued, companyId;
-			ComputerDTO c = computer.get();
 			logger.info("Name ? Previous: " + c.getName());
 			name = sc.nextLine();
 			name = name == "" ? c.getName() : name;
@@ -174,9 +184,11 @@ public class ComputerView {
 
 			this.computerController.updateComputer(c.getId(), name, introduced, discontinued, Integer.valueOf(companyId));
 			logger.info("Done !");
-		} else {
-			logger.warn("Computer introuvable...");
+
+		} catch (ItemNotFoundException e) {
+			logger.info("Computer introuvable...");
 		}
+
 	}
 
 	/**
@@ -190,19 +202,20 @@ public class ComputerView {
 		String prompt = sc.nextLine();
 		int id = Integer.valueOf(prompt);
 
-		Optional<ComputerDTO> computer = this.computerController.getComputerById(id);
-
-		if (computer.isPresent()) {
-			logger.info(computer.get().toString());
+		ComputerDTO computer;
+		try {
+			computer = this.computerController.getComputerById(id);
+			logger.info(computer.toString());
 			logger.info("Voulez-vous vraiment détruire cet objet ? (y/n)");
 
 			prompt = sc.nextLine();
 
 			if (prompt.equals("y")) {
-				this.computerController.deleteComputer(computer.get().getId());
+				this.computerController.deleteComputer(computer.getId());
 				logger.info("Computer deleted !");
 			}
-		} else {
+
+		} catch (ItemNotFoundException e) {
 			logger.warn("Computer introuvable...");
 		}
 	}

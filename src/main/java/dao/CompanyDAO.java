@@ -43,18 +43,18 @@ public class CompanyDAO {
 	}
 
 	public Optional<Company> get(int id) throws DAOException {
-		Company company = null;
+		Optional<Company> company = Optional.empty();
 		try (Connection conn = this.daoFactory.getConnection()) {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_ID);
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				company = companyMapper.map(rs);
+				company = Optional.ofNullable(companyMapper.map(rs));
 			}
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		}
-		return Optional.ofNullable(company);
+		return company;
 	}
 
 	/**
@@ -91,18 +91,18 @@ public class CompanyDAO {
 	 * @throws DAOException
 	 */
 	public Optional<Company> get(String name) throws DAOException {
-		Company company = null;
+		Optional<Company> company = Optional.empty();
 		try (Connection conn = this.daoFactory.getConnection()) {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_NAME);
 			stmt.setString(1, name);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				company = companyMapper.map(rs);
+				company = Optional.ofNullable(companyMapper.map(rs));
 			}
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		}
-		return Optional.ofNullable(company);
+		return company;
 	}
 
 	/**
@@ -111,15 +111,11 @@ public class CompanyDAO {
 	 * @param company The company we want to transform.
 	 * @return A company DTO.
 	 */
-	public Optional<CompanyDTO> createDTO(Optional<Company> company) {
-		CompanyDTO cDTO = null;
-		if (company.isPresent()) {
-			Company c = company.get();
-			cDTO = new CompanyDTO();
-			cDTO.setId(c.getId());
-			cDTO.setName(c.getName());
-		}
-		return Optional.ofNullable(cDTO);
+	public CompanyDTO createDTO(Company company) {
+		CompanyDTO cDTO = new CompanyDTO();
+		cDTO.setId(company.getId());
+		cDTO.setName(company.getName());
+		return cDTO;
 	}
 
 	/**
@@ -128,15 +124,10 @@ public class CompanyDAO {
 	 * @param cDTO The DTO we want to transform.
 	 * @return A Company model.
 	 */
-	public Optional<Company> createBean(Optional<CompanyDTO> cDTO) {
-		Company company = null;
-		if (cDTO.isPresent()) {
-			CompanyDTO c = cDTO.get();
-			company = new Company();
-			company.setId(c.getId());
-			company.setName(c.getName());
-
-		}
-		return Optional.ofNullable(company);
+	public Company createBean(CompanyDTO cDTO) {
+		Company company = new Company();
+		company.setId(cDTO.getId());
+		company.setName(cDTO.getName());
+		return company;
 	}
 }
