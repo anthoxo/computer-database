@@ -5,6 +5,7 @@ public class ComputerDTO {
 	private String name;
 	private String introducedDate;
 	private String discontinuedDate;
+	private int companyId;
 	private String companyName;
 
 	/**
@@ -30,6 +31,10 @@ public class ComputerDTO {
 		return this.discontinuedDate;
 	}
 
+	public int getCompanyId() {
+		return this.companyId;
+	}
+
 	public String getCompanyName() {
 		return this.companyName;
 	}
@@ -48,6 +53,10 @@ public class ComputerDTO {
 
 	public void setDiscontinuedDate(String discontinued) {
 		this.discontinuedDate = discontinued;
+	}
+
+	public void setCompanyId(int companyId) {
+		this.companyId = companyId;
 	}
 
 	public void setCompanyName(String companyName) {

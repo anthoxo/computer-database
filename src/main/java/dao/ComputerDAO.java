@@ -218,6 +218,7 @@ public class ComputerDAO {
 			if (c.getCompany() != null) {
 				cDTO.setCompanyName(c.getCompany().getName());
 			}
+			cDTO.setCompanyId(c.getCompanyId());
 		}
 		return Optional.ofNullable(cDTO);
 	}
@@ -238,9 +239,9 @@ public class ComputerDAO {
 			computer.setName(c.getName());
 			computer.setIntroduced(Utils.stringToTimestamp(c.getIntroducedDate()));
 			computer.setDiscontinued(Utils.stringToTimestamp(c.getDiscontinuedDate()));
-			Optional<Company> company = this.daoFactory.getCompanyDAO().get(c.getCompanyName());
+			computer.setCompanyId(c.getCompanyId());
+			Optional<Company> company = this.daoFactory.getCompanyDAO().get(c.getCompanyId());
 			if (company.isPresent()) {
-				computer.setCompanyId(company.get().getId());
 				computer.setCompany(company.get());
 			}
 		}

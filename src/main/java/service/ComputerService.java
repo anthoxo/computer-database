@@ -104,7 +104,7 @@ public class ComputerService {
 	public void updateComputer(ComputerDTO cDTO) {
 
 		try {
-			Optional<Computer> c = computerDAO.createBean(Optional.ofNullable(cDTO));
+			Optional<Computer> c = computerDAO.createBean(Optional.of(cDTO));
 			computerDAO.update(c.get());
 		} catch (DAOException e) {
 			logger.error(e.getMessage());

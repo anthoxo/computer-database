@@ -154,21 +154,25 @@ public class ComputerView {
 		int id = Integer.valueOf(prompt);
 		Optional<ComputerDTO> computer = this.computerController.getComputerById(id);
 		if (computer.isPresent()) {
-			String name, introduced, discontinued, companyName;
+			String name, introduced, discontinued, companyId;
 			ComputerDTO c = computer.get();
 			logger.info("Name ? Previous: " + c.getName());
 			name = sc.nextLine();
+			name = name == "" ? c.getName() : name;
 
 			logger.info("Introduced (yyyy/mm/dd)? Previous: {}", c.getIntroducedDate());
 			introduced = sc.nextLine();
+			introduced = introduced == "" ? c.getIntroducedDate() : introduced;
 
 			logger.info("Discontinued (yyyy/mm/dd)? Previous: {}", c.getDiscontinuedDate());
 			discontinued = sc.nextLine();
+			discontinued = discontinued == "" ? c.getDiscontinuedDate() : discontinued;
 
-			logger.info("Name of Company? Previous: {}", c.getCompanyName());
-			companyName = sc.nextLine();
+			logger.info("Id of Company? Previous: {}", c.getCompanyName());
+			companyId = sc.nextLine();
+			companyId = companyId == "" ? String.valueOf(c.getCompanyId()) : companyId;
 
-			this.computerController.updateComputer(c, name, introduced, discontinued, companyName);
+			this.computerController.updateComputer(c.getId(), name, introduced, discontinued, Integer.valueOf(companyId));
 			logger.info("Done !");
 		} else {
 			logger.warn("Computer introuvable...");

@@ -1,0 +1,74 @@
+package servlet;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import controller.CompanyController;
+import controller.ComputerController;
+import dto.CompanyDTO;
+import dto.ComputerDTO;
+
+@WebServlet("/computer/edit")
+public class EditComputerServlet extends HttpServlet {
+
+	private static final long serialVersionUID = 8206412986998744720L;
+
+	ComputerController computerController;
+	CompanyController companyController;
+
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String id, name, introduced, discontinued, companyId;
+
+		id = request.getParameter("id");
+		name = request.getParameter("computerName");
+		introduced = request.getParameter("introduced");
+		discontinued = request.getParameter("discontinued");
+		companyId = request.getParameter("companyId");
+
+		this.computerController.updateComputer(Integer.valueOf(id), name, introduced, discontinued, Integer.valueOf(companyId));
+
+		response.sendRedirect("/index");
+	}
+
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		computerController = (ComputerController) request.getSession().getAttribute("computer_controller");
+		if (computerController == null) {
+			computerController = new ComputerController();
+			request.getSession().setAttribute("computer_controller", computerController);
+		}
+
+		companyController = (CompanyController) request.getSession().getAttribute("company_controller");
+		if (companyController == null) {
+			companyController = new CompanyController();
+			request.getSession().setAttribute("company_controller", companyController);
+		}
+
+
+		String idString = request.getParameter("id");
+		int id = 0;
+		if (idString != null) {
+			id = Integer.valueOf(idString);
+		}
+
+		Optional<ComputerDTO> cDTO = this.computerController.getComputerById(id);
+		List<CompanyDTO> listCompanies = this.companyController.getAllCompanies();
+
+		if (cDTO.isPresent()) {
+			request.setAttribute("computer", cDTO.get());
+		}
+		request.setAttribute("listCompanies", listCompanies);
+
+		RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/views/editComputer.jsp");
+		rd.forward(request, response);
+	}
+}

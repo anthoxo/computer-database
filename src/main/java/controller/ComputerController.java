@@ -119,33 +119,13 @@ public class ComputerController {
 		computerService.createComputer(computerDTO);
 	}
 
-	/**
-	 *
-	 * @param computer     Computer to be updated.
-	 * @param name         Name of the new computer.
-	 * @param introduced   Date (in string) of its introduction.
-	 * @param discontinued Date (in string) when it will be discontinued.
-	 * @param companyName  Name of the company.
-	 * @return true if computer has been updated else false.
-	 */
-	public void updateComputer(ComputerDTO cDTO, String name, String introduced, String discontinued,
-			String companyName) {
-		if (!name.equals("")) {
-			cDTO.setName(name);
-		}
-
-		if (!introduced.equals("")) {
-			cDTO.setIntroducedDate(introduced);
-		}
-
-		if (!discontinued.equals("")) {
-			cDTO.setDiscontinuedDate(discontinued);
-		}
-
-		if (!companyName.equals("")) {
-			cDTO.setCompanyName(companyName);
-		}
-
+	public void updateComputer(int id, String name, String introduced, String discontinued, int companyId) {
+		ComputerDTO cDTO = new ComputerDTO();
+		cDTO.setId(id);
+		cDTO.setName(name);
+		cDTO.setIntroducedDate(introduced);
+		cDTO.setDiscontinuedDate(discontinued);
+		cDTO.setCompanyId(companyId);
 		computerService.updateComputer(cDTO);
 	}
 

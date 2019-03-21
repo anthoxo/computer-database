@@ -56,7 +56,7 @@
 			<tbody>
 				<c:forEach var="c" items="${listComputers}">
 					<tr>
-						<td><c:out value="${c.name}" /></td>
+						<td><a href="/computer/edit?id=${c.id}"><c:out value="${c.name}" /></a></td>
 						<td><c:out value="${c.introducedDate}" /></td>
 						<td><c:out value="${c.discontinuedDate}" /></td>
 						<td><c:out value="${c.companyName}" /></td>

@@ -36,6 +36,10 @@ public class CompanyController {
 		return this.companyPage;
 	}
 
+	public List<CompanyDTO> getAllCompanies() {
+		return this.companyService.getAllCompanies();
+	}
+
 	/**
 	 * Choose if we select the next or previous page.
 	 *
