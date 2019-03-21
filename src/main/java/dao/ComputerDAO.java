@@ -28,6 +28,7 @@ public class ComputerDAO {
 	static final String REQUEST_GET_ALL = "SELECT id,name,introduced,discontinued,company_id FROM computer";
 	static final String REQUEST_GET_BY_ID = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE id = ?";
 	static final String REQUEST_GET_BY_NAME = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE name = ?";
+	static final String REQUEST_GET_LIKE = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE name LIKE ?" ;
 
 	/**
 	 * Default constructor.
@@ -177,6 +178,26 @@ public class ComputerDAO {
 			throw new DAOException(e);
 		}
 		return Optional.ofNullable(computer);
+	}
+
+	public List<Computer> getPattern(String pattern) throws DAOException {
+		List<Computer> result = new ArrayList<Computer>();
+		try (Connection conn = this.daoFactory.getConnection()) {
+			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_LIKE);
+			stmt.setString(1, "%" + pattern + "%");
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				Computer c = computerMapper.map(rs);
+				Optional<Company> company = daoFactory.getCompanyDAO().get(c.getCompanyId());
+				if (company.isPresent()) {
+					c.setCompany(company.get());
+				}
+				result.add(c);
+			}
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		}
+		return result;
 	}
 
 	/**

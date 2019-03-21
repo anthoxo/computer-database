@@ -49,6 +49,10 @@ public class ComputerController {
 		return this.computerPage;
 	}
 
+	public List<ComputerDTO> getComputersByPattern(String pattern) {
+		return this.computerService.getComputersByPattern(pattern);
+	}
+
 	/**
 	 * Choose if we select the next or previous page.
 	 *

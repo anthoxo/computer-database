@@ -42,6 +42,8 @@ public class ComputerListServlet extends HttpServlet {
 			request.setAttribute("listComputers", this.computerController.getComputerPage().getEntitiesPage());
 			request.setAttribute("nbPages", this.computerController.getComputerPage().getNbPages());
 			request.setAttribute("idPage", index + 1);
+			request.setAttribute("urlPath", "/computer");
+			request.setAttribute("isSearching", "false");
 
 			RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/views/listComputers.jsp");
 			rd.forward(request, response);

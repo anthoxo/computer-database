@@ -13,8 +13,8 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="/index">
-				Application - Computer Database </a>
+			<a class="navbar-brand" href="/index"> Application - Computer
+				Database </a>
 		</div>
 	</header>
 
@@ -39,18 +39,17 @@
 		<div class="container text-center">
 			<ul class="pagination">
 				<c:if test="${idPage > 1}">
-					<li><a href="/company?id=${idPage-1}"
-						aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+					<li><a href="/company?id=${idPage-1}" aria-label="Previous">
+							<span aria-hidden="true">&laquo;</span>
 					</a></li>
 				</c:if>
 				<c:forEach var="i" begin="1" end="${nbPages}">
-					<li><a href="/company?id=${i}"> <c:out
-								value="${i}" /></a></li>
+					<li><a href="/company?id=${i}"> <c:out value="${i}" /></a></li>
 				</c:forEach>
 				<c:if test="${idPage < nbPages}">
-				<li><a href="/company?id=${idPage+1}"
-					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
-				</a></li>
+					<li><a href="/company?id=${idPage+1}" aria-label="Next"> <span
+							aria-hidden="true">&raquo;</span>
+					</a></li>
 				</c:if>
 			</ul>
 	</footer>

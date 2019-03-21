@@ -89,6 +89,18 @@ public class ComputerService {
 		return result;
 	}
 
+	public List<ComputerDTO> getComputersByPattern(String pattern) {
+		List<Computer> l;
+		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
+		try {
+			l = computerDAO.getPattern(pattern);
+			l.forEach(computer -> result.add(computerDAO.createDTO(Optional.of(computer)).get()));
+		} catch (DAOException e) {
+			logger.error(e.getMessage());
+		}
+		return result;
+	}
+
 	public void updateComputer(ComputerDTO cDTO) {
 
 		try {

@@ -66,7 +66,11 @@ public class Page<T> {
 	 * @return The sublist with size of NB_PAGES.
 	 */
 	public List<T> getEntitiesPage() {
-		return data.subList(index, Math.min(index + NB_ITEMS_PER_PAGE, length));
+		if (this.length == 0) {
+			return data;
+		} else {
+			return data.subList(index, Math.min(index + NB_ITEMS_PER_PAGE, length));
+		}
 	}
 
 	/**

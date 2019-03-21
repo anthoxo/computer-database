@@ -13,10 +13,35 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="/index">
-				Application - Computer Database </a>
+			<a class="navbar-brand" href="/index"> Application - Computer
+				Database </a>
 		</div>
 	</header>
+
+	<div class="container">
+		<div id="actions" class="form-horizontal">
+			<div class="pull-left">
+				<form id="searchForm" action="/computer/search" method="POST"
+					class="form-inline">
+					<input type="search" id="searchbox" name="search"
+						class="form-control" placeholder="Search name" /> <input
+						type="submit" id="searchsubmit" value="Filter by name"
+						class="btn btn-primary" />
+				</form>
+			</div>
+			<div class="pull-right">
+				<c:choose>
+					<c:when test="${isSearching == false}">
+						<a class="btn btn-success" id="addComputer" href="#">Add
+							Computer</a>
+					</c:when>
+					<c:otherwise>
+						<a class="btn btn-success" id="goBack" href="/computer">Go Back</a>
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</div>
+	</div>
 
 	<div class="container">
 		<table class="table table-striped table-bordered">
@@ -45,17 +70,16 @@
 		<div class="container text-center">
 			<ul class="pagination">
 				<c:if test="${idPage > 1}">
-					<li><a href="/computer?id=${idPage-1}"
-						aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+					<li><a href="${urlPath}?id=${idPage-1}" aria-label="Previous">
+							<span aria-hidden="true">&laquo;</span>
 					</a></li>
 				</c:if>
 				<c:forEach var="i" begin="1" end="${nbPages}">
-					<li><a href="/computer?id=${i}"> <c:out
-								value="${i}" /></a></li>
+					<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
 				</c:forEach>
 				<c:if test="${idPage < nbPages}">
-					<li><a href="/computer?id=${idPage+1}"
-						aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+					<li><a href="${urlPath}?id=${idPage+1}" aria-label="Next">
+							<span aria-hidden="true">&raquo;</span>
 					</a></li>
 				</c:if>
 			</ul>
