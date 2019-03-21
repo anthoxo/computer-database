@@ -134,7 +134,9 @@ public class ComputerController {
 	 * @param computer Computer to be deleted.
 	 * @return true if computer has been deleted else false.
 	 */
-	public void deleteComputer(ComputerDTO computer) {
-		computerService.deleteComputer(computer);
+	public void deleteComputer(int id) {
+		ComputerDTO cDTO = new ComputerDTO();
+		cDTO.setId(id);
+		computerService.deleteComputer(cDTO);
 	}
 }

@@ -125,7 +125,7 @@ public class ComputerView {
 	 * @param sc The scanner that used to ask user.
 	 */
 	public void chooseCreate(Scanner sc) {
-		String name, introduced, discontinued, companyName;
+		String name, introduced, discontinued, companyId;
 
 		logger.info("Name ?");
 		name = sc.nextLine();
@@ -136,10 +136,10 @@ public class ComputerView {
 		logger.info("Discontinued ? (yyyy/mm/dd)");
 		discontinued = sc.nextLine();
 
-		logger.info("Name of Company ?");
-		companyName = sc.nextLine();
+		logger.info("Id of Company ?");
+		companyId = sc.nextLine();
 
-		this.computerController.createComputer(name, introduced, discontinued, companyName);
+		this.computerController.createComputer(name, introduced, discontinued, Integer.valueOf(companyId));
 		logger.info("Done !");
 	}
 
@@ -199,7 +199,7 @@ public class ComputerView {
 			prompt = sc.nextLine();
 
 			if (prompt.equals("y")) {
-				this.computerController.deleteComputer(computer.get());
+				this.computerController.deleteComputer(computer.get().getId());
 				logger.info("Computer deleted !");
 			}
 		} else {

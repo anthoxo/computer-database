@@ -115,8 +115,14 @@ public class ComputerService {
 	public void deleteComputer(ComputerDTO cDTO) {
 
 		try {
-			Optional<Computer> c = computerDAO.createBean(Optional.ofNullable(cDTO));
-			computerDAO.delete(c.get());
+			Optional<Computer> computer = computerDAO.get(cDTO.getId());
+			if (computer.isPresent()) {
+				Optional<Computer> c = computerDAO.createBean(Optional.ofNullable(cDTO));
+				computerDAO.delete(c.get());
+			} else {
+				// not present, throw an Exception ?
+			}
+
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 		}
