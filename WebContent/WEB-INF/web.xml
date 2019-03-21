@@ -6,8 +6,8 @@
 
 	<!-- Config here. -->
 	<error-page>
-		<exception-type>404</exception-type>
-		<location>/computer-database/views/404.jsp</location>
+		<error-code>404</error-code>
+		<location>/views/404.jsp</location>
 	</error-page>
 
 </web-app>
