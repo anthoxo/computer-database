@@ -17,7 +17,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		
+
 		<mysql.connector.version>8.0.15</mysql.connector.version>
 		<slf4j.api.version>1.7.26</slf4j.api.version>
 		<logback.classic.version>1.2.3</logback.classic.version>
@@ -28,6 +28,7 @@
 		<servlet.api.version>4.0.1</servlet.api.version>
 		<jstl.version>1.2</jstl.version>
 		<selenium.version>2.27.0</selenium.version>
+		<commons.lang.version>2.5</commons.lang.version>
 	</properties>
 
 	<dependencies>
@@ -100,6 +101,12 @@
 			<artifactId>selenium-java</artifactId>
 			<version>${selenium.version}</version>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>${commons.lang.version}</version>
 		</dependency>
 
 	</dependencies>

@@ -31,20 +31,24 @@ public class Utils {
 	 * @return The Timestamp object of the desired date.
 	 */
 	public static Timestamp stringToTimestamp(String date) {
-		String[] dateStr = date.split("/");
-		Timestamp ts;
-		if (dateStr.length != 3) {
+		if (date == null) {
 			return null;
 		} else {
-			try {
-				ts = Timestamp.valueOf(java.time.LocalDate
-						.of(Integer.valueOf(dateStr[0]), Integer.valueOf(dateStr[1]), Integer.valueOf(dateStr[2]))
-						.atStartOfDay());
-			} catch (DateTimeException e) {
-				ts = null;
-				logger.warn(e.getMessage());
+			String[] dateStr = date.split("/");
+			Timestamp ts;
+			if (dateStr.length != 3) {
+				return null;
+			} else {
+				try {
+					ts = Timestamp.valueOf(java.time.LocalDate
+							.of(Integer.valueOf(dateStr[0]), Integer.valueOf(dateStr[1]), Integer.valueOf(dateStr[2]))
+							.atStartOfDay());
+				} catch (DateTimeException e) {
+					ts = null;
+					logger.warn(e.getMessage());
+				}
+				return ts;
 			}
-			return ts;
 		}
 	}
 

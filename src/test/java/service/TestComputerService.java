@@ -40,8 +40,4 @@ public class TestComputerService {
 		this.computerService.getComputerByName("ouais");
 		Mockito.verify(computerDAO).get(Mockito.anyString());
 	}
-
-
-
-
 }

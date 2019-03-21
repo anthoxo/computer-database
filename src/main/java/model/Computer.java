@@ -2,6 +2,9 @@ package model;
 
 import java.sql.Timestamp;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 public class Computer {
 	int id;
 	String name;
@@ -79,15 +82,16 @@ public class Computer {
 
 	@Override
 	public String toString() {
-		String companyString;
+		ToStringBuilder ts = new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE);
+		ts.append("id", id);
+		ts.append("name", name);
+		ts.append("introduced", introduced);
+		ts.append("discontinued", discontinued);
+		ts.append("company_id", companyId);
 		if (this.getCompany() != null) {
-			companyString = this.getCompany().toString();
-		} else {
-			companyString = "null";
+			ts.append("company", company.toString());
 		}
-
-		return String.format("Name: %s\nIntroduced in: %s\nDiscountinued in: %s\nCompany: %s", this.getName(),
-				this.getIntroduced(), this.getDiscontinued(), companyString);
+		return ts.toString();
 	}
 
 	@Override

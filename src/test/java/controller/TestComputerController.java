@@ -106,7 +106,7 @@ public class TestComputerController {
 		Mockito.when(dao.getComputerDAO()).thenReturn(computerDAO);
 		Mockito.when(dao.getCompanyDAO()).thenReturn(companyDAO);
 
-		Mockito.doReturn(true).when(computerDAO).create(Mockito.any(Computer.class));
+		Mockito.doNothing().when(computerDAO).create(Mockito.any(Computer.class));
 
 		this.computerController.createComputer("Computer_1", "", "", "");
 
@@ -116,7 +116,7 @@ public class TestComputerController {
 	@Test
 	public void testUpdateComputer() throws DAOException {
 		Mockito.when(dao.getComputerDAO()).thenReturn(computerDAO);
-		Mockito.doReturn(true).when(computerDAO).update(Mockito.any(Computer.class));
+		Mockito.doNothing().when(computerDAO).update(Mockito.any(Computer.class));
 
 		this.computerController.updateComputer(new ComputerDTO(), "Computer_1", "", "", "");
 
@@ -126,7 +126,7 @@ public class TestComputerController {
 	@Test
 	public void testDeleteComputer() throws DAOException {
 		Mockito.when(dao.getComputerDAO()).thenReturn(computerDAO);
-		Mockito.doReturn(true).when(computerDAO).delete(Mockito.any(Computer.class));
+		Mockito.doNothing().when(computerDAO).delete(Mockito.any(Computer.class));
 
 		this.computerController.deleteComputer(new ComputerDTO());
 
