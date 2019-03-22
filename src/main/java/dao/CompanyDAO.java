@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import dto.CompanyDTO;
 import exception.DAOException;
 import mapper.CompanyMapper;
 import model.Company;
@@ -102,32 +101,6 @@ public class CompanyDAO {
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		}
-		return company;
-	}
-
-	/**
-	 * Convert a model to its DTO representation.
-	 *
-	 * @param company The company we want to transform.
-	 * @return A company DTO.
-	 */
-	public CompanyDTO createDTO(Company company) {
-		CompanyDTO cDTO = new CompanyDTO();
-		cDTO.setId(company.getId());
-		cDTO.setName(company.getName());
-		return cDTO;
-	}
-
-	/**
-	 * Convert a DTO to its model.
-	 *
-	 * @param cDTO The DTO we want to transform.
-	 * @return A Company model.
-	 */
-	public Company createBean(CompanyDTO cDTO) {
-		Company company = new Company();
-		company.setId(cDTO.getId());
-		company.setName(cDTO.getName());
 		return company;
 	}
 }

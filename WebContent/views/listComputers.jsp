@@ -11,6 +11,16 @@
 <link href="/css/main.css" rel="stylesheet" media="screen">
 </head>
 <body>
+	<c:if test="${notification == true}">
+		<div class="alert alert-${lvlNotification} alert-dismissible show"
+			role="alert">
+			<strong><c:out value="${msgNotification}"></c:out></strong>
+			<button type="button" class="close" data-dismiss="alert"
+				aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+	</c:if>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<a class="navbar-brand" href="/index"> Application - Computer
@@ -97,8 +107,9 @@
 									<button type="button" class="btn btn-light"
 										data-dismiss="modal">Close</button>
 									<form action="/computer/delete" method="POST">
-										<input type="hidden" value="${c.id}" id="id_delete" name="id_delete"/>
-										<input type="submit" class="btn btn-primary" value="Delete" />
+										<input type="hidden" value="${c.id}" id="id_delete"
+											name="id_delete" /> <input type="submit"
+											class="btn btn-primary" value="Delete" />
 									</form>
 								</div>
 							</div>
@@ -132,6 +143,5 @@
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/dashboard.js"></script>
-
 </body>
 </html>

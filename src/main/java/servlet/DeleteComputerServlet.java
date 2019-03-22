@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import controller.ComputerController;
+import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
 
 @WebServlet("/computer/delete")
@@ -29,11 +30,21 @@ public class DeleteComputerServlet extends HttpServlet {
 
 		try {
 			this.computerController.deleteComputer(Integer.valueOf(id));
+			request.getSession().setAttribute("notification", "true");
+			request.getSession().setAttribute("msgNotification", "This object has been correctly deleted !");
+			request.getSession().setAttribute("lvlNotification", "success");
 		} catch (ItemNotFoundException e) {
-			// print something to say NOT FOUND
+			request.getSession().setAttribute("notification", "true");
+			request.getSession().setAttribute("msgNotification",
+					"This object you want to delete is not found in database.");
+			request.getSession().setAttribute("lvlNotification", "danger");
+		} catch (ItemNotDeletedException e) {
+			request.getSession().setAttribute("notification", "true");
+			request.getSession().setAttribute("msgNotification", "This object hasn't been deleted.");
+			request.getSession().setAttribute("lvlNotification", "danger");
 		}
 
-		response.sendRedirect("/index");
+		response.sendRedirect("/computer");
 	}
 
 }

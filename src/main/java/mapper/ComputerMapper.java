@@ -2,8 +2,14 @@ package mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
+import dao.DAOFactory;
+import dto.ComputerDTO;
+import exception.DAOException;
+import model.Company;
 import model.Computer;
+import utils.Utils;
 
 public class ComputerMapper {
 
@@ -42,4 +48,51 @@ public class ComputerMapper {
 		computer.setCompanyId(rs.getInt("company_id"));
 		return computer;
 	}
+
+	/**
+	 * Convert a model to its DTO representation.
+	 *
+	 * @param computer The computer we want to transform.
+	 * @return A computer DTO.
+	 */
+	public ComputerDTO createDTO(Computer computer) {
+		ComputerDTO cDTO = new ComputerDTO();
+
+		cDTO.setId(computer.getId());
+		cDTO.setName(computer.getName());
+		cDTO.setIntroducedDate(Utils.timestampToString(computer.getIntroduced()));
+		cDTO.setDiscontinuedDate(Utils.timestampToString(computer.getDiscontinued()));
+		cDTO.setCompanyId(computer.getCompanyId());
+		if (computer.getCompany() != null) {
+			cDTO.setCompanyName(computer.getCompany().getName());
+		}
+
+		return cDTO;
+	}
+
+	/**
+	 * Convert a DTO to its model.
+	 *
+	 * @param cDTO The DTO we want to transform.
+	 * @return A Company model.
+	 * @throws DAOException
+	 */
+	public Computer createBean(ComputerDTO cDTO) throws DAOException {
+		Computer computer = new Computer();
+
+		computer.setId(cDTO.getId());
+		computer.setName(cDTO.getName());
+		computer.setIntroduced(Utils.stringToTimestamp(cDTO.getIntroducedDate()));
+		computer.setDiscontinued(Utils.stringToTimestamp(cDTO.getDiscontinuedDate()));
+		computer.setCompanyId(cDTO.getCompanyId());
+
+		Optional<Company> company = DAOFactory.getInstance().getCompanyDAO().get(cDTO.getCompanyId());
+
+		if (company.isPresent()) {
+			computer.setCompany(company.get());
+		}
+
+		return computer;
+	}
+
 }

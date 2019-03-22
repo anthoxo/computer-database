@@ -45,6 +45,22 @@ public class ComputerListServlet extends HttpServlet {
 			request.setAttribute("urlPath", "/computer");
 			request.setAttribute("isSearching", "false");
 
+			String notification = (String) request.getSession().getAttribute("notification");
+
+			if (notification == null || notification == "false") {
+				request.setAttribute("notification", false);
+			} else {
+				String msgNotification = (String) request.getSession().getAttribute("msgNotification");
+				String lvlNotification = (String) request.getSession().getAttribute("lvlNotification");
+				request.setAttribute("notification", true);
+				request.setAttribute("msgNotification", msgNotification);
+				request.setAttribute("lvlNotification", lvlNotification);
+
+				request.getSession().setAttribute("notification", "false");
+				request.getSession().setAttribute("msgNotification", "");
+				request.getSession().setAttribute("lvlNotification", "");
+			}
+
 			RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/views/listComputers.jsp");
 			rd.forward(request, response);
 		} catch (ServletException e) {

@@ -4,7 +4,10 @@ import java.util.List;
 
 import dao.DAOFactory;
 import dto.ComputerDTO;
+import exception.ItemBadCreatedException;
+import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
+import exception.ItemNotUpdatedException;
 import model.Page;
 import service.ComputerService;
 import utils.Utils;
@@ -111,8 +114,9 @@ public class ComputerController {
 	 * @param discontinued Date (in string) when it will be discontinued.
 	 * @param companyName  Name of the company.
 	 * @return true if computer has been created else false.
+	 * @throws ItemBadCreatedException
 	 */
-	public void createComputer(String name, String introduced, String discontinued, int companyId) {
+	public void createComputer(String name, String introduced, String discontinued, int companyId) throws ItemBadCreatedException {
 		ComputerDTO computerDTO = new ComputerDTO();
 		computerDTO.setName(name);
 		computerDTO.setIntroducedDate(introduced);
@@ -121,7 +125,7 @@ public class ComputerController {
 		computerService.createComputer(computerDTO);
 	}
 
-	public void updateComputer(int id, String name, String introduced, String discontinued, int companyId) {
+	public void updateComputer(int id, String name, String introduced, String discontinued, int companyId) throws ItemNotUpdatedException {
 		ComputerDTO cDTO = new ComputerDTO();
 		cDTO.setId(id);
 		cDTO.setName(name);
@@ -136,8 +140,9 @@ public class ComputerController {
 	 * @param computer Computer to be deleted.
 	 * @return true if computer has been deleted else false.
 	 * @throws ItemNotFoundException
+	 * @throws ItemNotDeletedException
 	 */
-	public void deleteComputer(int id) throws ItemNotFoundException {
+	public void deleteComputer(int id) throws ItemNotFoundException, ItemNotDeletedException {
 		ComputerDTO cDTO = new ComputerDTO();
 		cDTO.setId(id);
 		computerService.deleteComputer(cDTO);

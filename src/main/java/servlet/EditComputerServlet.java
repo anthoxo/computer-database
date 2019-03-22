@@ -15,6 +15,7 @@ import controller.ComputerController;
 import dto.CompanyDTO;
 import dto.ComputerDTO;
 import exception.ItemNotFoundException;
+import exception.ItemNotUpdatedException;
 
 @WebServlet("/computer/edit")
 public class EditComputerServlet extends HttpServlet {
@@ -34,9 +35,19 @@ public class EditComputerServlet extends HttpServlet {
 		discontinued = request.getParameter("discontinued");
 		companyId = request.getParameter("companyId");
 
-		this.computerController.updateComputer(Integer.valueOf(id), name, introduced, discontinued, Integer.valueOf(companyId));
+		try {
+			this.computerController.updateComputer(Integer.valueOf(id), name, introduced, discontinued, Integer.valueOf(companyId));
+			request.getSession().setAttribute("notification", "true");
+			request.getSession().setAttribute("msgNotification", "This object has been correctly updated !");
+			request.getSession().setAttribute("lvlNotification", "success");
 
-		response.sendRedirect("/index");
+		} catch (ItemNotUpdatedException e) {
+			request.getSession().setAttribute("notification", "true");
+			request.getSession().setAttribute("msgNotification", "This object hasn't been updated.");
+			request.getSession().setAttribute("lvlNotification", "danger");
+		}
+
+		response.sendRedirect("/computer");
 	}
 
 	@Override

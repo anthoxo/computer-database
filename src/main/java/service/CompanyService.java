@@ -11,10 +11,12 @@ import dao.CompanyDAO;
 import dto.CompanyDTO;
 import exception.DAOException;
 import exception.ItemNotFoundException;
+import mapper.CompanyMapper;
 import model.Company;
 
 public class CompanyService {
 	CompanyDAO companyDAO;
+	CompanyMapper companyMapper;
 
 	private Logger logger = LoggerFactory.getLogger(CompanyService.class);
 
@@ -23,6 +25,7 @@ public class CompanyService {
 	 */
 	public CompanyService() {
 		companyDAO = CompanyDAO.getInstance();
+		companyMapper = CompanyMapper.getInstance();
 	}
 
 	/**
@@ -35,7 +38,7 @@ public class CompanyService {
 		List<Company> l;
 		try {
 			l = companyDAO.getAll();
-			l.forEach(company -> result.add(companyDAO.createDTO(company)));
+			l.forEach(company -> result.add(companyMapper.createDTO(company)));
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 		}
@@ -46,7 +49,7 @@ public class CompanyService {
 		try {
 			Optional<Company> company = companyDAO.get(name);
 			if (company.isPresent()) {
-				return companyDAO.createDTO(company.get());
+				return companyMapper.createDTO(company.get());
 			} else {
 				throw new ItemNotFoundException("getCompanyByName");
 			}

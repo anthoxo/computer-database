@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import controller.CompanyController;
 import controller.ComputerController;
 import dto.CompanyDTO;
+import exception.ItemBadCreatedException;
 
 @WebServlet("/computer/add")
 public class AddComputerServlet extends HttpServlet {
@@ -23,7 +24,7 @@ public class AddComputerServlet extends HttpServlet {
 	CompanyController companyController;
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		String name, introduced, discontinued, companyId;
 
 		name = request.getParameter("computerName");
@@ -31,9 +32,19 @@ public class AddComputerServlet extends HttpServlet {
 		discontinued = request.getParameter("discontinued");
 		companyId = request.getParameter("companyId");
 
-		this.computerController.createComputer(name, introduced, discontinued, Integer.valueOf(companyId));
+		try {
+			this.computerController.createComputer(name, introduced, discontinued, Integer.valueOf(companyId));
+			request.getSession().setAttribute("notification", "true");
+			request.getSession().setAttribute("msgNotification", "This object has been correctly created !");
+			request.getSession().setAttribute("lvlNotification", "success");
 
-		response.sendRedirect("/index");
+		} catch (ItemBadCreatedException e) {
+			request.getSession().setAttribute("notification", "true");
+			request.getSession().setAttribute("msgNotification", "This object hasn't been created.");
+			request.getSession().setAttribute("lvlNotification", "danger");
+		}
+
+		response.sendRedirect("/computer");
 	}
 
 
