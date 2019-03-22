@@ -8,7 +8,10 @@ import org.slf4j.LoggerFactory;
 
 import controller.ComputerController;
 import dto.ComputerDTO;
+import exception.ItemBadCreatedException;
+import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
+import exception.ItemNotUpdatedException;
 import utils.Utils;
 
 public class ComputerView {
@@ -149,8 +152,12 @@ public class ComputerView {
 		logger.info("Id of Company ?");
 		companyId = sc.nextLine();
 
-		this.computerController.createComputer(name, introduced, discontinued, Integer.valueOf(companyId));
-		logger.info("Done !");
+		try {
+			this.computerController.createComputer(name, introduced, discontinued, Integer.valueOf(companyId));
+			logger.info("Done !");
+		} catch (ItemBadCreatedException e) {
+			logger.warn("Object not created");
+		}
 	}
 
 	/**
@@ -182,9 +189,12 @@ public class ComputerView {
 			companyId = sc.nextLine();
 			companyId = companyId == "" ? String.valueOf(c.getCompanyId()) : companyId;
 
-			this.computerController.updateComputer(c.getId(), name, introduced, discontinued, Integer.valueOf(companyId));
-			logger.info("Done !");
-
+			try {
+				this.computerController.updateComputer(c.getId(), name, introduced, discontinued, Integer.valueOf(companyId));
+				logger.info("Done !");
+			} catch (ItemNotUpdatedException e) {
+				logger.warn("Object not updated !");
+			}
 		} catch (ItemNotFoundException e) {
 			logger.info("Computer introuvable...");
 		}
@@ -211,12 +221,16 @@ public class ComputerView {
 			prompt = sc.nextLine();
 
 			if (prompt.equals("y")) {
-				this.computerController.deleteComputer(computer.getId());
-				logger.info("Computer deleted !");
+				try {
+					this.computerController.deleteComputer(computer.getId());
+					logger.info("Computer deleted !");
+				} catch (ItemNotDeletedException e) {
+					logger.warn("Computer not deleted.");
+				}
 			}
 
 		} catch (ItemNotFoundException e) {
-			logger.warn("Computer introuvable...");
+			logger.warn("Computer introuvable.");
 		}
 	}
 }

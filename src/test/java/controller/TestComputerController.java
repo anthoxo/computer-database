@@ -14,13 +14,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import dao.CompanyDAO;
-import dao.ComputerDAO;
-import dao.DAOFactory;
 import dto.ComputerDTO;
 import exception.DAOException;
+import exception.ItemBadCreatedException;
+import exception.ItemNotDeletedException;
+import exception.ItemNotFoundException;
+import exception.ItemNotUpdatedException;
 import model.Computer;
 import model.Page;
+import service.ComputerService;
 
 @ExtendWith(MockitoExtension.class)
 public class TestComputerController {
@@ -34,13 +36,8 @@ public class TestComputerController {
 	private Page<ComputerDTO> pageComputers;
 
 	@Mock
-	private DAOFactory dao;
+	ComputerService computerService;
 
-	@Mock
-	private ComputerDAO computerDAO;
-
-	@Mock
-	private CompanyDAO companyDAO;
 
 	@InjectMocks
 	private ComputerController computerController;
@@ -48,7 +45,8 @@ public class TestComputerController {
 	@BeforeEach
 	public void init()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		DAOFactory.getInstance();
+
+
 
 		listComputers = new ArrayList<ComputerDTO>();
 		for (int i = 0; i < 40; ++i) {
@@ -64,9 +62,9 @@ public class TestComputerController {
 		computerController = new ComputerController();
 		computerController.computerPage = pageComputers;
 
-		Field field = ComputerController.class.getDeclaredField("DAO");
+		Field field = ComputerController.class.getDeclaredField("computerService");
 		field.setAccessible(true);
-		field.set(computerController, dao);
+		field.set(computerController, computerService);
 	}
 
 	@Test
@@ -102,35 +100,32 @@ public class TestComputerController {
 	}
 
 	@Test
-	public void testCreateComputer() throws DAOException {
-		Mockito.when(dao.getComputerDAO()).thenReturn(computerDAO);
-		Mockito.when(dao.getCompanyDAO()).thenReturn(companyDAO);
+	public void testCreateComputer() throws DAOException, ItemBadCreatedException {
+		Mockito.doNothing().when(computerService).createComputer(Mockito.any(ComputerDTO.class));
 
-		Mockito.doNothing().when(computerDAO).create(Mockito.any(Computer.class));
+		this.computerController.createComputer("Computer_1", "", "", 1);
 
-		this.computerController.createComputer("Computer_1", "", "", "");
-
-		Mockito.verify(computerDAO).create(Mockito.any(Computer.class));
+		Mockito.verify(computerService).createComputer(Mockito.any(ComputerDTO.class));
 	}
 
 	@Test
-	public void testUpdateComputer() throws DAOException {
-		Mockito.when(dao.getComputerDAO()).thenReturn(computerDAO);
-		Mockito.doNothing().when(computerDAO).update(Mockito.any(Computer.class));
+	public void testUpdateComputer() throws DAOException, ItemNotUpdatedException {
 
-		this.computerController.updateComputer(new ComputerDTO(), "Computer_1", "", "", "");
+		Mockito.doNothing().when(computerService).updateComputer(Mockito.any(ComputerDTO.class));
 
-		Mockito.verify(computerDAO).update(Mockito.any(Computer.class));
+		this.computerController.updateComputer(1, "Computer_1", "", "", 1);
+
+		Mockito.verify(computerService).updateComputer(Mockito.any(ComputerDTO.class));
 	}
 
 	@Test
-	public void testDeleteComputer() throws DAOException {
-		Mockito.when(dao.getComputerDAO()).thenReturn(computerDAO);
-		Mockito.doNothing().when(computerDAO).delete(Mockito.any(Computer.class));
+	public void testDeleteComputer() throws DAOException, ItemNotFoundException, ItemNotDeletedException {
 
-		this.computerController.deleteComputer(new ComputerDTO());
+		Mockito.doNothing().when(computerService).deleteComputer(Mockito.any());
 
-		Mockito.verify(computerDAO).delete(Mockito.any(Computer.class));
+		this.computerController.deleteComputer(0);
+
+		Mockito.verify(computerService).deleteComputer(Mockito.any());
 	}
 
 }

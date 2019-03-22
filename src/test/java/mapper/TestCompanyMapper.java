@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import dto.CompanyDTO;
 import model.Company;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,15 +26,37 @@ public class TestCompanyMapper {
 	@BeforeEach
 	public void init() throws SQLException {
 		companyMapper = CompanyMapper.getInstance();
-		Mockito.when(rs.getInt("id")).thenReturn(1);
-		Mockito.when(rs.getString("name")).thenReturn("Apple Inc.");
 	}
 
 	@Test
 	public void testMap() throws SQLException {
+		Mockito.when(rs.getInt("id")).thenReturn(1);
+		Mockito.when(rs.getString("name")).thenReturn("Apple Inc.");
+
 		Company company = companyMapper.map(rs);
 		assertEquals(company.getId(), 1);
 		assertEquals(company.getName(), "Apple Inc.");
 	}
+
+	@Test
+	public void testCreateDTO() {
+		Company c = new Company();
+		c.setName("Apple");
+		c.setId(0);
+		CompanyDTO cDTO = companyMapper.createDTO(c);
+		assertEquals(c.getId(), cDTO.getId());
+		assertEquals(c.getName(), cDTO.getName());
+	}
+
+	@Test
+	public void testCreateBean() {
+		CompanyDTO cDTO = new CompanyDTO();
+		cDTO.setId(0);
+		cDTO.setName("Apple");
+		Company c = companyMapper.createBean(cDTO);
+		assertEquals(c.getId(), cDTO.getId());
+		assertEquals(c.getName(), cDTO.getName());
+	}
+
 
 }

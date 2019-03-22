@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,10 +19,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import dto.ComputerDTO;
 import exception.DAOException;
 import mapper.ComputerMapper;
-import model.Company;
 import model.Computer;
 import utils.Utils;
 
@@ -203,36 +200,4 @@ public class TestComputerDAO {
 			assertTrue(1 == 2);
 		}
 	}
-
-	@Test
-	public void testCreateDTO() {
-		Computer c = listComputers.get(0);
-		Company company = new Company();
-		company.setName("Apple Inc.");
-		c.setIntroduced(Utils.stringToTimestamp("2000/01/01"));
-		c.setDiscontinued(Utils.stringToTimestamp("2020/01/01"));
-		c.setCompany(company);
-		ComputerDTO cDTO = computerDAO.createDTO(Optional.ofNullable(c)).get();
-		assertEquals(c.getId(), cDTO.getId());
-		assertEquals(c.getName(), cDTO.getName());
-		assertEquals(c.getIntroduced(), Utils.stringToTimestamp(cDTO.getIntroducedDate()));
-		assertEquals(c.getDiscontinued(), Utils.stringToTimestamp(cDTO.getDiscontinuedDate()));
-		assertEquals(c.getCompany().getName(), cDTO.getCompanyName());
-	}
-
-	@Test
-	public void testCreateBean() throws SQLException, DAOException {
-		initCreateBean();
-		ComputerDTO cDTO = new ComputerDTO();
-		cDTO.setId(0);
-		cDTO.setName("MacBook");
-		cDTO.setIntroducedDate("2010/01/01");
-		cDTO.setDiscontinuedDate("2020/01/01");
-		Computer c = computerDAO.createBean(Optional.ofNullable(cDTO)).get();
-		assertEquals(c.getId(), cDTO.getId());
-		assertEquals(c.getName(), cDTO.getName());
-		assertEquals(c.getIntroduced(), Utils.stringToTimestamp(cDTO.getIntroducedDate()));
-		assertEquals(c.getDiscontinued(), Utils.stringToTimestamp(cDTO.getDiscontinuedDate()));
-	}
-
 }

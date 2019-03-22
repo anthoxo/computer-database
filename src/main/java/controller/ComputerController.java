@@ -2,7 +2,6 @@ package controller;
 
 import java.util.List;
 
-import dao.DAOFactory;
 import dto.ComputerDTO;
 import exception.ItemBadCreatedException;
 import exception.ItemNotDeletedException;
@@ -15,7 +14,6 @@ import utils.Utils.ChoiceActionPage;
 
 public class ComputerController {
 
-	DAOFactory DAO = DAOFactory.getInstance();
 	ComputerService computerService;
 
 	Page<ComputerDTO> computerPage;
