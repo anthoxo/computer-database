@@ -121,6 +121,7 @@
 		</table>
 	</div>
 
+	<!-- Pagination (4 cases) -->
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
@@ -129,9 +130,44 @@
 							<span aria-hidden="true">&laquo;</span>
 					</a></li>
 				</c:if>
-				<c:forEach var="i" begin="1" end="${nbPages}">
-					<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
-				</c:forEach>
+				<c:choose>
+					<c:when test="${nbPages <= 13}">
+						<c:forEach var="i" begin="1" end="${nbPages}">
+							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
+						</c:forEach>
+					</c:when>
+					<c:when test="${idPage < 7}">
+						<c:forEach var="i" begin="1" end="8">
+							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
+						</c:forEach>
+						<li><a href="#">...</a></li>
+						<c:forEach var="i" begin="${nbPages - 3}" end="${nbPages}">
+							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
+						</c:forEach>
+					</c:when>
+					<c:when test="${idPage > nbPages - 6}">
+						<c:forEach var="i" begin="1" end="3">
+							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
+						</c:forEach>
+						<li><a href="#">...</a></li>
+						<c:forEach var="i" begin="${nbPages - 8}" end="${nbPages}">
+							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
+						</c:forEach>
+					</c:when>
+					<c:otherwise>
+						<c:forEach var="i" begin="1" end="3">
+							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
+						</c:forEach>
+						<li><a href="#">...</a></li>
+						<c:forEach var="i" begin="${idPage - 2}" end="${idPage + 2}">
+							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
+						</c:forEach>
+						<li><a href="#">...</a></li>
+						<c:forEach var="i" begin="${nbPages - 2}" end="${nbPages}">
+							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
+						</c:forEach>
+					</c:otherwise>
+				</c:choose>
 				<c:if test="${idPage < nbPages}">
 					<li><a href="${urlPath}?id=${idPage+1}" aria-label="Next">
 							<span aria-hidden="true">&raquo;</span>
