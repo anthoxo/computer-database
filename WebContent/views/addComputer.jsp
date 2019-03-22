@@ -18,25 +18,39 @@
 		</div>
 	</header>
 
+	<!-- Error alert (front validator) -->
+	<div class="container">
+		<div id="errComputerName" class="alert alert-danger" role="alert">
+			<strong>Should add computer name</strong>
+		</div>
+		<div id="errIntroduced" class="alert alert-danger" role="alert">
+			<strong>Introduced date should be in this form : yyyy/mm/dd</strong>
+		</div>
+		<div id="errDiscontinued" class="alert alert-danger" role="alert">
+			<strong>Discontinued date should be in this form :
+				yyyy/mm/dd</strong>
+		</div>
+	</div>
+	<!-- End error alert (front validator) -->
+
 	<div class="container">
 		<h1>Add computer</h1>
 		<form action="/computer/add" method="POST">
 			<fieldset>
 				<div class="form-group">
 					<label for="computerName">Computer name</label> <input type="text"
-						class="form-control" id="computerName"
-						name="computerName" placeholder="Computer name">
+						class="form-control" id="computerName" name="computerName"
+						placeholder="Computer name">
 				</div>
 				<div class="form-group">
-					<label for="introduced">Introduced date (yyyy/mm/dd)</label> <input type="text"
-						class="form-control"
-						name="introduced" id="introduced" placeholder="Introduced date">
+					<label for="introduced">Introduced date (yyyy/mm/dd)</label> <input
+						type="text" class="form-control" name="introduced" id="introduced"
+						placeholder="Introduced date">
 				</div>
 				<div class="form-group">
 					<label for="discontinued">Discontinued date (yyyy/mm/dd)</label> <input
-						type="text"
-						class="form-control" id="discontinued" name="discontinued"
-						placeholder="Discontinued date">
+						type="text" class="form-control" id="discontinued"
+						name="discontinued" placeholder="Discontinued date">
 				</div>
 				<div class="form-group">
 					<label for="companyId">Company</label> <select class="form-control"
@@ -50,8 +64,9 @@
 				</div>
 			</fieldset>
 			<div class="actions pull-right">
-				<input type="submit" value="Add" class="btn btn-primary" /> <a
-					href="/computer" class="btn btn-default">Cancel</a>
+				<input type="submit" value="Add" class="btn btn-primary"
+					id="btnEditOrAddComputer" /> <a href="/computer"
+					class="btn btn-default">Cancel</a>
 			</div>
 		</form>
 
@@ -59,6 +74,8 @@
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/dashboard.js"></script>
+	<script src="/js/jquery-validate.js"></script>
+
 
 </body>
 </html>
