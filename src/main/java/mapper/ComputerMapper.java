@@ -2,9 +2,7 @@ package mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Optional;
 
-import dao.DAOFactory;
 import dto.ComputerDTO;
 import exception.DAOException;
 import model.Company;
@@ -77,7 +75,7 @@ public class ComputerMapper {
 	 * @return A Company model.
 	 * @throws DAOException
 	 */
-	public Computer createBean(ComputerDTO cDTO) throws DAOException {
+	public Computer createBean(ComputerDTO cDTO) {
 		Computer computer = new Computer();
 
 		computer.setId(cDTO.getId());
@@ -86,11 +84,10 @@ public class ComputerMapper {
 		computer.setDiscontinued(Utils.stringToTimestamp(cDTO.getDiscontinuedDate()));
 		computer.setCompanyId(cDTO.getCompanyId());
 
-		Optional<Company> company = DAOFactory.getInstance().getCompanyDAO().get(cDTO.getCompanyId());
-
-		if (company.isPresent()) {
-			computer.setCompany(company.get());
-		}
+		Company company = new Company();
+		company.setId(cDTO.getCompanyId());
+		company.setName(cDTO.getCompanyName());
+		computer.setCompany(company);
 
 		return computer;
 	}

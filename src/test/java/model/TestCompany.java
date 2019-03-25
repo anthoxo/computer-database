@@ -61,7 +61,6 @@ public class TestCompany {
 	@Test
 	public void testEquals5() {
 		Company c = company;
-		boolean t = company.equals(c);
-		assertTrue(t);
+		assertTrue(company.equals(c));
 	}
 }

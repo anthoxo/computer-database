@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,11 +46,6 @@ public class TestComputerMapper {
 		Mockito.doReturn(1).when(rs).getInt("id");
 		Mockito.doReturn("Macbook Air").when(rs).getString("name");
 		Mockito.doReturn(1).when(rs).getInt("company_id");
-	}
-
-	public void initCreateBean() throws DAOException {
-		Optional<Company> o = Optional.of(new Company());
-		Mockito.doReturn(o).when(DAOFactory.getInstance().getCompanyDAO().get(Mockito.anyInt()));
 	}
 
 	@Test
@@ -97,7 +91,6 @@ public class TestComputerMapper {
 
 	@Test
 	public void testCreateBean() throws SQLException, DAOException {
-		initCreateBean();
 		ComputerDTO cDTO = new ComputerDTO();
 		cDTO.setId(0);
 		cDTO.setName("MacBook");

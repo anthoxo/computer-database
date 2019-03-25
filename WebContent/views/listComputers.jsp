@@ -35,14 +35,14 @@
 					class="form-inline">
 					<input type="search" id="searchbox" name="search"
 						class="form-control" placeholder="Search name" /> <input
-						type="submit" id="searchsubmit" value="Filter by name"
+						type="submit" id="searchSubmitBtn" value="Filter by name"
 						class="btn btn-primary" />
 				</form>
 			</div>
 			<div class="pull-right">
 				<c:choose>
 					<c:when test="${isSearching == false}">
-						<a class="btn btn-success" id="addComputer" href="/computer/add">Add
+						<a class="btn btn-success" id="addComputerBtn" href="/computer/add">Add
 							Computer</a>
 					</c:when>
 					<c:otherwise>
