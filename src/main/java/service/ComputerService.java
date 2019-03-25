@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import dao.ComputerDAO;
 import dto.ComputerDTO;
+import exception.ComputerException;
 import exception.DAOException;
 import exception.ItemBadCreatedException;
 import exception.ItemNotDeletedException;
@@ -16,10 +17,12 @@ import exception.ItemNotFoundException;
 import exception.ItemNotUpdatedException;
 import mapper.ComputerMapper;
 import model.Computer;
+import validator.ComputerValidator;
 
 public class ComputerService {
 	ComputerDAO computerDAO;
 	ComputerMapper computerMapper;
+	ComputerValidator computerValidator;
 
 	private Logger logger = LoggerFactory.getLogger(ComputerService.class);
 
@@ -29,6 +32,7 @@ public class ComputerService {
 	public ComputerService() {
 		computerDAO = ComputerDAO.getInstance();
 		computerMapper = ComputerMapper.getInstance();
+		computerValidator = new ComputerValidator();
 	}
 
 	/**
@@ -40,10 +44,13 @@ public class ComputerService {
 	public void createComputer(ComputerDTO computerDTO) throws ItemBadCreatedException {
 		try {
 			Computer c = computerMapper.createBean(computerDTO);
+			computerValidator.validate(c);
 			computerDAO.create(c);
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
-			throw new ItemBadCreatedException("createComputer");
+			throw new ItemBadCreatedException("dao");
+		} catch (ComputerException e) {
+			throw new ItemBadCreatedException("not-valid");
 		}
 	}
 
@@ -64,7 +71,7 @@ public class ComputerService {
 			}
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("getComputerByName");
+			throw new ItemNotFoundException("dao");
 		}
 	}
 
@@ -85,7 +92,7 @@ public class ComputerService {
 			}
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("getComputerById");
+			throw new ItemNotFoundException("dao");
 		}
 	}
 
@@ -96,10 +103,9 @@ public class ComputerService {
 	 * @return List of computers DTO.
 	 */
 	public List<ComputerDTO> getAllComputers() {
-		List<Computer> l;
 		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
 		try {
-			l = computerDAO.getAll();
+			List<Computer> l = computerDAO.getAll();
 			l.forEach(computer -> result.add(computerMapper.createDTO(computer)));
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
@@ -108,10 +114,9 @@ public class ComputerService {
 	}
 
 	public List<ComputerDTO> getComputersByPattern(String pattern) {
-		List<Computer> l;
 		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
 		try {
-			l = computerDAO.getPattern(pattern);
+			List<Computer> l = computerDAO.getPattern(pattern);
 			l.forEach(computer -> result.add(computerMapper.createDTO(computer)));
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
@@ -120,15 +125,16 @@ public class ComputerService {
 	}
 
 	public void updateComputer(ComputerDTO cDTO) throws ItemNotUpdatedException {
-
 		try {
 			Computer c = computerMapper.createBean(cDTO);
+			computerValidator.validate(c);
 			computerDAO.update(c);
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotUpdatedException("updateComputer");
+			throw new ItemNotUpdatedException("dao");
+		} catch (ComputerException e) {
+			throw new ItemNotUpdatedException("not-valid");
 		}
-
 	}
 
 	public void deleteComputer(ComputerDTO cDTO) throws ItemNotFoundException, ItemNotDeletedException {
@@ -142,7 +148,7 @@ public class ComputerService {
 			}
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotDeletedException("deleteComputer");
+			throw new ItemNotDeletedException("dao");
 		}
 	}
 }

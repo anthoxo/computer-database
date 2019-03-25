@@ -78,14 +78,14 @@ public class TestComputerMapper {
 		c.setCompanyId(1);
 		Company company = new Company();
 		company.setName("Apple Inc.");
-		c.setIntroduced(Utils.stringToTimestamp("2000/01/01"));
-		c.setDiscontinued(Utils.stringToTimestamp("2020/01/01"));
+		c.setIntroduced(Utils.stringToTimestamp("2000/01/01").get());
+		c.setDiscontinued(Utils.stringToTimestamp("2020/01/01").get());
 		c.setCompany(company);
 		ComputerDTO cDTO = computerMapper.createDTO(c);
 		assertEquals(c.getId(), cDTO.getId());
 		assertEquals(c.getName(), cDTO.getName());
-		assertEquals(c.getIntroduced(), Utils.stringToTimestamp(cDTO.getIntroducedDate()));
-		assertEquals(c.getDiscontinued(), Utils.stringToTimestamp(cDTO.getDiscontinuedDate()));
+		assertEquals(c.getIntroduced(), Utils.stringToTimestamp(cDTO.getIntroducedDate()).get());
+		assertEquals(c.getDiscontinued(), Utils.stringToTimestamp(cDTO.getDiscontinuedDate()).get());
 		assertEquals(c.getCompany().getName(), cDTO.getCompanyName());
 	}
 
@@ -99,8 +99,8 @@ public class TestComputerMapper {
 		Computer c = computerMapper.createBean(cDTO);
 		assertEquals(c.getId(), cDTO.getId());
 		assertEquals(c.getName(), cDTO.getName());
-		assertEquals(c.getIntroduced(), Utils.stringToTimestamp(cDTO.getIntroducedDate()));
-		assertEquals(c.getDiscontinued(), Utils.stringToTimestamp(cDTO.getDiscontinuedDate()));
+		assertEquals(c.getIntroduced(), Utils.stringToTimestamp(cDTO.getIntroducedDate()).get());
+		assertEquals(c.getDiscontinued(), Utils.stringToTimestamp(cDTO.getDiscontinuedDate()).get());
 	}
 
 }

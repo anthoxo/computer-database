@@ -47,25 +47,20 @@ public class ComputerDAO {
 	}
 
 	public void create(Computer obj) throws DAOException {
-		boolean validComputer = obj.isValidComputer();
-		if (validComputer) {
-			try (Connection conn = this.daoFactory.getConnection()) {
-				PreparedStatement stmt = conn.prepareStatement(REQUEST_CREATE);
-				stmt.setInt(1, obj.getId());
-				stmt.setString(2, obj.getName());
-				stmt.setTimestamp(3, obj.getIntroduced());
-				stmt.setTimestamp(4, obj.getDiscontinued());
-				if (daoFactory.getCompanyDAO().get(obj.getCompanyId()).isPresent()) {
-					stmt.setInt(5, obj.getCompanyId());
-				} else {
-					stmt.setObject(5, null);
-				}
-				stmt.executeUpdate();
-			} catch (SQLException e) {
-				throw new DAOException(e);
+		try (Connection conn = this.daoFactory.getConnection()) {
+			PreparedStatement stmt = conn.prepareStatement(REQUEST_CREATE);
+			stmt.setInt(1, obj.getId());
+			stmt.setString(2, obj.getName());
+			stmt.setTimestamp(3, obj.getIntroduced());
+			stmt.setTimestamp(4, obj.getDiscontinued());
+			if (daoFactory.getCompanyDAO().get(obj.getCompanyId()).isPresent()) {
+				stmt.setInt(5, obj.getCompanyId());
+			} else {
+				stmt.setObject(5, null);
 			}
-		} else {
-			// TODO throw new ValidatorException
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			throw new DAOException(e);
 		}
 	}
 
@@ -92,7 +87,7 @@ public class ComputerDAO {
 	public void update(Computer obj) throws DAOException {
 		Optional<Computer> computer = this.get(obj.getId());
 
-		if (obj.isValidComputer() && computer.isPresent()) {
+		if (computer.isPresent()) {
 
 			try (Connection conn = this.daoFactory.getConnection()) {
 				PreparedStatement stmt = conn.prepareStatement(REQUEST_UPDATE);

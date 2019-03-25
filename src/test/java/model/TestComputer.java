@@ -25,8 +25,8 @@ public class TestComputer {
 
 		computer.setId(1);
 		computer.setName("MacBook");
-		computer.setIntroduced(Utils.stringToTimestamp("2000/01/01"));
-		computer.setDiscontinued(Utils.stringToTimestamp("2001/01/01"));
+		computer.setIntroduced(Utils.stringToTimestamp("2000/01/01").get());
+		computer.setDiscontinued(Utils.stringToTimestamp("2001/01/01").get());
 		computer.setCompanyId(1);
 		computer.setCompany(company);
 	}
@@ -35,8 +35,8 @@ public class TestComputer {
 	public void testParam() {
 		assertEquals(computer.getId(), 1);
 		assertEquals(computer.getName(), "MacBook");
-		assertEquals(computer.getIntroduced(), Utils.stringToTimestamp("2000/01/01"));
-		assertEquals(computer.getDiscontinued(), Utils.stringToTimestamp("2001/01/01"));
+		assertEquals(computer.getIntroduced(), Utils.stringToTimestamp("2000/01/01").get());
+		assertEquals(computer.getDiscontinued(), Utils.stringToTimestamp("2001/01/01").get());
 		assertEquals(computer.getCompanyId(), 1);
 		assertEquals(computer.getCompany(), company);
 	}
@@ -61,8 +61,8 @@ public class TestComputer {
 		Computer c = new Computer();
 		c.setId(1);
 		c.setName("Macbook");
-		c.setIntroduced(Utils.stringToTimestamp("2000/01/01"));
-		c.setDiscontinued(Utils.stringToTimestamp("2001/01/01"));
+		c.setIntroduced(Utils.stringToTimestamp("2000/01/01").get());
+		c.setDiscontinued(Utils.stringToTimestamp("2001/01/01").get());
 		c.setCompanyId(1);
 		c.setCompany(company);
 		boolean t = computer.equals(c);
@@ -74,8 +74,8 @@ public class TestComputer {
 		Computer c = new Computer();
 		c.setId(1);
 		c.setName("MacBook");
-		c.setIntroduced(Utils.stringToTimestamp("2000/01/01"));
-		c.setDiscontinued(Utils.stringToTimestamp("2001/01/01"));
+		c.setIntroduced(Utils.stringToTimestamp("2000/01/01").get());
+		c.setDiscontinued(Utils.stringToTimestamp("2001/01/01").get());
 		c.setCompanyId(1);
 		c.setCompany(company);
 		boolean t = computer.equals(c);
@@ -96,16 +96,5 @@ public class TestComputer {
 		assertTrue(computerString.contains(computer.getIntroduced().toString()));
 		assertTrue(computerString.contains(computer.getDiscontinued().toString()));
 		assertTrue(computerString.contains(computer.getCompany().toString()));
-	}
-
-	@Test
-	public void testIsValidComputer1() {
-		assertTrue(computer.isValidComputer());
-	}
-
-	@Test
-	public void testIsValidComputer2() {
-		computer.setDiscontinued(Utils.stringToTimestamp("1990/01/01"));
-		assertTrue(computer.isValidComputer() == false);
 	}
 }

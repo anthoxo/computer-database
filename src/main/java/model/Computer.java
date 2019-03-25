@@ -67,19 +67,6 @@ public class Computer {
 		this.company = company;
 	}
 
-	/**
-	 * @return true if it's a valid computer, else false.
-	 */
-	public boolean isValidComputer() {
-		boolean validComputer = true;
-		if (this.getIntroduced() != null && this.getDiscontinued() != null) {
-			if (this.getDiscontinued().getTime() - this.getIntroduced().getTime() < 0) {
-				validComputer = false;
-			}
-		}
-		return validComputer;
-	}
-
 	@Override
 	public String toString() {
 		ToStringBuilder ts = new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE);

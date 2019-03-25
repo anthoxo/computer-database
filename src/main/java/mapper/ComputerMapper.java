@@ -2,6 +2,8 @@ package mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Optional;
 
 import dto.ComputerDTO;
 import exception.DAOException;
@@ -80,8 +82,15 @@ public class ComputerMapper {
 
 		computer.setId(cDTO.getId());
 		computer.setName(cDTO.getName());
-		computer.setIntroduced(Utils.stringToTimestamp(cDTO.getIntroducedDate()));
-		computer.setDiscontinued(Utils.stringToTimestamp(cDTO.getDiscontinuedDate()));
+		Optional<Timestamp> intro = Utils.stringToTimestamp(cDTO.getIntroducedDate());
+		Optional<Timestamp> discontinued = Utils.stringToTimestamp(cDTO.getDiscontinuedDate());
+		if (intro.isPresent()) {
+			computer.setIntroduced(intro.get());
+		}
+		if (discontinued.isPresent()) {
+			computer.setDiscontinued(discontinued.get());
+		}
+
 		computer.setCompanyId(cDTO.getCompanyId());
 
 		Company company = new Company();

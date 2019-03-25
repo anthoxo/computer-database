@@ -78,13 +78,17 @@ public class TestComputerService {
 
 	@Test
 	public void testCreate() throws DAOException, ItemBadCreatedException {
-		this.computerService.createComputer(new ComputerDTO());
+		ComputerDTO computerDTO = new ComputerDTO();
+		computerDTO.setName("oui");
+		this.computerService.createComputer(computerDTO);
 		Mockito.verify(computerDAO).create(Mockito.any());
 	}
 
 	@Test
 	public void testUpdate() throws DAOException, ItemNotUpdatedException {
-		this.computerService.updateComputer(new ComputerDTO());
+		ComputerDTO computerDTO = new ComputerDTO();
+		computerDTO.setName("oui");
+		this.computerService.updateComputer(computerDTO);
 		Mockito.verify(computerDAO).update(Mockito.any());
 	}
 

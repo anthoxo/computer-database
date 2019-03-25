@@ -2,6 +2,7 @@ package utils;
 
 import java.sql.Timestamp;
 import java.time.DateTimeException;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,21 +31,21 @@ public class Utils {
 	 * @param date The date (String) that we want to compute.
 	 * @return The Timestamp object of the desired date.
 	 */
-	public static Timestamp stringToTimestamp(String date) {
+	public static Optional<Timestamp> stringToTimestamp(String date) {
 		if (date == null) {
-			return null;
+			return Optional.empty();
 		} else {
 			String[] dateStr = date.split("/");
-			Timestamp ts;
+			Optional<Timestamp> ts;
 			if (dateStr.length != 3) {
-				return null;
+				return Optional.empty();
 			} else {
 				try {
-					ts = Timestamp.valueOf(java.time.LocalDate
+					ts = Optional.of(Timestamp.valueOf(java.time.LocalDate
 							.of(Integer.valueOf(dateStr[0]), Integer.valueOf(dateStr[1]), Integer.valueOf(dateStr[2]))
-							.atStartOfDay());
+							.atStartOfDay()));
 				} catch (DateTimeException e) {
-					ts = null;
+					ts = Optional.empty();
 					logger.warn(e.getMessage());
 				}
 				return ts;

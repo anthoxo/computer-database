@@ -40,7 +40,11 @@ public class AddComputerServlet extends HttpServlet {
 
 		} catch (ItemBadCreatedException e) {
 			request.getSession().setAttribute("notification", "true");
-			request.getSession().setAttribute("msgNotification", "This object hasn't been created.");
+			if (e.getMessage().equals("not-valid")) {
+				request.getSession().setAttribute("msgNotification", "This object isn't valid.");
+			} else {
+				request.getSession().setAttribute("msgNotification", "This object hasn't been created.");
+			}
 			request.getSession().setAttribute("lvlNotification", "danger");
 		}
 

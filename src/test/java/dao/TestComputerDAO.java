@@ -138,45 +138,14 @@ public class TestComputerDAO {
 	}
 
 	@Test
-	public void testCreateBad() throws SQLException {
-		Computer computer = new Computer();
-		computer.setId(1);
-		computer.setName("Computer");
-		computer.setIntroduced(Utils.stringToTimestamp("2000/01/01"));
-		computer.setDiscontinued(Utils.stringToTimestamp("1999/01/01"));
-		computer.setCompanyId(1);
-		try {
-			this.computerDAO.create(computer);
-		} catch (DAOException e) {
-			assertTrue(1 == 2);
-		}
-	}
-
-	@Test
 	public void testUpdate() throws SQLException {
 		initUpdate();
 		Mockito.doReturn(stmt).when(connection).prepareStatement(ComputerDAO.REQUEST_UPDATE);
 		Computer computer = new Computer();
 		computer.setId(1);
 		computer.setName("Computer");
-		computer.setIntroduced(Utils.stringToTimestamp("1999/01/01"));
-		computer.setDiscontinued(Utils.stringToTimestamp("2000/01/01"));
-		computer.setCompanyId(1);
-		try {
-			this.computerDAO.update(computer);
-		} catch (DAOException e) {
-			assertTrue(1 == 2);
-		}
-	}
-
-	@Test
-	public void testUpdateBad() throws SQLException {
-		initUpdate();
-		Computer computer = new Computer();
-		computer.setId(1);
-		computer.setName("Computer");
-		computer.setIntroduced(Utils.stringToTimestamp("2000/01/01"));
-		computer.setDiscontinued(Utils.stringToTimestamp("1999/01/01"));
+		computer.setIntroduced(Utils.stringToTimestamp("1999/01/01").get());
+		computer.setDiscontinued(Utils.stringToTimestamp("2000/01/01").get());
 		computer.setCompanyId(1);
 		try {
 			this.computerDAO.update(computer);
@@ -191,8 +160,8 @@ public class TestComputerDAO {
 		Computer computer = new Computer();
 		computer.setId(1);
 		computer.setName("Computer");
-		computer.setIntroduced(Utils.stringToTimestamp("2000/01/01"));
-		computer.setDiscontinued(Utils.stringToTimestamp("1999/01/01"));
+		computer.setIntroduced(Utils.stringToTimestamp("2000/01/01").get());
+		computer.setDiscontinued(Utils.stringToTimestamp("1999/01/01").get());
 		computer.setCompanyId(1);
 		try {
 			this.computerDAO.delete(computer);

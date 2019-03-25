@@ -43,7 +43,12 @@ public class EditComputerServlet extends HttpServlet {
 
 		} catch (ItemNotUpdatedException e) {
 			request.getSession().setAttribute("notification", "true");
-			request.getSession().setAttribute("msgNotification", "This object hasn't been updated.");
+			if (e.getMessage().equals("not-valid")) {
+				request.getSession().setAttribute("msgNotification", "This object isn't valid.");
+			} else {
+				request.getSession().setAttribute("msgNotification", "This object hasn't been updated.");
+
+			}
 			request.getSession().setAttribute("lvlNotification", "danger");
 		}
 
