@@ -52,7 +52,7 @@ public class EditComputerServlet extends HttpServlet {
 			request.getSession().setAttribute("lvlNotification", "danger");
 		}
 
-		response.sendRedirect("/computer");
+		response.sendRedirect(request.getContextPath() + "/computer");
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class EditComputerServlet extends HttpServlet {
 			rd.forward(request, response);
 		} catch (ItemNotFoundException e) {
 			// print SOMETHING TO SAY NOT FOUND
-			response.sendRedirect("/computer");
+			response.sendRedirect(request.getContextPath() + "/computer");
 		}
 	}
 }

@@ -3,6 +3,7 @@ package service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,7 @@ public class ComputerService {
 
 	/**
 	 * Create a new Computer in database using its DTO.
+	 *
 	 * @param computerDTO Computer DTO.
 	 * @return true if this object has been created, else false.
 	 * @throws ItemBadCreatedException
@@ -96,7 +98,6 @@ public class ComputerService {
 		}
 	}
 
-
 	/**
 	 * Retrieve all computers and return a list of computers dto.
 	 *
@@ -105,8 +106,8 @@ public class ComputerService {
 	public List<ComputerDTO> getAllComputers() {
 		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
 		try {
-			List<Computer> l = computerDAO.getAll();
-			l.forEach(computer -> result.add(computerMapper.createDTO(computer)));
+			result = computerDAO.getAll().stream().map((Computer computer) -> computerMapper.createDTO(computer))
+					.collect(Collectors.toList());
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 		}
@@ -116,8 +117,8 @@ public class ComputerService {
 	public List<ComputerDTO> getComputersByPattern(String pattern) {
 		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
 		try {
-			List<Computer> l = computerDAO.getPattern(pattern);
-			l.forEach(computer -> result.add(computerMapper.createDTO(computer)));
+			result = computerDAO.getPattern(pattern).stream().map((Computer computer) -> computerMapper.createDTO(computer))
+					.collect(Collectors.toList());
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 		}

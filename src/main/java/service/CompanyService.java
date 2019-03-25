@@ -3,6 +3,7 @@ package service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,10 +36,9 @@ public class CompanyService {
 	 */
 	public List<CompanyDTO> getAllCompanies() {
 		List<CompanyDTO> result = new ArrayList<CompanyDTO>();
-		List<Company> l;
 		try {
-			l = companyDAO.getAll();
-			l.forEach(company -> result.add(companyMapper.createDTO(company)));
+			result = companyDAO.getAll().stream().map((Company c) -> companyMapper.createDTO(c))
+					.collect(Collectors.toList());
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 		}

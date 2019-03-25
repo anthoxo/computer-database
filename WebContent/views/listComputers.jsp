@@ -6,9 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <title>List of computers</title>
-<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="/css/font-awesome.css" rel="stylesheet" media="screen">
-<link href="/css/main.css" rel="stylesheet" media="screen">
+<c:set var="context" value="${pageContext.request.contextPath}" />
+<link href="${context}/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="${context}/css/font-awesome.css" rel="stylesheet" media="screen">
+<link href="${context}/css/main.css" rel="stylesheet" media="screen">
 </head>
 <body>
 	<c:if test="${notification == true}">
@@ -23,7 +24,7 @@
 	</c:if>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="/index"> Application - Computer
+			<a class="navbar-brand" href="${context}/index"> Application - Computer
 				Database </a>
 		</div>
 	</header>
@@ -31,7 +32,7 @@
 	<div class="container">
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
-				<form id="searchForm" action="/computer/search" method="POST"
+				<form id="searchForm" action="${context}/computer/search" method="POST"
 					class="form-inline">
 					<input type="search" id="searchbox" name="search"
 						class="form-control" placeholder="Search name" /> <input
@@ -42,11 +43,11 @@
 			<div class="pull-right">
 				<c:choose>
 					<c:when test="${isSearching == false}">
-						<a class="btn btn-success" id="addComputerBtn" href="/computer/add">Add
+						<a class="btn btn-success" id="addComputerBtn" href="${context}/computer/add">Add
 							Computer</a>
 					</c:when>
 					<c:otherwise>
-						<a class="btn btn-success" id="goBack" href="/computer">Go
+						<a class="btn btn-success" id="goBack" href="${context}/computer">Go
 							Back</a>
 					</c:otherwise>
 				</c:choose>
@@ -68,7 +69,7 @@
 			<tbody>
 				<c:forEach var="c" items="${listComputers}">
 					<tr>
-						<td><a href="/computer/edit?id=${c.id}"><c:out
+						<td><a href="${context}/computer/edit?id=${c.id}"><c:out
 									value="${c.name}" /></a></td>
 						<td><c:out value="${c.introducedDate}" /></td>
 						<td><c:out value="${c.discontinuedDate}" /></td>
@@ -106,7 +107,7 @@
 								<div class="modal-footer">
 									<button type="button" class="btn btn-light"
 										data-dismiss="modal">Close</button>
-									<form action="/computer/delete" method="POST">
+									<form action="${context}/computer/delete" method="POST">
 										<input type="hidden" value="${c.id}" id="id_delete"
 											name="id_delete" /> <input type="submit"
 											class="btn btn-primary" value="Delete" />
@@ -126,58 +127,58 @@
 		<div class="container text-center">
 			<ul class="pagination">
 				<c:if test="${idPage > 1}">
-					<li><a href="${urlPath}?id=${idPage-1}" aria-label="Previous">
+					<li><a href="${context}/computer?id=${idPage-1}" aria-label="Previous">
 							<span aria-hidden="true">&laquo;</span>
 					</a></li>
 				</c:if>
 				<c:choose>
 					<c:when test="${nbPages <= 13}">
 						<c:forEach var="i" begin="1" end="${nbPages}">
-							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
+							<li><a href="${context}/computer?id=${i}"> <c:out value="${i}" /></a></li>
 						</c:forEach>
 					</c:when>
 					<c:when test="${idPage < 7}">
 						<c:forEach var="i" begin="1" end="8">
-							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
+							<li><a href="${context}/computer?id=${i}"> <c:out value="${i}" /></a></li>
 						</c:forEach>
 						<li><a href="#">...</a></li>
 						<c:forEach var="i" begin="${nbPages - 3}" end="${nbPages}">
-							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
+							<li><a href="${context}/computer?id=${i}"> <c:out value="${i}" /></a></li>
 						</c:forEach>
 					</c:when>
 					<c:when test="${idPage > nbPages - 6}">
 						<c:forEach var="i" begin="1" end="3">
-							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
+							<li><a href="${context}/computer?id=${i}"> <c:out value="${i}" /></a></li>
 						</c:forEach>
 						<li><a href="#">...</a></li>
 						<c:forEach var="i" begin="${nbPages - 8}" end="${nbPages}">
-							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
+							<li><a href="${context}/computer?id=${i}"> <c:out value="${i}" /></a></li>
 						</c:forEach>
 					</c:when>
 					<c:otherwise>
 						<c:forEach var="i" begin="1" end="3">
-							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
+							<li><a href="${context}/computer?id=${i}"> <c:out value="${i}" /></a></li>
 						</c:forEach>
 						<li><a href="#">...</a></li>
 						<c:forEach var="i" begin="${idPage - 2}" end="${idPage + 2}">
-							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
+							<li><a href="${context}/computer?id=${i}"> <c:out value="${i}" /></a></li>
 						</c:forEach>
 						<li><a href="#">...</a></li>
 						<c:forEach var="i" begin="${nbPages - 2}" end="${nbPages}">
-							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
+							<li><a href="${context}/computer?id=${i}"> <c:out value="${i}" /></a></li>
 						</c:forEach>
 					</c:otherwise>
 				</c:choose>
 				<c:if test="${idPage < nbPages}">
-					<li><a href="${urlPath}?id=${idPage+1}" aria-label="Next">
+					<li><a href="${context}/computer?id=${idPage+1}" aria-label="Next">
 							<span aria-hidden="true">&raquo;</span>
 					</a></li>
 				</c:if>
 			</ul>
 		</div>
 	</footer>
-	<script src="/js/jquery.min.js"></script>
-	<script src="/js/bootstrap.min.js"></script>
-	<script src="/js/dashboard.js"></script>
+	<script src="${context}/js/jquery.min.js"></script>
+	<script src="${context}/js/bootstrap.min.js"></script>
+	<script src="${context}/js/dashboard.js"></script>
 </body>
 </html>

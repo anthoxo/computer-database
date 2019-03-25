@@ -6,14 +6,15 @@
 <head>
 <meta charset="UTF-8">
 <title>Edit computer</title>
-<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="/css/font-awesome.css" rel="stylesheet" media="screen">
-<link href="/css/main.css" rel="stylesheet" media="screen">
+<c:set var="context" value="${pageContext.request.contextPath}" />
+<link href="${context}/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="${context}/css/font-awesome.css" rel="stylesheet" media="screen">
+<link href="${context}/css/main.css" rel="stylesheet" media="screen">
 </head>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="/index"> Application - Computer
+			<a class="navbar-brand" href="${context}/index"> Application - Computer
 				Database </a>
 		</div>
 	</header>
@@ -51,7 +52,7 @@
 	<div class="container">
 		<h1>Edit computer</h1>
 		<label for="computerName">Computer name</label> <br>
-		<form action="/computer/edit" method="POST">
+		<form action="${context}/computer/edit" method="POST">
 			<input type="hidden" value="${computer.id}" id="id" name="id" />
 			<fieldset>
 				<div class="form-group">
@@ -83,14 +84,14 @@
 			</fieldset>
 			<div class="actions pull-right">
 				<input type="submit" value="Edit" class="btn btn-primary"
-					id="btnEditOrAddComputer" /> <a href="/computer" class="btn btn-default">Cancel</a>
+					id="btnEditOrAddComputer" /> <a href="${context}/computer" class="btn btn-default">Cancel</a>
 			</div>
 		</form>
 	</div>
-	<script src="/js/jquery.min.js"></script>
-	<script src="/js/bootstrap.min.js"></script>
-	<script src="/js/dashboard.js"></script>
-	<script src="/js/jquery-validate.js"></script>
+	<script src="${context}/js/jquery.min.js"></script>
+	<script src="${context}/js/bootstrap.min.js"></script>
+	<script src="${context}/js/dashboard.js"></script>
+	<script src="${context}/js/jquery-validate.js"></script>
 
 </body>
 </html>

@@ -48,7 +48,7 @@ public class AddComputerServlet extends HttpServlet {
 			request.getSession().setAttribute("lvlNotification", "danger");
 		}
 
-		response.sendRedirect("/computer");
+		response.sendRedirect(request.getContextPath() + "/computer");
 	}
 
 
