@@ -16,19 +16,36 @@ import model.Page;
 public class ComputerListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	public static final String GET_PARAMETER_ID = "id";
+
+	public static final String COMPUTER_LIST = "computerList";
+	public static final String NB_PAGES = "nbPages";
+	public static final String ID_PAGE = "idPage";
+	public static final String URL_PATH = "urlPath";
+	public static final String IS_SEARCHING = "isSearching";
+
+	public static final String NOTIFICATION = "notification";
+	public static final String MSG_NOTIFICATION = "msgNotification";
+	public static final String LVL_NOTIFICATION = "lvlNotification";
+
+	public static final String URL_COMPUTER = "/computer";
+	public static final String VIEW_COMPUTER = "/views/listComputers.jsp";
+
+	public static final String COMPUTER_CONTROLLER = "computer_controller";
+
 	ComputerController computerController;
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			computerController = (ComputerController) request.getSession().getAttribute("computer_controller");
+			computerController = (ComputerController) request.getSession().getAttribute(COMPUTER_CONTROLLER);
 			if (computerController == null) {
 				computerController = new ComputerController();
-				request.getSession().setAttribute("computer_controller", computerController);
+				request.getSession().setAttribute(COMPUTER_CONTROLLER, computerController);
 			}
 
-			String indexPage = request.getParameter("id");
+			String indexPage = request.getParameter(GET_PARAMETER_ID);
 			int index;
 			if (indexPage == null) {
 				index = 0;
@@ -39,29 +56,29 @@ public class ComputerListServlet extends HttpServlet {
 
 			this.computerController.getComputerPage().goTo(index * Page.NB_ITEMS_PER_PAGE);
 
-			request.setAttribute("listComputers", this.computerController.getComputerPage().getEntitiesPage());
-			request.setAttribute("nbPages", this.computerController.getComputerPage().getNbPages());
-			request.setAttribute("idPage", index + 1);
-			request.setAttribute("urlPath", request.getContextPath() + "/computer");
-			request.setAttribute("isSearching", "false");
+			request.setAttribute(COMPUTER_LIST, this.computerController.getComputerPage().getEntitiesPage());
+			request.setAttribute(NB_PAGES, this.computerController.getComputerPage().getNbPages());
+			request.setAttribute(ID_PAGE, index + 1);
+			request.setAttribute(URL_PATH, request.getContextPath() + URL_COMPUTER);
+			request.setAttribute(IS_SEARCHING, "false");
 
-			String notification = (String) request.getSession().getAttribute("notification");
+			String notification = (String) request.getSession().getAttribute(NOTIFICATION);
 
 			if (notification == null || notification == "false") {
-				request.setAttribute("notification", false);
+				request.setAttribute(NOTIFICATION, false);
 			} else {
-				String msgNotification = (String) request.getSession().getAttribute("msgNotification");
-				String lvlNotification = (String) request.getSession().getAttribute("lvlNotification");
-				request.setAttribute("notification", true);
-				request.setAttribute("msgNotification", msgNotification);
-				request.setAttribute("lvlNotification", lvlNotification);
+				String msgNotification = (String) request.getSession().getAttribute(MSG_NOTIFICATION);
+				String lvlNotification = (String) request.getSession().getAttribute(LVL_NOTIFICATION);
+				request.setAttribute(NOTIFICATION, true);
+				request.setAttribute(MSG_NOTIFICATION, msgNotification);
+				request.setAttribute(LVL_NOTIFICATION, lvlNotification);
 
-				request.getSession().setAttribute("notification", "false");
-				request.getSession().setAttribute("msgNotification", "");
-				request.getSession().setAttribute("lvlNotification", "");
+				request.getSession().setAttribute(NOTIFICATION, "false");
+				request.getSession().setAttribute(MSG_NOTIFICATION, "");
+				request.getSession().setAttribute(LVL_NOTIFICATION, "");
 			}
 
-			RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/views/listComputers.jsp");
+			RequestDispatcher rd = this.getServletContext().getRequestDispatcher(VIEW_COMPUTER);
 			rd.forward(request, response);
 		} catch (ServletException e) {
 			throw new ServletException(e);

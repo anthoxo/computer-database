@@ -75,7 +75,7 @@
 					<label for="companyId">Company</label> <select class="form-control"
 						id="companyId" name="companyId">
 						<option value="0">--</option>
-						<c:forEach var="c" items="${listCompanies}">
+						<c:forEach var="c" items="${companyList}">
 							<option value="${c.id}"
 								<c:if test="${c.name == computer.companyName}">selected</c:if>>${c.name}</option>
 						</c:forEach>

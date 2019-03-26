@@ -23,7 +23,7 @@ public class TestComputeTimestamp {
 
 	@Test
 	public void testComputeTimestampGood2() {
-		Optional<Timestamp> ts = Utils.stringToTimestamp("1948/4/25");
+		Optional<Timestamp> ts = Utils.stringToTimestamp("1948/04/25");
 		assertTrue(ts.isPresent());
 		assertEquals(ts.get().toLocalDateTime().getYear(), 1948);
 		assertEquals(ts.get().toLocalDateTime().getMonthValue(), 4);

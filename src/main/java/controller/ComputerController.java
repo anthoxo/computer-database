@@ -115,13 +115,13 @@ public class ComputerController {
 
 	public void updateComputer(int id, String name, String introduced, String discontinued, int companyId)
 			throws ItemNotUpdatedException, ItemNotFoundException {
-		ComputerDTO cDTO = new ComputerDTO();
-		cDTO.setId(id);
-		cDTO.setName(name);
-		cDTO.setIntroducedDate(introduced);
-		cDTO.setDiscontinuedDate(discontinued);
-		cDTO.setCompanyId(companyId);
-		computerService.updateComputer(cDTO);
+		ComputerDTO computerDTO = new ComputerDTO();
+		computerDTO.setId(id);
+		computerDTO.setName(name);
+		computerDTO.setIntroducedDate(introduced);
+		computerDTO.setDiscontinuedDate(discontinued);
+		computerDTO.setCompanyId(companyId);
+		computerService.updateComputer(computerDTO);
 	}
 
 	/**
@@ -132,8 +132,8 @@ public class ComputerController {
 	 * @throws ItemNotDeletedException
 	 */
 	public void deleteComputer(int id) throws ItemNotFoundException, ItemNotDeletedException {
-		ComputerDTO cDTO = new ComputerDTO();
-		cDTO.setId(id);
-		computerService.deleteComputer(cDTO);
+		ComputerDTO computerDTO = new ComputerDTO();
+		computerDTO.setId(id);
+		computerService.deleteComputer(computerDTO);
 	}
 }

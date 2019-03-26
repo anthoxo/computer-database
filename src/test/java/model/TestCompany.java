@@ -27,31 +27,31 @@ public class TestCompany {
 
 	@Test
 	public void testEquals1() {
-		Company c = (new Company.Builder()).build();
-		assertFalse(company.equals(c));
+		Company company2 = (new Company.Builder()).build();
+		assertFalse(company.equals(company2));
 	}
 
 	@Test
 	public void testEquals2() {
-		Object c = new ArrayList<Company>();
-		assertFalse(company.equals(c));
+		Object company2 = new ArrayList<Company>();
+		assertFalse(company.equals(company2));
 	}
 
 	@Test
 	public void testEquals3() {
-		Company c = (new Company.Builder()).withId(1).withName("apple").build();
-		assertFalse(company.equals(c));
+		Company company2 = (new Company.Builder()).withId(1).withName("apple").build();
+		assertFalse(company.equals(company2));
 	}
 
 	@Test
 	public void testEquals4() {
-		Company c = (new Company.Builder()).withId(1).withName("Apple").build();;
-		assertTrue(company.equals(c));
+		Company company2 = (new Company.Builder()).withId(1).withName("Apple").build();;
+		assertTrue(company.equals(company2));
 	}
 
 	@Test
 	public void testEquals5() {
-		Company c = company;
-		assertTrue(company.equals(c));
+		Company company2 = company;
+		assertTrue(company.equals(company2));
 	}
 }

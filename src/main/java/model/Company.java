@@ -56,13 +56,13 @@ public class Company {
 		public Builder() {
 		}
 
-		public Builder withId(int i) {
-			this.id = i;
+		public Builder withId(int id) {
+			this.id = id;
 			return this;
 		}
 
-		public Builder withName(String n) {
-			this.name = n;
+		public Builder withName(String name) {
+			this.name = name;
 			return this;
 		}
 

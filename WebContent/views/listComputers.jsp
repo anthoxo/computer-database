@@ -67,7 +67,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach var="c" items="${listComputers}">
+				<c:forEach var="c" items="${computerList}">
 					<tr id="Computer_${c.id}">
 						<td><a href="${context}/computer/edit?id=${c.id}"><c:out
 									value="${c.name}" /></a></td>

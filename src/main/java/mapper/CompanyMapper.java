@@ -44,10 +44,10 @@ public class CompanyMapper {
 	 * @return A company DTO.
 	 */
 	public CompanyDTO createDTO(Company company) {
-		CompanyDTO cDTO = new CompanyDTO();
-		cDTO.setId(company.getId());
-		cDTO.setName(company.getName());
-		return cDTO;
+		CompanyDTO companyDTO = new CompanyDTO();
+		companyDTO.setId(company.getId());
+		companyDTO.setName(company.getName());
+		return companyDTO;
 	}
 
 	/**

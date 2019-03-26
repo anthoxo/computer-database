@@ -48,18 +48,18 @@ public class TestComputerDAO {
 	@InjectMocks
 	ComputerDAO computerDAO;
 
-	List<Computer> listComputers;
+	List<Computer> computerList;
 
 	@BeforeEach
 	public void init() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException,
 			IllegalAccessException {
 		this.computerDAO = ComputerDAO.getInstance();
 
-		listComputers = new ArrayList<Computer>();
+		computerList = new ArrayList<Computer>();
 		for (int i = 0; i < 3; ++i) {
 			Computer computer = (new Computer.Builder()).withId(i + 1).withName("Computer_" + String.valueOf(i + 1))
 					.build();
-			listComputers.add(computer);
+			computerList.add(computer);
 		}
 
 		Field field = ComputerDAO.class.getDeclaredField("daoFactory");
@@ -81,7 +81,7 @@ public class TestComputerDAO {
 		Mockito.when(stmt.executeQuery()).thenReturn(rs);
 		Mockito.when(rs.next()).thenReturn(Boolean.TRUE).thenReturn(Boolean.TRUE).thenReturn(Boolean.TRUE)
 				.thenReturn(Boolean.FALSE);
-		Mockito.doReturn(listComputers.get(0)).when(this.computerDAO.computerMapper).map(rs);
+		Mockito.doReturn(computerList.get(0)).when(this.computerDAO.computerMapper).map(rs);
 	}
 
 	public void initUpdate() throws SQLException {
@@ -121,14 +121,14 @@ public class TestComputerDAO {
 		initGet();
 		Mockito.when(connection.prepareStatement(ComputerDAO.REQUEST_GET_ALL)).thenReturn(stmt);
 		List<Computer> list = this.computerDAO.getAll();
-		assertEquals(list.size(), listComputers.size());
+		assertEquals(list.size(), computerList.size());
 	}
 
 	@Test
 	public void testCreate() throws SQLException {
 		initGoodRequest();
 		Mockito.when(connection.prepareStatement(ComputerDAO.REQUEST_CREATE)).thenReturn(stmt);
-		Computer computer = listComputers.get(0);
+		Computer computer = computerList.get(0);
 		try {
 			this.computerDAO.create(computer);
 		} catch (DAOException e) {

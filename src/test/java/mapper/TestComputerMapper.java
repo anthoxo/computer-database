@@ -72,30 +72,30 @@ public class TestComputerMapper {
 	@Test
 	public void testCreateDTO() {
 		Company company = (new Company.Builder()).withName("Apple Inc.").build();
-		Computer c = (new Computer.Builder()).withId(1).withName("Macbook Air")
+		Computer computer = (new Computer.Builder()).withId(1).withName("Macbook Air")
 				.withIntroducedDate(Utils.stringToTimestamp("2000/01/01").get())
 				.withDiscontinuedDate(Utils.stringToTimestamp("2020/01/01").get()).withCompanyId(1).withCompany(company)
 				.build();
-		ComputerDTO cDTO = computerMapper.createDTO(c);
-		assertEquals(c.getId(), cDTO.getId());
-		assertEquals(c.getName(), cDTO.getName());
-		assertEquals(c.getIntroduced(), Utils.stringToTimestamp(cDTO.getIntroducedDate()).get());
-		assertEquals(c.getDiscontinued(), Utils.stringToTimestamp(cDTO.getDiscontinuedDate()).get());
-		assertEquals(c.getCompany().getName(), cDTO.getCompanyName());
+		ComputerDTO computerDTO = computerMapper.createDTO(computer);
+		assertEquals(computer.getId(), computerDTO.getId());
+		assertEquals(computer.getName(), computerDTO.getName());
+		assertEquals(computer.getIntroduced(), Utils.stringToTimestamp(computerDTO.getIntroducedDate()).get());
+		assertEquals(computer.getDiscontinued(), Utils.stringToTimestamp(computerDTO.getDiscontinuedDate()).get());
+		assertEquals(computer.getCompany().getName(), computerDTO.getCompanyName());
 	}
 
 	@Test
 	public void testCreateBean() throws SQLException, DAOException {
-		ComputerDTO cDTO = new ComputerDTO();
-		cDTO.setId(0);
-		cDTO.setName("MacBook");
-		cDTO.setIntroducedDate("2010/01/01");
-		cDTO.setDiscontinuedDate("2020/01/01");
-		Computer c = computerMapper.createBean(cDTO);
-		assertEquals(c.getId(), cDTO.getId());
-		assertEquals(c.getName(), cDTO.getName());
-		assertEquals(c.getIntroduced(), Utils.stringToTimestamp(cDTO.getIntroducedDate()).get());
-		assertEquals(c.getDiscontinued(), Utils.stringToTimestamp(cDTO.getDiscontinuedDate()).get());
+		ComputerDTO computerDTO = new ComputerDTO();
+		computerDTO.setId(0);
+		computerDTO.setName("MacBook");
+		computerDTO.setIntroducedDate("2010/01/01");
+		computerDTO.setDiscontinuedDate("2020/01/01");
+		Computer computer = computerMapper.createBean(computerDTO);
+		assertEquals(computer.getId(), computerDTO.getId());
+		assertEquals(computer.getName(), computerDTO.getName());
+		assertEquals(computer.getIntroduced(), Utils.stringToTimestamp(computerDTO.getIntroducedDate()).get());
+		assertEquals(computer.getDiscontinued(), Utils.stringToTimestamp(computerDTO.getDiscontinuedDate()).get());
 	}
 
 }

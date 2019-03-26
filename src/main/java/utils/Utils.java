@@ -79,9 +79,9 @@ public class Utils {
 	 * @return An enum key based on Class c.
 	 */
 	public static <T extends Enum<T>> T stringToEnum(Class<T> c, String string) {
-		String str = string.toUpperCase().replace('-', '_');
+		String date = string.toUpperCase().replace('-', '_');
 		try {
-			return Enum.valueOf(c, str);
+			return Enum.valueOf(c, date);
 		} catch (IllegalArgumentException ex) {
 			return Enum.valueOf(c, "NULL");
 		}

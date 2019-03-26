@@ -40,20 +40,20 @@ public class TestCompanyMapper {
 
 	@Test
 	public void testCreateDTO() {
-		Company c = (new Company.Builder()).withId(0).withName("Apple").build();
-		CompanyDTO cDTO = companyMapper.createDTO(c);
-		assertEquals(c.getId(), cDTO.getId());
-		assertEquals(c.getName(), cDTO.getName());
+		Company company = (new Company.Builder()).withId(0).withName("Apple").build();
+		CompanyDTO companyDTO = companyMapper.createDTO(company);
+		assertEquals(company.getId(), companyDTO.getId());
+		assertEquals(company.getName(), companyDTO.getName());
 	}
 
 	@Test
 	public void testCreateBean() {
-		CompanyDTO cDTO = new CompanyDTO();
-		cDTO.setId(0);
-		cDTO.setName("Apple");
-		Company c = companyMapper.createBean(cDTO);
-		assertEquals(c.getId(), cDTO.getId());
-		assertEquals(c.getName(), cDTO.getName());
+		CompanyDTO companyDTO = new CompanyDTO();
+		companyDTO.setId(0);
+		companyDTO.setName("Apple");
+		Company company = companyMapper.createBean(companyDTO);
+		assertEquals(company.getId(), companyDTO.getId());
+		assertEquals(company.getName(), companyDTO.getName());
 	}
 
 }

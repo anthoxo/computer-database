@@ -52,18 +52,18 @@ public class ComputerMapper {
 	 * @return A computer DTO.
 	 */
 	public ComputerDTO createDTO(Computer computer) {
-		ComputerDTO cDTO = new ComputerDTO();
+		ComputerDTO computerDTO = new ComputerDTO();
 
-		cDTO.setId(computer.getId());
-		cDTO.setName(computer.getName());
-		cDTO.setIntroducedDate(Utils.timestampToString(computer.getIntroduced()));
-		cDTO.setDiscontinuedDate(Utils.timestampToString(computer.getDiscontinued()));
-		cDTO.setCompanyId(computer.getCompanyId());
+		computerDTO.setId(computer.getId());
+		computerDTO.setName(computer.getName());
+		computerDTO.setIntroducedDate(Utils.timestampToString(computer.getIntroduced()));
+		computerDTO.setDiscontinuedDate(Utils.timestampToString(computer.getDiscontinued()));
+		computerDTO.setCompanyId(computer.getCompanyId());
 		if (computer.getCompany() != null) {
-			cDTO.setCompanyName(computer.getCompany().getName());
+			computerDTO.setCompanyName(computer.getCompany().getName());
 		}
 
-		return cDTO;
+		return computerDTO;
 	}
 
 	/**

@@ -45,9 +45,9 @@ public class ComputerService {
 	 */
 	public void createComputer(ComputerDTO computerDTO) throws ItemBadCreatedException {
 		try {
-			Computer c = computerMapper.createBean(computerDTO);
-			computerValidator.validate(c);
-			computerDAO.create(c);
+			Computer computer = computerMapper.createBean(computerDTO);
+			computerValidator.validate(computer);
+			computerDAO.create(computer);
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 			throw new ItemBadCreatedException("dao");
@@ -65,9 +65,9 @@ public class ComputerService {
 	 */
 	public ComputerDTO getComputerByName(String name) throws ItemNotFoundException {
 		try {
-			Optional<Computer> c = computerDAO.get(name);
-			if (c.isPresent()) {
-				return computerMapper.createDTO(c.get());
+			Optional<Computer> computerOpt = computerDAO.get(name);
+			if (computerOpt.isPresent()) {
+				return computerMapper.createDTO(computerOpt.get());
 			} else {
 				throw new ItemNotFoundException("getComputerByName");
 			}
@@ -86,9 +86,9 @@ public class ComputerService {
 	 */
 	public ComputerDTO getComputerById(int id) throws ItemNotFoundException {
 		try {
-			Optional<Computer> c = computerDAO.get(id);
-			if (c.isPresent()) {
-				return computerMapper.createDTO(c.get());
+			Optional<Computer> computerOpt = computerDAO.get(id);
+			if (computerOpt.isPresent()) {
+				return computerMapper.createDTO(computerOpt.get());
 			} else {
 				throw new ItemNotFoundException("getComputerById");
 			}
@@ -127,9 +127,9 @@ public class ComputerService {
 
 	public void updateComputer(ComputerDTO cDTO) throws ItemNotUpdatedException, ItemNotFoundException {
 		try {
-			Computer c = computerMapper.createBean(cDTO);
-			computerValidator.validate(c);
-			computerDAO.update(c);
+			Computer computer = computerMapper.createBean(cDTO);
+			computerValidator.validate(computer);
+			computerDAO.update(computer);
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotUpdatedException("dao");
@@ -140,10 +140,10 @@ public class ComputerService {
 
 	public void deleteComputer(ComputerDTO cDTO) throws ItemNotFoundException, ItemNotDeletedException {
 		try {
-			Optional<Computer> computer = computerDAO.get(cDTO.getId());
-			if (computer.isPresent()) {
-				Computer c = computerMapper.createBean(cDTO);
-				computerDAO.delete(c);
+			Optional<Computer> computerOpt = computerDAO.get(cDTO.getId());
+			if (computerOpt.isPresent()) {
+				Computer computer = computerMapper.createBean(cDTO);
+				computerDAO.delete(computer);
 			} else {
 				throw new ItemNotFoundException("deleteComputer");
 			}

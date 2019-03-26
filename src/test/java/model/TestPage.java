@@ -91,10 +91,10 @@ public class TestPage {
 
 	@Test
 	public void testGetEntitiesPage() {
-		List<Integer> l = this.page.getEntitiesPage();
-		assertEquals(l.size(), Page.NB_ITEMS_PER_PAGE);
+		List<Integer> list = this.page.getEntitiesPage();
+		assertEquals(list.size(), Page.NB_ITEMS_PER_PAGE);
 		for (int i = 0; i < Page.NB_ITEMS_PER_PAGE; ++i) {
-			assertEquals(l.get(i), 50 + i);
+			assertEquals(list.get(i), 50 + i);
 		}
 	}
 

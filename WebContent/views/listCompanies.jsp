@@ -29,7 +29,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach var="c" items="${listCompanies}">
+				<c:forEach var="c" items="${companyList}">
 					<tr>
 						<td><c:out value="${c.name}" /></td>
 					</tr>

@@ -18,6 +18,19 @@ public class ComputerSearchServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -4860354040907739312L;
 
+	public static final String GET_PARAMETER_ID = "id";
+
+	public static final String COMPUTER_LIST = "computerList";
+	public static final String NB_PAGES = "nbPages";
+	public static final String ID_PAGE = "idPage";
+	public static final String URL_PATH = "urlPath";
+	public static final String IS_SEARCHING = "isSearching";
+
+	public static final String URL_COMPUTER_SEARCH = "/computer/search";
+	public static final String VIEW_COMPUTER = "/views/listComputers.jsp";
+
+	public static final String COMPUTER_CONTROLLER = "computer_controller";
+
 	ComputerController computerController;
 	String pattern = "";
 	Page<ComputerDTO> computerPage;
@@ -41,13 +54,13 @@ public class ComputerSearchServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		computerController = (ComputerController) request.getSession().getAttribute("computer_controller");
+		computerController = (ComputerController) request.getSession().getAttribute(COMPUTER_CONTROLLER);
 		if (computerController == null) {
 			computerController = new ComputerController();
-			request.getSession().setAttribute("computer_controller", computerController);
+			request.getSession().setAttribute(COMPUTER_CONTROLLER, computerController);
 		}
 
-		String indexPage = request.getParameter("id");
+		String indexPage = request.getParameter(GET_PARAMETER_ID);
 		int index;
 		if (indexPage == null) {
 			index = 0;
@@ -58,13 +71,13 @@ public class ComputerSearchServlet extends HttpServlet {
 
 		computerPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
 
-		request.setAttribute("listComputers", computerPage.getEntitiesPage());
-		request.setAttribute("nbPages", computerPage.getNbPages());
-		request.setAttribute("idPage", index + 1);
-		request.setAttribute("urlPath", request.getContextPath() + "/computer/search");
-		request.setAttribute("isSearching", "true");
+		request.setAttribute(COMPUTER_LIST, computerPage.getEntitiesPage());
+		request.setAttribute(NB_PAGES, computerPage.getNbPages());
+		request.setAttribute(ID_PAGE, index + 1);
+		request.setAttribute(URL_PATH, request.getContextPath() + URL_COMPUTER_SEARCH);
+		request.setAttribute(IS_SEARCHING, "true");
 
-		RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/views/listComputers.jsp");
+		RequestDispatcher rd = this.getServletContext().getRequestDispatcher(VIEW_COMPUTER);
 		rd.forward(request, response);
 
 	}

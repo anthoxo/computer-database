@@ -31,10 +31,10 @@ public class TestComputerController {
 	@Mock
 	private Computer computer;
 
-	private List<ComputerDTO> listComputers;
+	private List<ComputerDTO> computerList;
 
 	@Mock
-	private Page<ComputerDTO> pageComputers;
+	private Page<ComputerDTO> computerPage;
 
 	@Mock
 	ComputerService computerService;
@@ -46,19 +46,19 @@ public class TestComputerController {
 	public void init()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 
-		listComputers = new ArrayList<ComputerDTO>();
+		computerList = new ArrayList<ComputerDTO>();
 		for (int i = 0; i < 40; ++i) {
-			ComputerDTO c = new ComputerDTO();
-			c.setId(i + 1);
-			c.setName("Computer_" + String.valueOf(i + 1));
-			c.setCompanyName("Apple_" + String.valueOf(i + 1));
-			listComputers.add(c);
+			ComputerDTO computerDTO = new ComputerDTO();
+			computerDTO.setId(i + 1);
+			computerDTO.setName("Computer_" + String.valueOf(i + 1));
+			computerDTO.setCompanyName("Apple_" + String.valueOf(i + 1));
+			computerList.add(computerDTO);
 		}
 
-		pageComputers = new Page<ComputerDTO>(listComputers);
+		computerPage = new Page<ComputerDTO>(computerList);
 
 		computerController = new ComputerController();
-		computerController.computerPage = pageComputers;
+		computerController.computerPage = computerPage;
 
 		Field field = ComputerController.class.getDeclaredField("computerService");
 		field.setAccessible(true);

@@ -19,10 +19,10 @@ import model.Page;
 
 @ExtendWith(MockitoExtension.class)
 public class TestCompanyController {
-	private List<CompanyDTO> listCompanies;
+	private List<CompanyDTO> companyList;
 
 	@Mock
-	private Page<CompanyDTO> pageCompanies;
+	private Page<CompanyDTO> companyPage;
 
 	@InjectMocks
 	private CompanyController companyController;
@@ -32,18 +32,18 @@ public class TestCompanyController {
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		DAOFactory.getInstance();
 
-		listCompanies = new ArrayList<CompanyDTO>();
+		companyList = new ArrayList<CompanyDTO>();
 		for (int i = 0; i < 40; ++i) {
-			CompanyDTO c = new CompanyDTO();
-			c.setId(i + 1);
-			c.setName("Company_" + String.valueOf(i + 1));
-			listCompanies.add(c);
+			CompanyDTO companyDTO = new CompanyDTO();
+			companyDTO.setId(i + 1);
+			companyDTO.setName("Company_" + String.valueOf(i + 1));
+			companyList.add(companyDTO);
 		}
 
-		pageCompanies = new Page<CompanyDTO>(listCompanies);
+		companyPage = new Page<CompanyDTO>(companyList);
 
 		companyController = new CompanyController();
-		companyController.companyPage = pageCompanies;
+		companyController.companyPage = companyPage;
 	}
 
 	@Test

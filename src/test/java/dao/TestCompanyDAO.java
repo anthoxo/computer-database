@@ -43,18 +43,18 @@ public class TestCompanyDAO {
 	@InjectMocks
 	CompanyDAO companyDAO;
 
-	List<Company> listCompanies;
+	List<Company> companyList;
 
 	@BeforeEach
 	public void init()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		this.companyDAO = CompanyDAO.getInstance();
 
-		listCompanies = new ArrayList<Company>();
+		companyList = new ArrayList<Company>();
 		for (int i = 0; i < 3; ++i) {
 			Company company = (new Company.Builder()).withId(i + 1).withName("Company_" + String.valueOf(i + 1))
 					.build();
-			listCompanies.add(company);
+			companyList.add(company);
 		}
 
 		Field field = CompanyDAO.class.getDeclaredField("daoFactory");
@@ -71,7 +71,7 @@ public class TestCompanyDAO {
 		Mockito.when(stmt.executeQuery()).thenReturn(rs);
 		Mockito.when(rs.next()).thenReturn(Boolean.TRUE).thenReturn(Boolean.TRUE).thenReturn(Boolean.TRUE)
 				.thenReturn(Boolean.FALSE);
-		Mockito.doReturn(listCompanies.get(0)).when(this.companyDAO.companyMapper).map(rs);
+		Mockito.doReturn(companyList.get(0)).when(this.companyDAO.companyMapper).map(rs);
 	}
 
 	@Test
