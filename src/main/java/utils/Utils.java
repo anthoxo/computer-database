@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dao.DAOFactory;
+import validator.ValidatorUtil;
 
 public class Utils {
 
@@ -32,9 +33,8 @@ public class Utils {
 	 * @return The Timestamp object of the desired date.
 	 */
 	public static Optional<Timestamp> stringToTimestamp(String date) {
-		if (date == null) {
-			return Optional.empty();
-		} else {
+		boolean isValid = ValidatorUtil.validDateString.test(date).isValid();
+		if (isValid) {
 			String[] dateStr = date.split("/");
 			Optional<Timestamp> ts;
 			if (dateStr.length != 3) {
@@ -50,6 +50,8 @@ public class Utils {
 				}
 				return ts;
 			}
+		} else {
+			return Optional.empty();
 		}
 	}
 
