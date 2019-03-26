@@ -44,12 +44,14 @@ public class CompanyDAO {
 	public Optional<Company> get(int id) throws DAOException {
 		Optional<Company> company = Optional.empty();
 		try (Connection conn = this.daoFactory.getConnection()) {
+
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_ID);
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				company = Optional.ofNullable(companyMapper.map(rs));
 			}
+
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		}
@@ -63,14 +65,11 @@ public class CompanyDAO {
 	 * @throws DAOException
 	 */
 	public List<Company> getAll() throws DAOException {
-
 		List<Company> listCompanies = new ArrayList<Company>();
-
 		try (Connection conn = this.daoFactory.getConnection()) {
 
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_ALL);
 			ResultSet rs = stmt.executeQuery();
-
 			while (rs.next()) {
 				Company company = companyMapper.map(rs);
 				listCompanies.add(company);
@@ -92,12 +91,14 @@ public class CompanyDAO {
 	public Optional<Company> get(String name) throws DAOException {
 		Optional<Company> company = Optional.empty();
 		try (Connection conn = this.daoFactory.getConnection()) {
+
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_NAME);
 			stmt.setString(1, name);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				company = Optional.ofNullable(companyMapper.map(rs));
 			}
+
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		}

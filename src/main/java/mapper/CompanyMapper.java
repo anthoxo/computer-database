@@ -14,7 +14,6 @@ public class CompanyMapper {
 	 * Default constructor.
 	 */
 	private CompanyMapper() {
-
 	}
 
 	/**

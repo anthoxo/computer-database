@@ -78,8 +78,10 @@ public class ComputerView {
 
 		boolean stop = false;
 
+		this.computerController.refreshComputerPage();
+
 		while (!stop) {
-			List<ComputerDTO> listComputers = this.computerController.getComputerPageList();
+			List<ComputerDTO> listComputers = this.computerController.getComputerPage().getEntitiesPage();
 			listComputers
 					.forEach((ComputerDTO computer) -> logger.info(computer == null ? "null" : computer.toString()));
 			logger.info("next // previous // back ?");

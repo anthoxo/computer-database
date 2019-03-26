@@ -1,7 +1,6 @@
 package service;
 
 import java.lang.reflect.Field;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,8 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import dao.CompanyDAO;
 import exception.DAOException;
-import exception.ItemNotFoundException;
-import model.Company;
 
 @ExtendWith(MockitoExtension.class)
 public class TestCompanyService {
@@ -38,22 +35,4 @@ public class TestCompanyService {
 		this.companyService.getAllCompanies();
 		Mockito.verify(companyDAO).getAll();
 	}
-
-	@Test
-	public void testGetCompanyByName() throws ItemNotFoundException, DAOException {
-		Mockito.when(companyDAO.get("")).thenReturn(Optional.of((new Company.Builder()).build()));
-		this.companyService.getCompanyByName("");
-		Mockito.verify(companyDAO).get("");
-	}
-
-	@Test
-	public void testGetCompanyByNameThrow() throws DAOException {
-		try {
-			this.companyService.getCompanyByName("");
-		} catch (ItemNotFoundException e) {
-			Mockito.verify(companyDAO).get("");
-		}
-	}
-
-
 }

@@ -42,6 +42,7 @@ public class ComputerListServlet extends HttpServlet {
 			request.setAttribute("listComputers", this.computerController.getComputerPage().getEntitiesPage());
 			request.setAttribute("nbPages", this.computerController.getComputerPage().getNbPages());
 			request.setAttribute("idPage", index + 1);
+			request.setAttribute("urlPath", request.getContextPath() + "/computer");
 			request.setAttribute("isSearching", "false");
 
 			String notification = (String) request.getSession().getAttribute("notification");

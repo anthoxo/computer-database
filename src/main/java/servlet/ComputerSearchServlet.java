@@ -61,13 +61,12 @@ public class ComputerSearchServlet extends HttpServlet {
 		request.setAttribute("listComputers", computerPage.getEntitiesPage());
 		request.setAttribute("nbPages", computerPage.getNbPages());
 		request.setAttribute("idPage", index + 1);
-		request.setAttribute("urlPath", "/computer/search");
+		request.setAttribute("urlPath", request.getContextPath() + "/computer/search");
 		request.setAttribute("isSearching", "true");
 
 		RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/views/listComputers.jsp");
 		rd.forward(request, response);
 
 	}
-
 
 }

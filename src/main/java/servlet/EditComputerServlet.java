@@ -36,7 +36,8 @@ public class EditComputerServlet extends HttpServlet {
 		companyId = request.getParameter("companyId");
 
 		try {
-			this.computerController.updateComputer(Integer.valueOf(id), name, introduced, discontinued, Integer.valueOf(companyId));
+			this.computerController.updateComputer(Integer.valueOf(id), name, introduced, discontinued,
+					Integer.valueOf(companyId));
 			request.getSession().setAttribute("notification", "true");
 			request.getSession().setAttribute("msgNotification", "This object has been correctly updated !");
 			request.getSession().setAttribute("lvlNotification", "success");
@@ -47,7 +48,6 @@ public class EditComputerServlet extends HttpServlet {
 				request.getSession().setAttribute("msgNotification", "This object isn't valid.");
 			} else {
 				request.getSession().setAttribute("msgNotification", "This object hasn't been updated.");
-
 			}
 			request.getSession().setAttribute("lvlNotification", "danger");
 		}
@@ -56,7 +56,8 @@ public class EditComputerServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		computerController = (ComputerController) request.getSession().getAttribute("computer_controller");
 		if (computerController == null) {
 			computerController = new ComputerController();
@@ -68,7 +69,6 @@ public class EditComputerServlet extends HttpServlet {
 			companyController = new CompanyController();
 			request.getSession().setAttribute("company_controller", companyController);
 		}
-
 
 		String idString = request.getParameter("id");
 		int id = 0;

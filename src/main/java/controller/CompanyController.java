@@ -11,7 +11,6 @@ import utils.Utils.ChoiceActionPage;
 public class CompanyController {
 
 	CompanyService companyService;
-
 	Page<CompanyDTO> companyPage;
 	boolean isGoingBack;
 

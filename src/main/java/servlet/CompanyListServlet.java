@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import controller.CompanyController;
 import model.Page;
 
-
 @WebServlet("/company")
 public class CompanyListServlet extends HttpServlet {
 
@@ -28,14 +27,13 @@ public class CompanyListServlet extends HttpServlet {
 			if (companyController == null) {
 				companyController = new CompanyController();
 				request.getSession().setAttribute("company_controller", companyController);
-			} else {
-				companyController.refreshCompanyPage();
 			}
 
 			String indexPage = request.getParameter("id");
 			int index;
 			if (indexPage == null) {
 				index = 0;
+				companyController.refreshCompanyPage();
 			} else {
 				index = Integer.valueOf(indexPage) - 1;
 			}

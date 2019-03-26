@@ -55,6 +55,7 @@ public class Utils {
 
 	/**
 	 * Compute Timestamp into string (yyyy/mm/dd).
+	 *
 	 * @param date The date (Timestamp) that we want to compute.
 	 * @return The string date.
 	 */

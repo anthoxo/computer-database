@@ -15,7 +15,6 @@ import utils.Utils.ChoiceActionPage;
 public class ComputerController {
 
 	ComputerService computerService;
-
 	Page<ComputerDTO> computerPage;
 	boolean isGoingBack;
 
@@ -34,16 +33,6 @@ public class ComputerController {
 	public void refreshComputerPage() {
 		List<ComputerDTO> listComputers = computerService.getAllComputers();
 		this.computerPage = new Page<ComputerDTO>(listComputers);
-	}
-
-	/**
-	 * @return sublist of computer list (page).
-	 */
-	public List<ComputerDTO> getComputerPageList() {
-		if (this.computerPage == null) {
-			this.refreshComputerPage();
-		}
-		return this.computerPage.getEntitiesPage();
 	}
 
 	public Page<ComputerDTO> getComputerPage() {
@@ -114,7 +103,8 @@ public class ComputerController {
 	 * @return true if computer has been created else false.
 	 * @throws ItemBadCreatedException
 	 */
-	public void createComputer(String name, String introduced, String discontinued, int companyId) throws ItemBadCreatedException {
+	public void createComputer(String name, String introduced, String discontinued, int companyId)
+			throws ItemBadCreatedException {
 		ComputerDTO computerDTO = new ComputerDTO();
 		computerDTO.setName(name);
 		computerDTO.setIntroducedDate(introduced);
@@ -123,7 +113,8 @@ public class ComputerController {
 		computerService.createComputer(computerDTO);
 	}
 
-	public void updateComputer(int id, String name, String introduced, String discontinued, int companyId) throws ItemNotUpdatedException {
+	public void updateComputer(int id, String name, String introduced, String discontinued, int companyId)
+			throws ItemNotUpdatedException {
 		ComputerDTO cDTO = new ComputerDTO();
 		cDTO.setId(id);
 		cDTO.setName(name);

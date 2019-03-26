@@ -74,7 +74,8 @@ public class ComputerMapper {
 	 * @throws DAOException
 	 */
 	public Computer createBean(ComputerDTO cDTO) {
-		Computer.Builder computerBuilder = new Computer.Builder().withId(cDTO.getId()).withName(cDTO.getName());
+		Company company = (new Company.Builder()).withId(cDTO.getCompanyId()).withName(cDTO.getCompanyName()).build();
+		Computer.Builder computerBuilder = new Computer.Builder();
 
 		Optional<Timestamp> intro = Utils.stringToTimestamp(cDTO.getIntroducedDate());
 		Optional<Timestamp> discontinued = Utils.stringToTimestamp(cDTO.getDiscontinuedDate());
@@ -85,8 +86,8 @@ public class ComputerMapper {
 			computerBuilder = computerBuilder.withDiscontinuedDate(discontinued.get());
 		}
 
-		Company company = (new Company.Builder()).withId(cDTO.getCompanyId()).withName(cDTO.getCompanyName()).build();
-		return computerBuilder.withCompanyId(cDTO.getCompanyId()).withCompany(company).build();
+		return computerBuilder.withId(cDTO.getId()).withName(cDTO.getName()).withCompanyId(cDTO.getCompanyId())
+				.withCompany(company).build();
 	}
 
 }

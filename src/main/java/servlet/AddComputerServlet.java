@@ -24,7 +24,8 @@ public class AddComputerServlet extends HttpServlet {
 	CompanyController companyController;
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
 		String name, introduced, discontinued, companyId;
 
 		name = request.getParameter("computerName");
@@ -51,9 +52,9 @@ public class AddComputerServlet extends HttpServlet {
 		response.sendRedirect(request.getContextPath() + "/computer");
 	}
 
-
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		computerController = (ComputerController) request.getSession().getAttribute("computer_controller");
 		if (computerController == null) {
 			computerController = new ComputerController();

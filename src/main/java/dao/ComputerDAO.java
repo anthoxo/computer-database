@@ -26,7 +26,7 @@ public class ComputerDAO {
 	static final String REQUEST_GET_ALL = "SELECT id,name,introduced,discontinued,company_id FROM computer";
 	static final String REQUEST_GET_BY_ID = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE id = ?";
 	static final String REQUEST_GET_BY_NAME = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE name = ?";
-	static final String REQUEST_GET_LIKE = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE name LIKE ?" ;
+	static final String REQUEST_GET_LIKE = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE name LIKE ?";
 
 	/**
 	 * Default constructor.
@@ -86,10 +86,9 @@ public class ComputerDAO {
 
 	public void update(Computer obj) throws DAOException {
 		Optional<Computer> computer = this.get(obj.getId());
-
 		if (computer.isPresent()) {
-
 			try (Connection conn = this.daoFactory.getConnection()) {
+
 				PreparedStatement stmt = conn.prepareStatement(REQUEST_UPDATE);
 				stmt.setString(1, obj.getName());
 				stmt.setTimestamp(2, obj.getIntroduced());
@@ -101,6 +100,7 @@ public class ComputerDAO {
 				}
 				stmt.setInt(5, obj.getId());
 				stmt.executeUpdate();
+
 			} catch (SQLException e) {
 				throw new DAOException(e);
 			}
@@ -112,9 +112,7 @@ public class ComputerDAO {
 	public void delete(Computer obj) throws DAOException {
 		try (Connection conn = this.daoFactory.getConnection()) {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_DELETE);
-
 			stmt.setInt(1, obj.getId());
-
 			stmt.executeUpdate();
 		} catch (SQLException e) {
 			throw new DAOException(e);
@@ -129,8 +127,8 @@ public class ComputerDAO {
 	 */
 	public List<Computer> getAll() throws DAOException {
 		ArrayList<Computer> listComputers = new ArrayList<Computer>();
-
 		try (Connection conn = this.daoFactory.getConnection()) {
+
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_ALL);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -141,6 +139,7 @@ public class ComputerDAO {
 				}
 				listComputers.add(computer);
 			}
+
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		}
@@ -158,6 +157,7 @@ public class ComputerDAO {
 	public Optional<Computer> get(String name) throws DAOException {
 		Optional<Computer> computer = Optional.empty();
 		try (Connection conn = this.daoFactory.getConnection()) {
+
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_NAME);
 			stmt.setString(1, name);
 			ResultSet rs = stmt.executeQuery();
@@ -169,6 +169,7 @@ public class ComputerDAO {
 				}
 				computer = Optional.ofNullable(c);
 			}
+
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		}
@@ -178,6 +179,7 @@ public class ComputerDAO {
 	public List<Computer> getPattern(String pattern) throws DAOException {
 		List<Computer> result = new ArrayList<Computer>();
 		try (Connection conn = this.daoFactory.getConnection()) {
+
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_LIKE);
 			stmt.setString(1, "%" + pattern + "%");
 			ResultSet rs = stmt.executeQuery();
@@ -189,6 +191,7 @@ public class ComputerDAO {
 				}
 				result.add(c);
 			}
+
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		}
