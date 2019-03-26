@@ -125,7 +125,7 @@ public class ComputerService {
 		return result;
 	}
 
-	public void updateComputer(ComputerDTO cDTO) throws ItemNotUpdatedException {
+	public void updateComputer(ComputerDTO cDTO) throws ItemNotUpdatedException, ItemNotFoundException {
 		try {
 			Computer c = computerMapper.createBean(cDTO);
 			computerValidator.validate(c);

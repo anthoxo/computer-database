@@ -114,7 +114,7 @@ public class ComputerController {
 	}
 
 	public void updateComputer(int id, String name, String introduced, String discontinued, int companyId)
-			throws ItemNotUpdatedException {
+			throws ItemNotUpdatedException, ItemNotFoundException {
 		ComputerDTO cDTO = new ComputerDTO();
 		cDTO.setId(id);
 		cDTO.setName(name);

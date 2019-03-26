@@ -85,7 +85,7 @@ public class TestComputerService {
 	}
 
 	@Test
-	public void testUpdate() throws DAOException, ItemNotUpdatedException {
+	public void testUpdate() throws DAOException, ItemNotUpdatedException, ItemNotFoundException {
 		ComputerDTO computerDTO = new ComputerDTO();
 		computerDTO.setName("oui");
 		this.computerService.updateComputer(computerDTO);

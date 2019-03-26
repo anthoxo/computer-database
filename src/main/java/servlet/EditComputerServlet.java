@@ -50,6 +50,10 @@ public class EditComputerServlet extends HttpServlet {
 				request.getSession().setAttribute("msgNotification", "This object hasn't been updated.");
 			}
 			request.getSession().setAttribute("lvlNotification", "danger");
+		} catch (ItemNotFoundException e) {
+			request.getSession().setAttribute("notification", "true");
+			request.getSession().setAttribute("msgNotification", "This object isn't in database.");
+			request.getSession().setAttribute("lvlNotification", "danger");
 		}
 
 		response.sendRedirect(request.getContextPath() + "/computer");
@@ -86,7 +90,9 @@ public class EditComputerServlet extends HttpServlet {
 			RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/views/editComputer.jsp");
 			rd.forward(request, response);
 		} catch (ItemNotFoundException e) {
-			// print SOMETHING TO SAY NOT FOUND
+			request.getSession().setAttribute("notification", "true");
+			request.getSession().setAttribute("msgNotification", "This object isn't in database.");
+			request.getSession().setAttribute("lvlNotification", "danger");
 			response.sendRedirect(request.getContextPath() + "/computer");
 		}
 	}

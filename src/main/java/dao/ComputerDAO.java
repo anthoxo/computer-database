@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import exception.DAOException;
+import exception.ItemNotFoundException;
 import mapper.ComputerMapper;
 import model.Company;
 import model.Computer;
@@ -84,7 +85,7 @@ public class ComputerDAO {
 		return computer;
 	}
 
-	public void update(Computer obj) throws DAOException {
+	public void update(Computer obj) throws DAOException, ItemNotFoundException {
 		Optional<Computer> computer = this.get(obj.getId());
 		if (computer.isPresent()) {
 			try (Connection conn = this.daoFactory.getConnection()) {
@@ -105,7 +106,7 @@ public class ComputerDAO {
 				throw new DAOException(e);
 			}
 		} else {
-			// TODO throw new validator exception
+			throw new ItemNotFoundException("update");
 		}
 	}
 

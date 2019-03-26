@@ -20,6 +20,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import exception.DAOException;
+import exception.ItemNotFoundException;
 import mapper.ComputerMapper;
 import model.Computer;
 import utils.Utils;
@@ -137,7 +138,7 @@ public class TestComputerDAO {
 	}
 
 	@Test
-	public void testUpdate() throws SQLException {
+	public void testUpdate() throws SQLException, ItemNotFoundException {
 		initUpdate();
 		Mockito.doReturn(stmt).when(connection).prepareStatement(ComputerDAO.REQUEST_UPDATE);
 		Computer computer = (new Computer.Builder()).withId(1).withName("Computer")

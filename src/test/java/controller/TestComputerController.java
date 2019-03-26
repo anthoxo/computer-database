@@ -109,7 +109,7 @@ public class TestComputerController {
 	}
 
 	@Test
-	public void testUpdateComputer() throws DAOException, ItemNotUpdatedException {
+	public void testUpdateComputer() throws DAOException, ItemNotUpdatedException, ItemNotFoundException {
 
 		Mockito.doNothing().when(computerService).updateComputer(Mockito.any(ComputerDTO.class));
 
