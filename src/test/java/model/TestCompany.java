@@ -1,6 +1,7 @@
 package model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -27,29 +28,25 @@ public class TestCompany {
 	@Test
 	public void testEquals1() {
 		Company c = (new Company.Builder()).build();
-		boolean t = company.equals(c);
-		assertTrue(t == false);
+		assertFalse(company.equals(c));
 	}
 
 	@Test
 	public void testEquals2() {
 		Object c = new ArrayList<Company>();
-		boolean t = company.equals(c);
-		assertTrue(t == false);
+		assertFalse(company.equals(c));
 	}
 
 	@Test
 	public void testEquals3() {
 		Company c = (new Company.Builder()).withId(1).withName("apple").build();
-		boolean t = company.equals(c);
-		assertTrue(t == false);
+		assertFalse(company.equals(c));
 	}
 
 	@Test
 	public void testEquals4() {
 		Company c = (new Company.Builder()).withId(1).withName("Apple").build();;
-		boolean t = company.equals(c);
-		assertTrue(t);
+		assertTrue(company.equals(c));
 	}
 
 	@Test

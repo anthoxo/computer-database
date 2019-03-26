@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public class GenericValidationResult {
 
-	boolean valid;
+	private boolean valid;
 
 	public boolean isValid() {
 		return valid;

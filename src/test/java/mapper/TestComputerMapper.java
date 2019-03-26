@@ -33,7 +33,6 @@ public class TestComputerMapper {
 	@Mock
 	CompanyDAO companyDAO;
 
-
 	ComputerMapper computerMapper;
 
 	@BeforeEach
@@ -73,12 +72,9 @@ public class TestComputerMapper {
 	@Test
 	public void testCreateDTO() {
 		Company company = (new Company.Builder()).withName("Apple Inc.").build();
-		Computer c = (new Computer.Builder()).withId(1)
-				.withName("Macbook Air")
+		Computer c = (new Computer.Builder()).withId(1).withName("Macbook Air")
 				.withIntroducedDate(Utils.stringToTimestamp("2000/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("2020/01/01").get())
-				.withCompanyId(1)
-				.withCompany(company)
+				.withDiscontinuedDate(Utils.stringToTimestamp("2020/01/01").get()).withCompanyId(1).withCompany(company)
 				.build();
 		ComputerDTO cDTO = computerMapper.createDTO(c);
 		assertEquals(c.getId(), cDTO.getId());

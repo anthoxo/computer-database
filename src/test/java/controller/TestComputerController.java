@@ -1,5 +1,6 @@
 package controller;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
@@ -38,15 +39,12 @@ public class TestComputerController {
 	@Mock
 	ComputerService computerService;
 
-
 	@InjectMocks
 	private ComputerController computerController;
 
 	@BeforeEach
 	public void init()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-
-
 
 		listComputers = new ArrayList<ComputerDTO>();
 		for (int i = 0; i < 40; ++i) {
@@ -69,34 +67,29 @@ public class TestComputerController {
 
 	@Test
 	public void testSelectActionNext() {
-		boolean result = computerController.selectAction("next");
-		assertTrue(result);
+		assertTrue(computerController.selectAction("next"));
 	}
 
 	@Test
 	public void testSelectActionPrevious() {
-		boolean result = computerController.selectAction("previous");
-		assertTrue(result);
+		assertTrue(computerController.selectAction("previous"));
 	}
 
 	@Test
 	public void testSelectActionBack() {
-		boolean result = computerController.selectAction("back");
-		assertTrue(result);
+		assertTrue(computerController.selectAction("back"));
 		assertTrue(computerController.isGoingBack());
 
 	}
 
 	@Test
 	public void testSelectActionBadAction1() {
-		boolean result = computerController.selectAction("bad_action");
-		assertTrue(result == false);
+		assertFalse(computerController.selectAction("bad_action"));
 	}
 
 	@Test
 	public void testSelectActionBadAction2() {
-		boolean result = computerController.selectAction("kfdblifd");
-		assertTrue(result == false);
+		assertFalse(computerController.selectAction("kfdblifd"));
 	}
 
 	@Test

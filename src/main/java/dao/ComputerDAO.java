@@ -179,10 +179,11 @@ public class ComputerDAO {
 
 	public List<Computer> getPattern(String pattern) throws DAOException {
 		List<Computer> result = new ArrayList<Computer>();
+		String patternRequest = new StringBuilder().append("%").append(pattern).append("%").toString();
 		try (Connection conn = this.daoFactory.getConnection()) {
 
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_LIKE);
-			stmt.setString(1, "%" + pattern + "%");
+			stmt.setString(1, patternRequest);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				Computer c = computerMapper.map(rs);

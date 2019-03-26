@@ -100,7 +100,7 @@ public class TestPage {
 
 	@Test
 	public void testNbPages1() {
-		assertTrue(page.getNbPages() == 10);
+		assertEquals(page.getNbPages(), 10);
 	}
 
 	@Test
@@ -111,7 +111,7 @@ public class TestPage {
 		}
 		this.page = new Page<Integer>(list);
 
-		assertTrue(page.getNbPages() == 6);
+		assertEquals(page.getNbPages(), 6);
 	}
 
 	@Test

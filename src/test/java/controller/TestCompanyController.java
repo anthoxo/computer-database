@@ -1,5 +1,6 @@
 package controller;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -47,33 +48,28 @@ public class TestCompanyController {
 
 	@Test
 	public void testSelectActionNext() {
-		boolean result = companyController.selectAction("next");
-		assertTrue(result);
+		assertTrue(companyController.selectAction("next"));
 	}
 
 	@Test
 	public void testSelectActionPrevious() {
-		boolean result = companyController.selectAction("previous");
-		assertTrue(result);
+		assertTrue(companyController.selectAction("previous"));
 	}
 
 	@Test
 	public void testSelectActionBack() {
-		boolean result = companyController.selectAction("back");
-		assertTrue(result);
+		assertTrue(companyController.selectAction("back"));
 		assertTrue(companyController.isGoingBack());
 
 	}
 
 	@Test
 	public void testSelectActionBadAction1() {
-		boolean result = companyController.selectAction("bad_action");
-		assertTrue(result == false);
+		assertFalse(companyController.selectAction("bad_action"));
 	}
 
 	@Test
 	public void testSelectActionBadAction2() {
-		boolean result = companyController.selectAction("kfdblifd");
-		assertTrue(result == false);
+		assertFalse(companyController.selectAction("kfdblifd"));
 	}
 }

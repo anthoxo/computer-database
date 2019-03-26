@@ -1,5 +1,6 @@
 package controller;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -23,34 +24,29 @@ public class TestMainController {
 
 	@Test
 	public void testSelectDatabaseCompany() {
-		boolean result = mainController.selectDatabase("company");
-		assertTrue(result);
+		assertTrue(mainController.selectDatabase("company"));
 	}
 
 	@Test
 	public void testSelectDatabaseComputer() {
-		boolean result = mainController.selectDatabase("computer");
-		assertTrue(result);
+		assertTrue(mainController.selectDatabase("computer"));
 	}
 
 	@Test
 	public void testSelectDatabaseBack() {
-		boolean result = mainController.selectDatabase("quit");
-		assertTrue(result);
+		assertTrue(mainController.selectDatabase("quit"));
 		assertTrue(mainController.isLeaving());
 
 	}
 
 	@Test
 	public void testSelectDatabaseBadAction1() {
-		boolean result = mainController.selectDatabase("bad_action");
-		assertTrue(result == false);
+		assertFalse(mainController.selectDatabase("bad_action"));
 	}
 
 	@Test
 	public void testSelectDatabaseBadAction2() {
-		boolean result = mainController.selectDatabase("kfdblifd");
-		assertTrue(result == false);
+		assertFalse(mainController.selectDatabase("kfdblifd"));
 	}
 
 }
