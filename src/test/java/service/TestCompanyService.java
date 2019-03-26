@@ -41,7 +41,7 @@ public class TestCompanyService {
 
 	@Test
 	public void testGetCompanyByName() throws ItemNotFoundException, DAOException {
-		Mockito.when(companyDAO.get("")).thenReturn(Optional.of(new Company()));
+		Mockito.when(companyDAO.get("")).thenReturn(Optional.of((new Company.Builder()).build()));
 		this.companyService.getCompanyByName("");
 		Mockito.verify(companyDAO).get("");
 	}

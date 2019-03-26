@@ -72,15 +72,14 @@ public class TestComputerMapper {
 
 	@Test
 	public void testCreateDTO() {
-		Computer c = new Computer();
-		c.setName("Macbook Air");
-		c.setId(1);
-		c.setCompanyId(1);
-		Company company = new Company();
-		company.setName("Apple Inc.");
-		c.setIntroduced(Utils.stringToTimestamp("2000/01/01").get());
-		c.setDiscontinued(Utils.stringToTimestamp("2020/01/01").get());
-		c.setCompany(company);
+		Company company = (new Company.Builder()).withName("Apple Inc.").build();
+		Computer c = (new Computer.Builder()).withId(1)
+				.withName("Macbook Air")
+				.withIntroducedDate(Utils.stringToTimestamp("2000/01/01").get())
+				.withDiscontinuedDate(Utils.stringToTimestamp("2020/01/01").get())
+				.withCompanyId(1)
+				.withCompany(company)
+				.build();
 		ComputerDTO cDTO = computerMapper.createDTO(c);
 		assertEquals(c.getId(), cDTO.getId());
 		assertEquals(c.getName(), cDTO.getName());

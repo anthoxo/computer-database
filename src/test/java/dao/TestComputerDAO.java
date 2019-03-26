@@ -56,9 +56,8 @@ public class TestComputerDAO {
 
 		listComputers = new ArrayList<Computer>();
 		for (int i = 0; i < 3; ++i) {
-			Computer computer = new Computer();
-			computer.setId(i + 1);
-			computer.setName("Computer_" + String.valueOf(i + 1));
+			Computer computer = (new Computer.Builder()).withId(i + 1).withName("Computer_" + String.valueOf(i + 1))
+					.build();
 			listComputers.add(computer);
 		}
 
@@ -141,12 +140,11 @@ public class TestComputerDAO {
 	public void testUpdate() throws SQLException {
 		initUpdate();
 		Mockito.doReturn(stmt).when(connection).prepareStatement(ComputerDAO.REQUEST_UPDATE);
-		Computer computer = new Computer();
-		computer.setId(1);
-		computer.setName("Computer");
-		computer.setIntroduced(Utils.stringToTimestamp("1999/01/01").get());
-		computer.setDiscontinued(Utils.stringToTimestamp("2000/01/01").get());
-		computer.setCompanyId(1);
+		Computer computer = (new Computer.Builder()).withId(1).withName("Computer")
+				.withIntroducedDate(Utils.stringToTimestamp("1999/01/01").get())
+				.withDiscontinuedDate(Utils.stringToTimestamp("2000/01/01").get())
+				.withCompanyId(1)
+				.build();
 		try {
 			this.computerDAO.update(computer);
 		} catch (DAOException e) {
@@ -157,12 +155,11 @@ public class TestComputerDAO {
 	@Test
 	public void testDelete() throws SQLException {
 		initDelete();
-		Computer computer = new Computer();
-		computer.setId(1);
-		computer.setName("Computer");
-		computer.setIntroduced(Utils.stringToTimestamp("2000/01/01").get());
-		computer.setDiscontinued(Utils.stringToTimestamp("1999/01/01").get());
-		computer.setCompanyId(1);
+		Computer computer = (new Computer.Builder()).withId(1).withName("Computer")
+				.withIntroducedDate(Utils.stringToTimestamp("2000/01/01").get())
+				.withDiscontinuedDate(Utils.stringToTimestamp("1999/01/01").get())
+				.withCompanyId(1)
+				.build();
 		try {
 			this.computerDAO.delete(computer);
 		} catch (DAOException e) {

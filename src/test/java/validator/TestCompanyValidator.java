@@ -19,9 +19,7 @@ public class TestCompanyValidator {
 
 	@Test
 	public void testGoodCompany() {
-		Company company = new Company();
-		company.setId(1);
-		company.setName("Apple Inc.");
+		Company company = (new Company.Builder()).withId(1).withName("Apple Inc.").build();
 		try {
 			companyValidator.validate(company);
 			assertTrue(true);
@@ -32,8 +30,7 @@ public class TestCompanyValidator {
 
 	@Test
 	public void testBadCompany1() {
-		Company company = new Company();
-		company.setId(1);
+		Company company = (new Company.Builder()).withId(1).build();
 		try {
 			companyValidator.validate(company);
 			assertTrue(false);
@@ -44,9 +41,7 @@ public class TestCompanyValidator {
 
 	@Test
 	public void testBadCompany2() {
-		Company company = new Company();
-		company.setId(1);
-		company.setName("");
+		Company company = (new Company.Builder()).withId(1).withName("").build();
 		try {
 			companyValidator.validate(company);
 			assertTrue(false);

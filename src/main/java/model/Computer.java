@@ -13,10 +13,7 @@ public class Computer {
 	int companyId;
 	Company company;
 
-	/**
-	 * Default constructor.
-	 */
-	public Computer() {
+	private Computer() {
 	}
 
 	public int getId() {
@@ -99,6 +96,59 @@ public class Computer {
 	public int hashCode() {
 		return this.getId() + this.getName().hashCode() + this.getIntroduced().hashCode()
 				+ this.getDiscontinued().hashCode() + this.getCompanyId() + this.getCompany().hashCode();
+	}
+
+	public static class Builder {
+		private int id;
+		private String name;
+		private Timestamp introduced;
+		private Timestamp discontinued;
+		private int companyId;
+		private Company company;
+
+		public Builder() {
+		}
+
+		public Builder withId(int id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder withName(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder withIntroducedDate(Timestamp introduced) {
+			this.introduced = introduced;
+			return this;
+		}
+
+		public Builder withDiscontinuedDate(Timestamp discontinued) {
+			this.discontinued = discontinued;
+			return this;
+		}
+
+		public Builder withCompanyId(int companyId) {
+			this.companyId = companyId;
+			return this;
+		}
+
+		public Builder withCompany(Company company) {
+			this.company = company;
+			return this;
+		}
+
+		public Computer build() {
+			Computer computer = new Computer();
+			computer.setId(this.id);
+			computer.setName(this.name);
+			computer.setIntroduced(this.introduced);
+			computer.setDiscontinued(this.discontinued);
+			computer.setCompanyId(this.companyId);
+			computer.setCompany(this.company);
+			return computer;
+		}
 	}
 
 }

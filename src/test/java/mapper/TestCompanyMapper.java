@@ -40,9 +40,7 @@ public class TestCompanyMapper {
 
 	@Test
 	public void testCreateDTO() {
-		Company c = new Company();
-		c.setName("Apple");
-		c.setId(0);
+		Company c = (new Company.Builder()).withId(0).withName("Apple").build();
 		CompanyDTO cDTO = companyMapper.createDTO(c);
 		assertEquals(c.getId(), cDTO.getId());
 		assertEquals(c.getName(), cDTO.getName());
@@ -57,6 +55,5 @@ public class TestCompanyMapper {
 		assertEquals(c.getId(), cDTO.getId());
 		assertEquals(c.getName(), cDTO.getName());
 	}
-
 
 }

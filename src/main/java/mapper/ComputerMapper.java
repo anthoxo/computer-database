@@ -40,13 +40,9 @@ public class ComputerMapper {
 	 * @throws SQLException if there is a problem with SQL connection.
 	 */
 	public Computer map(ResultSet rs) throws SQLException {
-		Computer computer = new Computer();
-		computer.setId(rs.getInt("id"));
-		computer.setName(rs.getString("name"));
-		computer.setIntroduced(rs.getTimestamp("introduced"));
-		computer.setDiscontinued(rs.getTimestamp("discontinued"));
-		computer.setCompanyId(rs.getInt("company_id"));
-		return computer;
+		return (new Computer.Builder()).withId(rs.getInt("id")).withName(rs.getString("name"))
+				.withIntroducedDate(rs.getTimestamp("introduced")).withDiscontinuedDate(rs.getTimestamp("discontinued"))
+				.withCompanyId(rs.getInt("company_id")).build();
 	}
 
 	/**
@@ -78,27 +74,19 @@ public class ComputerMapper {
 	 * @throws DAOException
 	 */
 	public Computer createBean(ComputerDTO cDTO) {
-		Computer computer = new Computer();
+		Computer.Builder computerBuilder = new Computer.Builder().withId(cDTO.getId()).withName(cDTO.getName());
 
-		computer.setId(cDTO.getId());
-		computer.setName(cDTO.getName());
 		Optional<Timestamp> intro = Utils.stringToTimestamp(cDTO.getIntroducedDate());
 		Optional<Timestamp> discontinued = Utils.stringToTimestamp(cDTO.getDiscontinuedDate());
 		if (intro.isPresent()) {
-			computer.setIntroduced(intro.get());
+			computerBuilder = computerBuilder.withIntroducedDate(intro.get());
 		}
 		if (discontinued.isPresent()) {
-			computer.setDiscontinued(discontinued.get());
+			computerBuilder = computerBuilder.withDiscontinuedDate(discontinued.get());
 		}
 
-		computer.setCompanyId(cDTO.getCompanyId());
-
-		Company company = new Company();
-		company.setId(cDTO.getCompanyId());
-		company.setName(cDTO.getCompanyName());
-		computer.setCompany(company);
-
-		return computer;
+		Company company = (new Company.Builder()).withId(cDTO.getCompanyId()).withName(cDTO.getCompanyName()).build();
+		return computerBuilder.withCompanyId(cDTO.getCompanyId()).withCompany(company).build();
 	}
 
 }

@@ -7,10 +7,7 @@ public class Company {
 	int id;
 	String name;
 
-	/**
-	 * Default constructor.
-	 */
-	public Company() {
+	private Company() {
 	}
 
 	public int getId() {
@@ -50,5 +47,30 @@ public class Company {
 	@Override
 	public int hashCode() {
 		return this.getId() + this.getName().hashCode();
+	}
+
+	public static class Builder {
+		private int id;
+		private String name;
+
+		public Builder() {
+		}
+
+		public Builder withId(int i) {
+			this.id = i;
+			return this;
+		}
+
+		public Builder withName(String n) {
+			this.name = n;
+			return this;
+		}
+
+		public Company build() {
+			Company company = new Company();
+			company.setId(id);
+			company.setName(name);
+			return company;
+		}
 	}
 }

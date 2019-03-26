@@ -14,9 +14,7 @@ public class TestCompany {
 
 	@BeforeEach
 	public void init() {
-		company = new Company();
-		company.setId(1);
-		company.setName("Apple");
+		company = (new Company.Builder()).withId(1).withName("Apple").build();
 	}
 
 	@Test
@@ -28,7 +26,7 @@ public class TestCompany {
 
 	@Test
 	public void testEquals1() {
-		Company c = new Company();
+		Company c = (new Company.Builder()).build();
 		boolean t = company.equals(c);
 		assertTrue(t == false);
 	}
@@ -42,18 +40,14 @@ public class TestCompany {
 
 	@Test
 	public void testEquals3() {
-		Company c = new Company();
-		c.setId(1);
-		c.setName("apple");
+		Company c = (new Company.Builder()).withId(1).withName("apple").build();
 		boolean t = company.equals(c);
 		assertTrue(t == false);
 	}
 
 	@Test
 	public void testEquals4() {
-		Company c = new Company();
-		c.setId(1);
-		c.setName("Apple");
+		Company c = (new Company.Builder()).withId(1).withName("Apple").build();;
 		boolean t = company.equals(c);
 		assertTrue(t);
 	}

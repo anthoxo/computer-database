@@ -35,10 +35,7 @@ public class CompanyMapper {
 	 * @throws SQLException if there is a problem with SQL connection.
 	 */
 	public Company map(ResultSet rs) throws SQLException {
-		Company company = new Company();
-		company.setId(rs.getInt("id"));
-		company.setName(rs.getString("name"));
-		return company;
+		return (new Company.Builder()).withId(rs.getInt("id")).withName(rs.getString("name")).build();
 	}
 
 	/**
@@ -61,9 +58,6 @@ public class CompanyMapper {
 	 * @return A Company model.
 	 */
 	public Company createBean(CompanyDTO cDTO) {
-		Company company = new Company();
-		company.setId(cDTO.getId());
-		company.setName(cDTO.getName());
-		return company;
+		return (new Company.Builder()).withId(cDTO.getId()).withName(cDTO.getName()).build();
 	}
 }

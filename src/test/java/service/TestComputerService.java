@@ -44,7 +44,7 @@ public class TestComputerService {
 
 	@Test
 	public void testGetByName() throws DAOException, ItemNotFoundException {
-		Optional<Computer> o = Optional.of(new Computer());
+		Optional<Computer> o = Optional.of(new Computer.Builder().build());
 		Mockito.when(computerDAO.get(Mockito.anyString())).thenReturn(o);
 		this.computerService.getComputerByName("ouais");
 		Mockito.verify(computerDAO).get(Mockito.anyString());
@@ -61,7 +61,7 @@ public class TestComputerService {
 
 	@Test
 	public void testGetById() throws DAOException, ItemNotFoundException {
-		Optional<Computer> o = Optional.of(new Computer());
+		Optional<Computer> o = Optional.of(new Computer.Builder().build());
 		Mockito.when(computerDAO.get(Mockito.anyInt())).thenReturn(o);
 		this.computerService.getComputerById(1);
 		Mockito.verify(computerDAO).get(Mockito.anyInt());
@@ -94,7 +94,7 @@ public class TestComputerService {
 
 	@Test
 	public void testDelete() throws DAOException, ItemNotFoundException, ItemNotDeletedException {
-		Optional<Computer> o = Optional.of(new Computer());
+		Optional<Computer> o = Optional.of(new Computer.Builder().build());
 		Mockito.when(computerDAO.get(Mockito.anyInt())).thenReturn(o);
 		this.computerService.deleteComputer(new ComputerDTO());
 		Mockito.verify(computerDAO).delete(Mockito.any());

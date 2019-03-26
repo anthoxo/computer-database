@@ -52,9 +52,8 @@ public class TestCompanyDAO {
 
 		listCompanies = new ArrayList<Company>();
 		for (int i = 0; i < 3; ++i) {
-			Company company = new Company();
-			company.setId(i + 1);
-			company.setName("Company_" + String.valueOf(i + 1));
+			Company company = (new Company.Builder()).withId(i + 1).withName("Company_" + String.valueOf(i + 1))
+					.build();
 			listCompanies.add(company);
 		}
 

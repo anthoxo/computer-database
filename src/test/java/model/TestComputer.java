@@ -17,19 +17,15 @@ public class TestComputer {
 
 	@BeforeEach
 	public void init() {
-		computer = new Computer();
-		company = new Company();
-
-		company.setId(1);
-		company.setName("Apple");
-
-		computer.setId(1);
-		computer.setName("MacBook");
-		computer.setIntroduced(Utils.stringToTimestamp("2000/01/01").get());
-		computer.setDiscontinued(Utils.stringToTimestamp("2001/01/01").get());
-		computer.setCompanyId(1);
-		computer.setCompany(company);
-	}
+		company = (new Company.Builder()).withId(1).withName("Apple").build();
+		computer = (new Computer.Builder()).withId(1)
+				.withName("MacBook")
+				.withIntroducedDate(Utils.stringToTimestamp("2000/01/01").get())
+				.withDiscontinuedDate(Utils.stringToTimestamp("2001/01/01").get())
+				.withCompanyId(1)
+				.withCompany(company)
+				.build();
+		}
 
 	@Test
 	public void testParam() {
@@ -44,7 +40,7 @@ public class TestComputer {
 
 	@Test
 	public void testEquals1() {
-		Computer c = new Computer();
+		Computer c = new Computer.Builder().build();
 		boolean t = computer.equals(c);
 		assertTrue(t == false);
 	}
@@ -58,26 +54,26 @@ public class TestComputer {
 
 	@Test
 	public void testEquals3() {
-		Computer c = new Computer();
-		c.setId(1);
-		c.setName("Macbook");
-		c.setIntroduced(Utils.stringToTimestamp("2000/01/01").get());
-		c.setDiscontinued(Utils.stringToTimestamp("2001/01/01").get());
-		c.setCompanyId(1);
-		c.setCompany(company);
+		Computer c = (new Computer.Builder()).withId(1)
+				.withName("Macbook")
+				.withIntroducedDate(Utils.stringToTimestamp("2000/01/01").get())
+				.withDiscontinuedDate(Utils.stringToTimestamp("2001/01/01").get())
+				.withCompanyId(1)
+				.withCompany(company)
+				.build();
 		boolean t = computer.equals(c);
 		assertTrue(t == false);
 	}
 
 	@Test
 	public void testEquals4() {
-		Computer c = new Computer();
-		c.setId(1);
-		c.setName("MacBook");
-		c.setIntroduced(Utils.stringToTimestamp("2000/01/01").get());
-		c.setDiscontinued(Utils.stringToTimestamp("2001/01/01").get());
-		c.setCompanyId(1);
-		c.setCompany(company);
+		Computer c = (new Computer.Builder()).withId(1)
+				.withName("MacBook")
+				.withIntroducedDate(Utils.stringToTimestamp("2000/01/01").get())
+				.withDiscontinuedDate(Utils.stringToTimestamp("2001/01/01").get())
+				.withCompanyId(1)
+				.withCompany(company)
+				.build();
 		boolean t = computer.equals(c);
 		assertTrue(t);
 	}
