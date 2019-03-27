@@ -10,4 +10,9 @@ public class DAOException extends Exception {
 		super(e);
 	}
 
+	public DAOException(DAOException e) {
+		super(e);
+	}
+
+
 }

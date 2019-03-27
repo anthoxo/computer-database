@@ -3,7 +3,6 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -48,76 +47,66 @@ public class ComputerDAO {
 	}
 
 	public void create(Computer obj) throws DAOException {
-		try (Connection conn = this.daoFactory.getConnection()) {
+		TransactionHandler.from((Connection conn, Computer computerArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_CREATE);
-			stmt.setInt(1, obj.getId());
-			stmt.setString(2, obj.getName());
-			stmt.setTimestamp(3, obj.getIntroduced());
-			stmt.setTimestamp(4, obj.getDiscontinued());
-			if (daoFactory.getCompanyDAO().get(obj.getCompanyId()).isPresent()) {
-				stmt.setInt(5, obj.getCompanyId());
+			stmt.setInt(1, computerArg.getId());
+			stmt.setString(2, computerArg.getName());
+			stmt.setTimestamp(3, computerArg.getIntroduced());
+			stmt.setTimestamp(4, computerArg.getDiscontinued());
+			if (daoFactory.getCompanyDAO().get(computerArg.getCompanyId()).isPresent()) {
+				stmt.setInt(5, computerArg.getCompanyId());
 			} else {
 				stmt.setObject(5, null);
 			}
 			stmt.executeUpdate();
-		} catch (SQLException e) {
-			throw new DAOException(e);
-		}
+		}).run(obj);
 	}
 
 	public Optional<Computer> get(int id) throws DAOException {
 		Optional<Computer> computerOpt = Optional.empty();
-		try (Connection conn = this.daoFactory.getConnection()) {
+		TransactionHandler.from((Connection conn, Optional<Computer> computerOptArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_ID);
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				Computer computer = computerMapper.map(rs);
-				Optional<Company> company = daoFactory.getCompanyDAO().get(computer.getCompanyId());
-				if (company.isPresent()) {
-					computer.setCompany(company.get());
+				Optional<Company> companyOpt = daoFactory.getCompanyDAO().get(computer.getCompanyId());
+				if (companyOpt.isPresent()) {
+					computer.setCompany(companyOpt.get());
 				}
-				computerOpt = Optional.ofNullable(computer);
+				computerOptArg = Optional.ofNullable(computer);
 			}
-		} catch (SQLException e) {
-			throw new DAOException(e);
-		}
+		}).run(computerOpt);
 		return computerOpt;
 	}
 
 	public void update(Computer obj) throws DAOException, ItemNotFoundException {
 		Optional<Computer> computerOpt = this.get(obj.getId());
 		if (computerOpt.isPresent()) {
-			try (Connection conn = this.daoFactory.getConnection()) {
-
+			TransactionHandler.from((Connection conn, Computer computerArg) -> {
 				PreparedStatement stmt = conn.prepareStatement(REQUEST_UPDATE);
-				stmt.setString(1, obj.getName());
-				stmt.setTimestamp(2, obj.getIntroduced());
-				stmt.setTimestamp(3, obj.getDiscontinued());
-				if (daoFactory.getCompanyDAO().get(obj.getCompanyId()).isPresent()) {
-					stmt.setInt(4, obj.getCompanyId());
+				stmt.setString(1, computerArg.getName());
+				stmt.setTimestamp(2, computerArg.getIntroduced());
+				stmt.setTimestamp(3, computerArg.getDiscontinued());
+				if (daoFactory.getCompanyDAO().get(computerArg.getCompanyId()).isPresent()) {
+					stmt.setInt(4, computerArg.getCompanyId());
 				} else {
 					stmt.setObject(4, null);
 				}
 				stmt.setInt(5, obj.getId());
 				stmt.executeUpdate();
-
-			} catch (SQLException e) {
-				throw new DAOException(e);
-			}
+			}).run(obj);
 		} else {
 			throw new ItemNotFoundException("update");
 		}
 	}
 
 	public void delete(Computer obj) throws DAOException {
-		try (Connection conn = this.daoFactory.getConnection()) {
+		TransactionHandler.from((Connection conn, Computer computerArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_DELETE);
-			stmt.setInt(1, obj.getId());
+			stmt.setInt(1, computerArg.getId());
 			stmt.executeUpdate();
-		} catch (SQLException e) {
-			throw new DAOException(e);
-		}
+		}).run(obj);
 	}
 
 	/**
@@ -127,9 +116,8 @@ public class ComputerDAO {
 	 * @throws DAOException
 	 */
 	public List<Computer> getAll() throws DAOException {
-		ArrayList<Computer> listComputers = new ArrayList<Computer>();
-		try (Connection conn = this.daoFactory.getConnection()) {
-
+		ArrayList<Computer> computerList = new ArrayList<Computer>();
+		TransactionHandler.from((Connection conn, ArrayList<Computer> computerListArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_ALL);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -138,14 +126,10 @@ public class ComputerDAO {
 				if (company.isPresent()) {
 					computer.setCompany(company.get());
 				}
-				listComputers.add(computer);
+				computerListArg.add(computer);
 			}
-
-		} catch (SQLException e) {
-			throw new DAOException(e);
-		}
-
-		return listComputers;
+		}).run(computerList);
+		return computerList;
 	}
 
 	/**
@@ -157,8 +141,7 @@ public class ComputerDAO {
 	 */
 	public Optional<Computer> get(String name) throws DAOException {
 		Optional<Computer> computerOpt = Optional.empty();
-		try (Connection conn = this.daoFactory.getConnection()) {
-
+		TransactionHandler.from((Connection conn, Optional<Computer> computerOptArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_NAME);
 			stmt.setString(1, name);
 			ResultSet rs = stmt.executeQuery();
@@ -168,20 +151,17 @@ public class ComputerDAO {
 				if (company.isPresent()) {
 					computer.setCompany(company.get());
 				}
-				computerOpt = Optional.ofNullable(computer);
+				computerOptArg = Optional.ofNullable(computer);
 			}
-
-		} catch (SQLException e) {
-			throw new DAOException(e);
-		}
+		}).run(computerOpt);
 		return computerOpt;
 	}
 
 	public List<Computer> getPattern(String pattern) throws DAOException {
 		List<Computer> result = new ArrayList<Computer>();
-		String patternRequest = new StringBuilder().append("%").append(pattern).append("%").toString();
-		try (Connection conn = this.daoFactory.getConnection()) {
+		TransactionHandler.from((Connection conn, List<Computer> computerListArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_LIKE);
+			String patternRequest = new StringBuilder().append("%").append(pattern).append("%").toString();
 			stmt.setString(1, patternRequest);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -190,11 +170,9 @@ public class ComputerDAO {
 				if (companyOpt.isPresent()) {
 					computer.setCompany(companyOpt.get());
 				}
-				result.add(computer);
+				computerListArg.add(computer);
 			}
-		} catch (SQLException e) {
-			throw new DAOException(e);
-		}
+		}).run(result);
 		return result;
 	}
 }

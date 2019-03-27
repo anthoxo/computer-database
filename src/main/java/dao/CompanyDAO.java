@@ -3,7 +3,6 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,18 +42,14 @@ public class CompanyDAO {
 
 	public Optional<Company> get(int id) throws DAOException {
 		Optional<Company> company = Optional.empty();
-		try (Connection conn = this.daoFactory.getConnection()) {
-
+		TransactionHandler.from((Connection conn, Optional<Company> companyArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_ID);
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				company = Optional.ofNullable(companyMapper.map(rs));
+				companyArg = Optional.ofNullable(companyMapper.map(rs));
 			}
-
-		} catch (SQLException e) {
-			throw new DAOException(e);
-		}
+		}).run(company);
 		return company;
 	}
 
@@ -66,18 +61,14 @@ public class CompanyDAO {
 	 */
 	public List<Company> getAll() throws DAOException {
 		List<Company> listCompanies = new ArrayList<Company>();
-		try (Connection conn = this.daoFactory.getConnection()) {
-
+		TransactionHandler.from((Connection conn, List<Company> l) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_ALL);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				Company company = companyMapper.map(rs);
-				listCompanies.add(company);
+				l.add(company);
 			}
-
-		} catch (SQLException e) {
-			throw new DAOException(e);
-		}
+		}).run(listCompanies);
 		return listCompanies;
 	}
 
@@ -90,18 +81,14 @@ public class CompanyDAO {
 	 */
 	public Optional<Company> get(String name) throws DAOException {
 		Optional<Company> company = Optional.empty();
-		try (Connection conn = this.daoFactory.getConnection()) {
-
+		TransactionHandler.from((Connection conn, Optional<Company> companyOpt) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_NAME);
 			stmt.setString(1, name);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				company = Optional.ofNullable(companyMapper.map(rs));
+				companyOpt = Optional.ofNullable(companyMapper.map(rs));
 			}
-
-		} catch (SQLException e) {
-			throw new DAOException(e);
-		}
+		}).run(company);
 		return company;
 	}
 }
