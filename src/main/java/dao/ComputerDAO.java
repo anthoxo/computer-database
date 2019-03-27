@@ -59,12 +59,13 @@ public class ComputerDAO {
 				stmt.setObject(5, null);
 			}
 			stmt.executeUpdate();
+			return Optional.empty();
 		}).run(obj);
 	}
 
 	public Optional<Computer> get(int id) throws DAOException {
 		Optional<Computer> computerOpt = Optional.empty();
-		TransactionHandler.from((Connection conn, Optional<Computer> computerOptArg) -> {
+		return TransactionHandler.from((Connection conn, Optional<Computer> computerOptArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_ID);
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
@@ -76,8 +77,8 @@ public class ComputerDAO {
 				}
 				computerOptArg = Optional.ofNullable(computer);
 			}
-		}).run(computerOpt);
-		return computerOpt;
+			return computerOptArg;
+		}).run(computerOpt).getResult();
 	}
 
 	public void update(Computer obj) throws DAOException, ItemNotFoundException {
@@ -95,6 +96,7 @@ public class ComputerDAO {
 				}
 				stmt.setInt(5, obj.getId());
 				stmt.executeUpdate();
+				return Optional.empty();
 			}).run(obj);
 		} else {
 			throw new ItemNotFoundException("update");
@@ -106,6 +108,7 @@ public class ComputerDAO {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_DELETE);
 			stmt.setInt(1, computerArg.getId());
 			stmt.executeUpdate();
+			return Optional.empty();
 		}).run(obj);
 	}
 
@@ -117,7 +120,7 @@ public class ComputerDAO {
 	 */
 	public List<Computer> getAll() throws DAOException {
 		ArrayList<Computer> computerList = new ArrayList<Computer>();
-		TransactionHandler.from((Connection conn, ArrayList<Computer> computerListArg) -> {
+		return TransactionHandler.from((Connection conn, ArrayList<Computer> computerListArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_ALL);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -128,8 +131,8 @@ public class ComputerDAO {
 				}
 				computerListArg.add(computer);
 			}
-		}).run(computerList);
-		return computerList;
+			return computerListArg;
+		}).run(computerList).getResult();
 	}
 
 	/**
@@ -141,7 +144,7 @@ public class ComputerDAO {
 	 */
 	public Optional<Computer> get(String name) throws DAOException {
 		Optional<Computer> computerOpt = Optional.empty();
-		TransactionHandler.from((Connection conn, Optional<Computer> computerOptArg) -> {
+		return TransactionHandler.from((Connection conn, Optional<Computer> computerOptArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_NAME);
 			stmt.setString(1, name);
 			ResultSet rs = stmt.executeQuery();
@@ -153,13 +156,13 @@ public class ComputerDAO {
 				}
 				computerOptArg = Optional.ofNullable(computer);
 			}
-		}).run(computerOpt);
-		return computerOpt;
+			return computerOptArg;
+		}).run(computerOpt).getResult();
 	}
 
 	public List<Computer> getPattern(String pattern) throws DAOException {
 		List<Computer> result = new ArrayList<Computer>();
-		TransactionHandler.from((Connection conn, List<Computer> computerListArg) -> {
+		return TransactionHandler.from((Connection conn, List<Computer> computerListArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_LIKE);
 			String patternRequest = new StringBuilder().append("%").append(pattern).append("%").toString();
 			stmt.setString(1, patternRequest);
@@ -172,7 +175,7 @@ public class ComputerDAO {
 				}
 				computerListArg.add(computer);
 			}
-		}).run(result);
-		return result;
+			return computerListArg;
+		}).run(result).getResult();
 	}
 }

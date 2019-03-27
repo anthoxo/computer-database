@@ -20,6 +20,7 @@ public class DAOFactory {
 	private static DAOFactory instance = null;
 
 	public static final String DAO_PROPERTIES = "dao.properties";
+	public static final String DAO_TEST_PROPERTIES = "dao-test.properties";
 
 	private Logger logger = LoggerFactory.getLogger(DAOFactory.class);
 	private HikariDataSource hikariDataSource;
@@ -28,9 +29,13 @@ public class DAOFactory {
 	 * Default constructor.
 	 */
 	private DAOFactory() {
+		this(DAO_PROPERTIES);
+	}
+
+	private DAOFactory(String propertiesPath) {
 		Properties properties = new Properties();
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		InputStream fichierProperties = classLoader.getResourceAsStream(DAO_PROPERTIES);
+		InputStream fichierProperties = classLoader.getResourceAsStream(propertiesPath);
 		try {
 			properties.load(fichierProperties);
 			HikariConfig hikariCfg = new HikariConfig(properties);
@@ -83,5 +88,15 @@ public class DAOFactory {
 	 */
 	public Logger getLogger() {
 		return this.logger;
+	}
+
+	public static void startTest() {
+		instance = new DAOFactory(DAO_TEST_PROPERTIES);
+		ComputerDAO.getInstance().daoFactory = instance;
+	}
+
+	public static void stopTest() {
+		instance = new DAOFactory();
+		ComputerDAO.getInstance().daoFactory = instance;
 	}
 }

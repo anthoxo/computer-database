@@ -15,7 +15,6 @@ public class CompanyDAO {
 
 	private static CompanyDAO instance = null;
 
-	DAOFactory daoFactory = DAOFactory.getInstance();
 	CompanyMapper companyMapper = CompanyMapper.getInstance();
 
 	static final String REQUEST_GET_BY_ID = "SELECT id,name FROM company WHERE id = ?";
@@ -42,15 +41,15 @@ public class CompanyDAO {
 
 	public Optional<Company> get(int id) throws DAOException {
 		Optional<Company> company = Optional.empty();
-		TransactionHandler.from((Connection conn, Optional<Company> companyArg) -> {
+		return TransactionHandler.from((Connection conn, Optional<Company> companyArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_ID);
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				companyArg = Optional.ofNullable(companyMapper.map(rs));
 			}
-		}).run(company);
-		return company;
+			return companyArg;
+		}).run(company).getResult();
 	}
 
 	/**
@@ -61,15 +60,15 @@ public class CompanyDAO {
 	 */
 	public List<Company> getAll() throws DAOException {
 		List<Company> listCompanies = new ArrayList<Company>();
-		TransactionHandler.from((Connection conn, List<Company> l) -> {
+		return TransactionHandler.from((Connection conn, List<Company> l) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_ALL);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				Company company = companyMapper.map(rs);
 				l.add(company);
 			}
-		}).run(listCompanies);
-		return listCompanies;
+			return l;
+		}).run(listCompanies).getResult();
 	}
 
 	/**
@@ -81,14 +80,14 @@ public class CompanyDAO {
 	 */
 	public Optional<Company> get(String name) throws DAOException {
 		Optional<Company> company = Optional.empty();
-		TransactionHandler.from((Connection conn, Optional<Company> companyOpt) -> {
+		return TransactionHandler.from((Connection conn, Optional<Company> companyOpt) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_NAME);
 			stmt.setString(1, name);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				companyOpt = Optional.ofNullable(companyMapper.map(rs));
 			}
-		}).run(company);
-		return company;
+			return companyOpt;
+		}).run(company).getResult();
 	}
 }

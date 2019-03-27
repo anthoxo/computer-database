@@ -3,162 +3,108 @@ package dao;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import exception.DAOException;
 import exception.ItemNotFoundException;
-import mapper.ComputerMapper;
 import model.Computer;
+import utils.RunSQLScript;
 import utils.Utils;
 
 @ExtendWith(MockitoExtension.class)
 public class TestComputerDAO {
-	@Mock
-	DAOFactory dao;
 
-	@Mock
-	Connection connection;
-
-	@Mock
-	PreparedStatement stmt;
-
-	@Mock
-	ResultSet rs;
-
-	@Mock
-	ComputerMapper computerMapper;
-
-	@Mock
-	CompanyDAO companyDAO;
-
-	@InjectMocks
 	ComputerDAO computerDAO;
 
-	List<Computer> computerList;
+	@BeforeAll
+	public static void setUp() throws IOException, DAOException {
+		DAOFactory.startTest();
+		RunSQLScript.run();
+	}
+
+	@AfterAll
+	public static void stop() {
+		DAOFactory.stopTest();
+	}
 
 	@BeforeEach
-	public void init() throws SQLException, NoSuchFieldException, SecurityException, IllegalArgumentException,
-			IllegalAccessException {
+	public void init() {
 		this.computerDAO = ComputerDAO.getInstance();
-
-		computerList = new ArrayList<Computer>();
-		for (int i = 0; i < 3; ++i) {
-			Computer computer = (new Computer.Builder()).withId(i + 1).withName("Computer_" + String.valueOf(i + 1))
-					.build();
-			computerList.add(computer);
-		}
-
-		Field field = ComputerDAO.class.getDeclaredField("daoFactory");
-		field.setAccessible(true);
-		field.set(computerDAO, dao);
-
-		field = ComputerDAO.class.getDeclaredField("computerMapper");
-		field.setAccessible(true);
-		field.set(computerDAO, computerMapper);
-	}
-
-	public void initGoodRequest() throws SQLException {
-		Mockito.when(dao.getCompanyDAO()).thenReturn(companyDAO);
-		Mockito.when(dao.getConnection()).thenReturn(connection);
-	}
-
-	public void initGet() throws SQLException {
-		initGoodRequest();
-		Mockito.when(stmt.executeQuery()).thenReturn(rs);
-		Mockito.when(rs.next()).thenReturn(Boolean.TRUE).thenReturn(Boolean.TRUE).thenReturn(Boolean.TRUE)
-				.thenReturn(Boolean.FALSE);
-		Mockito.doReturn(computerList.get(0)).when(this.computerDAO.computerMapper).map(rs);
-	}
-
-	public void initUpdate() throws SQLException {
-		initGet();
-		Mockito.when(connection.prepareStatement(ComputerDAO.REQUEST_GET_BY_ID)).thenReturn(stmt);
-	}
-
-	public void initDelete() throws SQLException {
-		Mockito.when(dao.getConnection()).thenReturn(connection);
-		Mockito.when(connection.prepareStatement(ComputerDAO.REQUEST_DELETE)).thenReturn(stmt);
-	}
-
-	public void initCreateBean() {
-		Mockito.when(dao.getCompanyDAO()).thenReturn(companyDAO);
 	}
 
 	@Test
 	public void testGetById() throws SQLException, DAOException {
-		initGet();
-		Mockito.when(connection.prepareStatement(ComputerDAO.REQUEST_GET_BY_ID)).thenReturn(stmt);
-		Computer computer = this.computerDAO.get(0).get();
-		assertEquals(computer.getId(), 1);
-		assertEquals(computer.getName(), "Computer_1");
+		Optional<Computer> computerOpt = this.computerDAO.get(1);
+		if (computerOpt.isPresent()) {
+			Computer computer = computerOpt.get();
+			assertEquals(computer.getId(), 1);
+			assertEquals(computer.getName(), "MacBook Pro 15.4 inch");
+		} else {
+			assertTrue(false);
+		}
 	}
 
 	@Test
 	public void testGetByName() throws SQLException, DAOException {
-		initGet();
-		Mockito.when(connection.prepareStatement(ComputerDAO.REQUEST_GET_BY_NAME)).thenReturn(stmt);
-		Computer computer = this.computerDAO.get("Computer_1").get();
-		assertEquals(computer.getId(), 1);
-		assertEquals(computer.getName(), "Computer_1");
+		Optional<Computer> computerOpt = this.computerDAO.get("CM-2a");
+		if (computerOpt.isPresent()) {
+			Computer computer = computerOpt.get();
+			assertEquals(computer.getId(), 2);
+			assertEquals(computer.getName(), "CM-2a");
+		} else {
+			assertTrue(false);
+		}
 	}
 
 	@Test
 	public void testGetAll() throws SQLException, DAOException {
-		initGet();
-		Mockito.when(connection.prepareStatement(ComputerDAO.REQUEST_GET_ALL)).thenReturn(stmt);
 		List<Computer> list = this.computerDAO.getAll();
-		assertEquals(list.size(), computerList.size());
+		assertEquals(list.size(), 4);
 	}
 
 	@Test
-	public void testCreate() throws SQLException {
-		initGoodRequest();
-		Mockito.when(connection.prepareStatement(ComputerDAO.REQUEST_CREATE)).thenReturn(stmt);
-		Computer computer = computerList.get(0);
+	public void testCreateAndDelete() throws SQLException {
 		try {
+			Computer computer = new Computer.Builder().withName("Computer_test").build();
 			this.computerDAO.create(computer);
+			List<Computer> list = this.computerDAO.getAll();
+			assertEquals(list.size(), 5);
+			this.computerDAO.delete(this.computerDAO.get("Computer_test").get());
+			list = this.computerDAO.getAll();
+			assertEquals(list.size(), 4);
 		} catch (DAOException e) {
 			assertTrue(false);
 		}
-
 	}
 
 	@Test
-	public void testUpdate() throws SQLException, ItemNotFoundException {
-		initUpdate();
-		Mockito.doReturn(stmt).when(connection).prepareStatement(ComputerDAO.REQUEST_UPDATE);
-		Computer computer = (new Computer.Builder()).withId(1).withName("Computer")
-				.withIntroducedDate(Utils.stringToTimestamp("1999/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("2000/01/01").get()).withCompanyId(1).build();
+	public void testCreateAndUpdate() throws SQLException, ItemNotFoundException {
 		try {
+			Computer computer = new Computer.Builder().withName("Computer_test").build();
+			this.computerDAO.create(computer);
+			List<Computer> list = this.computerDAO.getAll();
+			assertEquals(list.size(), 5);
+			computer = this.computerDAO.get("Computer_test").get();
+			computer.setIntroduced(Utils.stringToTimestamp("1999/01/01").get());
+			computer.setDiscontinued(Utils.stringToTimestamp("2000/01/01").get());
 			this.computerDAO.update(computer);
-		} catch (DAOException e) {
-			assertTrue(false);
-		}
-	}
-
-	@Test
-	public void testDelete() throws SQLException {
-		initDelete();
-		Computer computer = (new Computer.Builder()).withId(1).withName("Computer")
-				.withIntroducedDate(Utils.stringToTimestamp("2000/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("1999/01/01").get()).withCompanyId(1).build();
-		try {
-			this.computerDAO.delete(computer);
+			computer = this.computerDAO.get("Computer_test").get();
+			assertEquals(computer.getName(), "Computer_test");
+			assertEquals(computer.getIntroduced(), Utils.stringToTimestamp("1999/01/01").get());
+			assertEquals(computer.getDiscontinued(), Utils.stringToTimestamp("2000/01/01").get());
+			this.computerDAO.delete(this.computerDAO.get("Computer_test").get());
+			list = this.computerDAO.getAll();
+			assertEquals(list.size(), 4);
 		} catch (DAOException e) {
 			assertTrue(false);
 		}

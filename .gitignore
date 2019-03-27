@@ -1,6 +1,7 @@
 /bin/
 /logs/
 *.log
+/src/main/resources/dao.properties
 
 # eclipse project file
 .settings/

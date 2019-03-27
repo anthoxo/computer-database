@@ -5,29 +5,30 @@ import java.sql.SQLException;
 
 import exception.DAOException;
 
-public class TransactionHandler<U> {
+public class TransactionHandler<U,R> {
 
-	interface MyConsumer<U> {
-		public void accept(Connection t, U u) throws SQLException, DAOException;
+	public interface MyConsumer<U,R> {
+		public R accept(Connection t, U u) throws SQLException, DAOException;
 	};
 
-	MyConsumer<U> myConsumer;
+	MyConsumer<U,R> myConsumer;
+	R result;
 	DAOFactory daoFactory;
 
-	private TransactionHandler(MyConsumer<U> myConsumer) {
+	private TransactionHandler(MyConsumer<U,R> myConsumer) {
 		this.myConsumer = myConsumer;
-		daoFactory = DAOFactory.getInstance();
+		this.daoFactory = DAOFactory.getInstance();
 	}
 
-	public static <U> TransactionHandler<U> from(MyConsumer<U> myConsumer) {
-		return new TransactionHandler<U>(myConsumer);
+	public static <U,R> TransactionHandler<U,R> from(MyConsumer<U,R> myConsumer) {
+		return new TransactionHandler<U,R>(myConsumer);
 	}
 
-	public void run(U u) throws DAOException {
+	public TransactionHandler<U,R> run(U u) throws DAOException {
 		try (Connection conn = this.daoFactory.getConnection()) {
 			conn.setAutoCommit(false);
 			try {
-				this.myConsumer.accept(conn, u);
+				this.result = this.myConsumer.accept(conn, u);
 			} catch (SQLException e) {
 				conn.rollback();
 				conn.setAutoCommit(true);
@@ -42,6 +43,10 @@ public class TransactionHandler<U> {
 		} catch (SQLException e) {
 			throw new DAOException(e);
 		}
+		return this;
 	}
 
+	public R getResult() {
+		return this.result;
+	}
 }
