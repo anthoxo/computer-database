@@ -7,8 +7,10 @@
 <meta charset="UTF-8">
 <title>List of computers</title>
 <c:set var="context" value="${pageContext.request.contextPath}" />
-<link href="${context}/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="${context}/css/font-awesome.css" rel="stylesheet" media="screen">
+<link href="${context}/css/bootstrap.min.css" rel="stylesheet"
+	media="screen">
+<link href="${context}/css/font-awesome.css" rel="stylesheet"
+	media="screen">
 <link href="${context}/css/main.css" rel="stylesheet" media="screen">
 </head>
 <body>
@@ -24,16 +26,16 @@
 	</c:if>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="${context}/index"> Application - Computer
-				Database </a>
+			<a class="navbar-brand" href="${context}/index"> Application -
+				Computer Database </a>
 		</div>
 	</header>
-
 	<div class="container">
+		<h1 id="homeTitle">${computerNumber} computers found</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
-				<form id="searchForm" action="${context}/computer/search" method="POST"
-					class="form-inline">
+				<form id="searchForm" action="${context}/computer/search"
+					method="POST" class="form-inline">
 					<input type="search" id="searchbox" name="search"
 						class="form-control" placeholder="Search name" /> <input
 						type="submit" id="searchSubmitBtn" value="Filter by name"
@@ -43,8 +45,8 @@
 			<div class="pull-right">
 				<c:choose>
 					<c:when test="${isSearching == false}">
-						<a class="btn btn-success" id="addComputerBtn" href="${context}/computer/add">Add
-							Computer</a>
+						<a class="btn btn-success" id="addComputerBtn"
+							href="${context}/computer/add">Add Computer</a>
 					</c:when>
 					<c:otherwise>
 						<a class="btn btn-success" id="goBack" href="${context}/computer">Go

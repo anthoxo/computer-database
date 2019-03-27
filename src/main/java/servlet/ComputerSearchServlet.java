@@ -25,6 +25,7 @@ public class ComputerSearchServlet extends HttpServlet {
 	public static final String ID_PAGE = "idPage";
 	public static final String URL_PATH = "urlPath";
 	public static final String IS_SEARCHING = "isSearching";
+	public static final String COMPUTER_NUMBER = "computerNumber";
 
 	public static final String URL_COMPUTER_SEARCH = "/computer/search";
 	public static final String VIEW_COMPUTER = "/views/listComputers.jsp";
@@ -76,6 +77,8 @@ public class ComputerSearchServlet extends HttpServlet {
 		request.setAttribute(ID_PAGE, index + 1);
 		request.setAttribute(URL_PATH, request.getContextPath() + URL_COMPUTER_SEARCH);
 		request.setAttribute(IS_SEARCHING, "true");
+		request.setAttribute(COMPUTER_NUMBER, computerPage.getLength());
+
 
 		RequestDispatcher rd = this.getServletContext().getRequestDispatcher(VIEW_COMPUTER);
 		rd.forward(request, response);

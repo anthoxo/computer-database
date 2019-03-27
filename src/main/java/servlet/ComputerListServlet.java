@@ -23,6 +23,8 @@ public class ComputerListServlet extends HttpServlet {
 	public static final String ID_PAGE = "idPage";
 	public static final String URL_PATH = "urlPath";
 	public static final String IS_SEARCHING = "isSearching";
+	public static final String COMPUTER_NUMBER = "computerNumber";
+
 
 	public static final String NOTIFICATION = "notification";
 	public static final String MSG_NOTIFICATION = "msgNotification";
@@ -61,6 +63,7 @@ public class ComputerListServlet extends HttpServlet {
 			request.setAttribute(ID_PAGE, index + 1);
 			request.setAttribute(URL_PATH, request.getContextPath() + URL_COMPUTER);
 			request.setAttribute(IS_SEARCHING, "false");
+			request.setAttribute(COMPUTER_NUMBER, this.computerController.getComputerPage().getLength());
 
 			String notification = (String) request.getSession().getAttribute(NOTIFICATION);
 

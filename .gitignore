@@ -2,6 +2,8 @@
 /logs/
 *.log
 /src/main/resources/dao.properties
+/src/main/resources/dao-test.properties
+
 
 # eclipse project file
 .settings/
