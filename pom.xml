@@ -29,6 +29,7 @@
 		<jstl.version>1.2</jstl.version>
 		<selenium.version>2.27.0</selenium.version>
 		<commons.lang.version>2.5</commons.lang.version>
+		<hikaricp.version>3.3.1</hikaricp.version>
 	</properties>
 
 	<dependencies>
@@ -107,6 +108,13 @@
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>${commons.lang.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>${hikaricp.version}</version>
 		</dependency>
 
 	</dependencies>

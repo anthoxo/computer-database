@@ -39,7 +39,6 @@ public class EditComputerServlet extends HttpServlet {
 	public static final String COMPANY_CONTROLLER = "company_controller";
 	public static final String COMPANY_LIST = "companyList";
 
-
 	ComputerController computerController;
 	CompanyController companyController;
 

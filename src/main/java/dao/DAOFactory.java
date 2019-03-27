@@ -3,12 +3,14 @@ package dao;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class DAOFactory {
 
@@ -17,19 +19,10 @@ public class DAOFactory {
 
 	private static DAOFactory instance = null;
 
-	public static final String DRIVER_TABLE = "DRIVER_TABLE";
-	public static final String URL_TABLE = "URL_TABLE";
-	public static final String USER_TABLE = "USER_TABLE";
-	public static final String PASSWORD_TABLE = "PASSWORD_TABLE";
-	public static final String TABLE_NAME = "TABLE_NAME";
-
-	private String driver;
-	private String urlDatabase;
-	private String user;
-	private String password;
-	private String table;
+	public static final String DAO_PROPERTIES = "dao.properties";
 
 	private Logger logger = LoggerFactory.getLogger(DAOFactory.class);
+	private HikariDataSource hikariDataSource;
 
 	/**
 	 * Default constructor.
@@ -37,24 +30,13 @@ public class DAOFactory {
 	private DAOFactory() {
 		Properties properties = new Properties();
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		InputStream fichierProperties = classLoader.getResourceAsStream("dao.properties");
-
+		InputStream fichierProperties = classLoader.getResourceAsStream(DAO_PROPERTIES);
 		try {
 			properties.load(fichierProperties);
+			HikariConfig hikariCfg = new HikariConfig(properties);
+			this.hikariDataSource = new HikariDataSource(hikariCfg);
 		} catch (IOException e1) {
 			logger.error(e1.getMessage());
-		}
-
-		this.driver = properties.getProperty(DRIVER_TABLE);
-		this.urlDatabase = properties.getProperty(URL_TABLE);
-		this.user = properties.getProperty(USER_TABLE);
-		this.password = properties.getProperty(PASSWORD_TABLE);
-		this.table = properties.getProperty(TABLE_NAME);
-
-		try {
-			Class.forName(this.driver);
-		} catch (ClassNotFoundException e) {
-			logger.error(e.getMessage());
 		}
 	}
 
@@ -93,7 +75,7 @@ public class DAOFactory {
 	 * @throws SQLException If it's impossible to create this connection.
 	 */
 	public Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(this.urlDatabase + this.table, this.user, this.password);
+		return hikariDataSource.getConnection();
 	}
 
 	/**
