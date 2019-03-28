@@ -9,9 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import controller.ComputerController;
 import dto.ComputerDTO;
 import model.Page;
+import service.ComputerService;
+import utils.Utils.OrderByOption;
 import utils.Variable;
 
 @WebServlet("/computer/search")
@@ -19,9 +20,11 @@ public class ComputerSearchServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -4860354040907739312L;
 
-	ComputerController computerController;
+	ComputerService computerService = ComputerService.getInstance();
 	String pattern = "";
 	Page<ComputerDTO> computerPage;
+	String orderBy;
+	OrderByOption orderByOption;
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -38,24 +41,29 @@ public class ComputerSearchServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		computerController = (ComputerController) request.getSession().getAttribute(Variable.COMPUTER_CONTROLLER);
-		if (computerController == null) {
-			computerController = new ComputerController();
-			request.getSession().setAttribute(Variable.COMPUTER_CONTROLLER, computerController);
-		}
-
 		String indexPage = request.getParameter(Variable.GET_PARAMETER_ID);
 		int index;
-		String orderBy;
+		String orderByTmp;
 		if (indexPage == null) {
 			index = 0;
-			orderBy = request.getParameter(Variable.GET_ORDER_BY);
-			if (orderBy != null) {
-				computerController.refreshAttributeOrderBy(orderBy);
-				computerPage = new Page<ComputerDTO>(computerController.getComputersByPatternOrderBy(pattern, orderBy));
+			orderByTmp = request.getParameter(Variable.GET_ORDER_BY);
+			if (orderByTmp != null) {
+				switch (this.orderByOption) {
+				case ASC:
+					this.orderByOption = OrderByOption.DESC;
+					break;
+				default:
+					this.orderByOption = OrderByOption.ASC;
+					break;
+				}
+				if (!orderByTmp.equals(this.orderBy)) {
+					this.orderByOption = OrderByOption.ASC;
+				}
+				this.orderBy = orderByTmp;
+				computerPage = new Page<ComputerDTO>(
+						this.computerService.getComputersByPatternOrderBy(pattern, this.orderBy, this.orderByOption));
 			} else {
-				computerPage = new Page<ComputerDTO>(computerController.getComputersByPattern(pattern));
+				computerPage = new Page<ComputerDTO>(this.computerService.getComputersByPattern(pattern));
 			}
 		} else {
 			index = Integer.valueOf(indexPage) - 1;

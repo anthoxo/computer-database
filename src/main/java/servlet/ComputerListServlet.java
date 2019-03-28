@@ -9,49 +9,62 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import controller.ComputerController;
+import dto.ComputerDTO;
 import model.Page;
+import service.ComputerService;
+import utils.Utils.OrderByOption;
 import utils.Variable;
 
 @WebServlet("/computer")
 public class ComputerListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	ComputerController computerController;
+	ComputerService computerService = ComputerService.getInstance();
+	Page<ComputerDTO> computerPage;
+	OrderByOption orderByOption;
+	String orderBy;
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			computerController = (ComputerController) request.getSession().getAttribute(Variable.COMPUTER_CONTROLLER);
-			if (computerController == null) {
-				computerController = new ComputerController();
-				request.getSession().setAttribute(Variable.COMPUTER_CONTROLLER, computerController);
-			}
-
 			String indexPage = request.getParameter(Variable.GET_PARAMETER_ID);
-			String orderBy;
+			String orderByTmp;
 			int index;
 			if (indexPage == null) {
 				index = 0;
-				orderBy = request.getParameter(Variable.GET_ORDER_BY);
-				if (orderBy != null) {
-					computerController.refreshComputerPage(orderBy);
+				orderByTmp = request.getParameter(Variable.GET_ORDER_BY);
+				if (orderByTmp != null) {
+					switch (this.orderByOption) {
+					case ASC:
+						this.orderByOption = OrderByOption.DESC;
+						break;
+					default:
+						this.orderByOption = OrderByOption.ASC;
+						break;
+					}
+					if (!orderByTmp.equals(orderBy)) {
+						this.orderByOption = OrderByOption.ASC;
+					}
+					this.orderBy = orderByTmp;
+					this.computerPage = new Page<ComputerDTO>(
+							computerService.getAllComputersOrderBy(orderBy, orderByOption));
 				} else {
-					computerController.refreshComputerPage();
+					orderByOption = OrderByOption.NULL;
+					this.computerPage = new Page<ComputerDTO>(computerService.getAllComputers());
 				}
 			} else {
 				index = Integer.valueOf(indexPage) - 1;
 			}
 
-			this.computerController.getComputerPage().goTo(index * Page.NB_ITEMS_PER_PAGE);
+			computerPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
 
-			request.setAttribute(Variable.COMPUTER_LIST, this.computerController.getComputerPage().getEntitiesPage());
-			request.setAttribute(Variable.NB_PAGES, this.computerController.getComputerPage().getNbPages());
+			request.setAttribute(Variable.COMPUTER_LIST, computerPage.getEntitiesPage());
+			request.setAttribute(Variable.NB_PAGES, computerPage.getNbPages());
 			request.setAttribute(Variable.ID_PAGE, index + 1);
 			request.setAttribute(Variable.URL_PATH, request.getContextPath() + Variable.URL_COMPUTER);
 			request.setAttribute(Variable.IS_SEARCHING, "false");
-			request.setAttribute(Variable.COMPUTER_NUMBER, this.computerController.getComputerPage().getLength());
+			request.setAttribute(Variable.COMPUTER_NUMBER, computerPage.getLength());
 
 			String notification = (String) request.getSession().getAttribute(Variable.NOTIFICATION);
 

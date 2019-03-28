@@ -10,12 +10,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import controller.CompanyController;
-import controller.ComputerController;
 import dto.CompanyDTO;
 import dto.ComputerDTO;
 import exception.ItemNotFoundException;
 import exception.ItemNotUpdatedException;
+import service.CompanyService;
+import service.ComputerService;
 import utils.Variable;
 
 @WebServlet("/computer/edit")
@@ -23,22 +23,21 @@ public class EditComputerServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 8206412986998744720L;
 
-	ComputerController computerController;
-	CompanyController companyController;
+	ComputerService computerService = ComputerService.getInstance();
+	CompanyService companyService = CompanyService.getInstance();
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String id, name, introduced, discontinued, companyId;
-
-		id = request.getParameter(Variable.GET_PARAMETER_ID);
-		name = request.getParameter(Variable.GET_PARAMETER_NAME);
-		introduced = request.getParameter(Variable.GET_PARAMETER_INTRODUCED);
-		discontinued = request.getParameter(Variable.GET_PARAMETER_DISCONTINUED);
-		companyId = request.getParameter(Variable.GET_PARAMETER_COMPANY_ID);
-
+		String id = request.getParameter(Variable.GET_PARAMETER_ID);
+		String companyId = request.getParameter(Variable.GET_PARAMETER_COMPANY_ID);
+		ComputerDTO computerDTO = new ComputerDTO();
+		computerDTO.setId(Integer.valueOf(id));
+		computerDTO.setName(request.getParameter(Variable.GET_PARAMETER_NAME));
+		computerDTO.setIntroducedDate(request.getParameter(Variable.GET_PARAMETER_INTRODUCED));
+		computerDTO.setDiscontinuedDate(request.getParameter(Variable.GET_PARAMETER_DISCONTINUED));
+		computerDTO.setCompanyId(Integer.valueOf(companyId));
 		try {
-			this.computerController.updateComputer(Integer.valueOf(id), name, introduced, discontinued,
-					Integer.valueOf(companyId));
+			this.computerService.updateComputer(computerDTO);
 			request.getSession().setAttribute(Variable.NOTIFICATION, "true");
 			request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "This object has been correctly updated !");
 			request.getSession().setAttribute(Variable.LVL_NOTIFICATION, "success");
@@ -63,18 +62,6 @@ public class EditComputerServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		computerController = (ComputerController) request.getSession().getAttribute(Variable.COMPUTER_CONTROLLER);
-		if (computerController == null) {
-			computerController = new ComputerController();
-			request.getSession().setAttribute(Variable.COMPUTER_CONTROLLER, computerController);
-		}
-
-		companyController = (CompanyController) request.getSession().getAttribute(Variable.COMPANY_CONTROLLER);
-		if (companyController == null) {
-			companyController = new CompanyController();
-			request.getSession().setAttribute(Variable.COMPANY_CONTROLLER, companyController);
-		}
-
 		String idString = request.getParameter(Variable.GET_PARAMETER_ID);
 		int id = 0;
 		if (idString != null) {
@@ -82,9 +69,9 @@ public class EditComputerServlet extends HttpServlet {
 		}
 
 		try {
-			ComputerDTO cDTO = this.computerController.getComputerById(id);
+			ComputerDTO cDTO = this.computerService.getComputerById(id);
 			request.setAttribute("computer", cDTO);
-			List<CompanyDTO> listCompanies = this.companyController.getAllCompanies();
+			List<CompanyDTO> listCompanies = this.companyService.getAllCompanies();
 
 			request.setAttribute(Variable.COMPANY_LIST, listCompanies);
 

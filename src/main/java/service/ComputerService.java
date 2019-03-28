@@ -22,6 +22,9 @@ import utils.Utils.OrderByOption;
 import validator.ComputerValidator;
 
 public class ComputerService {
+
+	private static ComputerService instance = null;
+
 	ComputerDAO computerDAO;
 	ComputerMapper computerMapper;
 	ComputerValidator computerValidator;
@@ -31,11 +34,19 @@ public class ComputerService {
 	/**
 	 * Default constructor.
 	 */
-	public ComputerService() {
+	private ComputerService() {
 		computerDAO = ComputerDAO.getInstance();
 		computerMapper = ComputerMapper.getInstance();
 		computerValidator = new ComputerValidator();
 	}
+
+	public static ComputerService getInstance() {
+		if (instance == null) {
+			instance = new ComputerService();
+		}
+		return instance;
+	}
+
 
 	/**
 	 * Create a new Computer in database using its DTO.

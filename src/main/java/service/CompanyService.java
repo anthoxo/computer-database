@@ -14,6 +14,9 @@ import mapper.CompanyMapper;
 import model.Company;
 
 public class CompanyService {
+
+	private static CompanyService instance = null;
+
 	CompanyDAO companyDAO;
 	CompanyMapper companyMapper;
 
@@ -22,10 +25,18 @@ public class CompanyService {
 	/**
 	 * Default constructor.
 	 */
-	public CompanyService() {
+	private CompanyService() {
 		companyDAO = CompanyDAO.getInstance();
 		companyMapper = CompanyMapper.getInstance();
 	}
+
+	public static CompanyService getInstance() {
+		if (instance == null) {
+			instance = new CompanyService();
+		}
+		return instance;
+	}
+
 
 	/**
 	 * Retrieve all companies and return a list of company dto.

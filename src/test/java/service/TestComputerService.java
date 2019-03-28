@@ -19,6 +19,7 @@ import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
 import exception.ItemNotUpdatedException;
 import model.Computer;
+import utils.Utils.OrderByOption;
 
 @ExtendWith(MockitoExtension.class)
 public class TestComputerService {
@@ -44,8 +45,8 @@ public class TestComputerService {
 
 	@Test
 	public void testGetAllOrderBy() throws DAOException {
-		this.computerService.getAllComputersOrderBy("name");
-		Mockito.verify(computerDAO).getAllOrderBy("name");
+		this.computerService.getAllComputersOrderBy("name", OrderByOption.ASC);
+		Mockito.verify(computerDAO).getAllOrderBy("name", false);
 	}
 
 	@Test
@@ -123,7 +124,7 @@ public class TestComputerService {
 
 	@Test
 	public void testGetPatternOrderBy() throws DAOException {
-		this.computerService.getComputersByPatternOrderBy("ou", "name");
-		Mockito.verify(computerDAO).getPatternOrderBy("ou", "name");
+		this.computerService.getComputersByPatternOrderBy("ou", "name", OrderByOption.ASC);
+		Mockito.verify(computerDAO).getPatternOrderBy("ou", "name", false);
 	}
 }

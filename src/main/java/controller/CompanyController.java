@@ -18,7 +18,7 @@ public class CompanyController {
 	 * Default constructor.
 	 */
 	public CompanyController() {
-		companyService = new CompanyService();
+		companyService = CompanyService.getInstance();
 		this.isGoingBack = false;
 		this.refreshCompanyPage();
 	}

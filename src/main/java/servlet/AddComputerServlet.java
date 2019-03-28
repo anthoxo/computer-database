@@ -10,10 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import controller.CompanyController;
-import controller.ComputerController;
 import dto.CompanyDTO;
+import dto.ComputerDTO;
 import exception.ItemBadCreatedException;
+import service.CompanyService;
+import service.ComputerService;
 import utils.Variable;
 
 @WebServlet("/computer/add")
@@ -21,21 +22,26 @@ public class AddComputerServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -690181327611746612L;
 
-	ComputerController computerController;
-	CompanyController companyController;
+	ComputerService computerService = ComputerService.getInstance();
+	CompanyService companyService = CompanyService.getInstance();
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-		String name, introduced, discontinued, companyId;
-
-		name = request.getParameter(Variable.GET_PARAMETER_NAME);
-		introduced = request.getParameter(Variable.GET_PARAMETER_INTRODUCED);
-		discontinued = request.getParameter(Variable.GET_PARAMETER_DISCONTINUED);
-		companyId = request.getParameter(Variable.GET_PARAMETER_COMPANY_ID);
-
+		ComputerDTO computerDTO = new ComputerDTO();
+		computerDTO.setName(request.getParameter(Variable.GET_PARAMETER_NAME));
+		computerDTO.setIntroducedDate(request.getParameter(Variable.GET_PARAMETER_INTRODUCED));
+		computerDTO.setDiscontinuedDate(request.getParameter(Variable.GET_PARAMETER_DISCONTINUED));
+		String companyIdStr = request.getParameter(Variable.GET_PARAMETER_COMPANY_ID);
+		int companyId = 0;
 		try {
-			this.computerController.createComputer(name, introduced, discontinued, Integer.valueOf(companyId));
+			companyId = Integer.parseInt(companyIdStr);
+		} catch (NumberFormatException e) {
+			companyId = 0;
+		}
+		computerDTO.setCompanyId(companyId);
+		try {
+			this.computerService.createComputer(computerDTO);
 			request.getSession().setAttribute(Variable.NOTIFICATION, "true");
 			request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "This object has been correctly created !");
 			request.getSession().setAttribute(Variable.LVL_NOTIFICATION, "success");
@@ -56,23 +62,10 @@ public class AddComputerServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		computerController = (ComputerController) request.getSession().getAttribute(Variable.COMPUTER_CONTROLLER);
-		if (computerController == null) {
-			computerController = new ComputerController();
-			request.getSession().setAttribute(Variable.COMPUTER_CONTROLLER, computerController);
-		}
-
-		companyController = (CompanyController) request.getSession().getAttribute(Variable.COMPANY_CONTROLLER);
-		if (companyController == null) {
-			companyController = new CompanyController();
-			request.getSession().setAttribute(Variable.COMPANY_CONTROLLER, companyController);
-		}
-
-		List<CompanyDTO> companyList = this.companyController.getAllCompanies();
+		List<CompanyDTO> companyList = this.companyService.getAllCompanies();
 		request.setAttribute(Variable.COMPANY_LIST, companyList);
 
 		RequestDispatcher rd = this.getServletContext().getRequestDispatcher(Variable.VIEW_ADD);
 		rd.forward(request, response);
 	}
-
 }

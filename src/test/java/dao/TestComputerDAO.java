@@ -76,7 +76,7 @@ public class TestComputerDAO {
 	@Test
 	public void testGetAllOrderByName() throws SQLException, DAOException {
 		List<String> l = Arrays.asList("CM-200", "CM-2a", "CM-5e", "MacBook Pro 15.4 inch");
-		List<Computer> list = this.computerDAO.getAllOrderBy("name");
+		List<Computer> list = this.computerDAO.getAllOrderBy("name", false);
 		for (int i = 0 ; i < 4 ; ++i) {
 			assertEquals(l.get(i), list.get(i).getName());
 		}
@@ -94,7 +94,7 @@ public class TestComputerDAO {
 	@Test
 	public void testGetPatternOrderBy() throws SQLException, DAOException {
 		List<String> l = Arrays.asList("CM-200", "CM-2a");
-		List<Computer> list = this.computerDAO.getPatternOrderBy("-2", "name");
+		List<Computer> list = this.computerDAO.getPatternOrderBy("-2", "name", false);
 		for (int i = 0 ; i < l.size() ; ++i) {
 			assertEquals(l.get(i), list.get(i).getName());
 		}
