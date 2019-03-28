@@ -31,8 +31,13 @@ public class ComputerController {
 	 * Fetch computer list and fill controller field.
 	 */
 	public void refreshComputerPage() {
-		List<ComputerDTO> listComputers = computerService.getAllComputers();
-		this.computerPage = new Page<ComputerDTO>(listComputers);
+		List<ComputerDTO> computerList = computerService.getAllComputers();
+		this.computerPage = new Page<ComputerDTO>(computerList);
+	}
+
+	public void refreshComputerPage(String order) {
+		List<ComputerDTO> computerList = computerService.getAllComputersOrderBy(order);
+		this.computerPage = new Page<ComputerDTO>(computerList);
 	}
 
 	public Page<ComputerDTO> getComputerPage() {
@@ -41,6 +46,10 @@ public class ComputerController {
 
 	public List<ComputerDTO> getComputersByPattern(String pattern) {
 		return this.computerService.getComputersByPattern(pattern);
+	}
+
+	public List<ComputerDTO> getComputersByPatternOrderBy(String pattern, String order) {
+		return this.computerService.getComputersByPatternOrderBy(pattern, order);
 	}
 
 	/**

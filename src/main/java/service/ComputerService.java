@@ -114,6 +114,17 @@ public class ComputerService {
 		return result;
 	}
 
+	public List<ComputerDTO> getAllComputersOrderBy(String order) {
+		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
+		try {
+			result = computerDAO.getAllOrderBy(order).stream().map((Computer computer) -> computerMapper.createDTO(computer))
+					.collect(Collectors.toList());
+		} catch (DAOException e) {
+			logger.error(e.getMessage());
+		}
+		return result;
+	}
+
 	public List<ComputerDTO> getComputersByPattern(String pattern) {
 		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
 		try {
@@ -124,6 +135,18 @@ public class ComputerService {
 		}
 		return result;
 	}
+
+	public List<ComputerDTO> getComputersByPatternOrderBy(String pattern, String order) {
+		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
+		try {
+			result = computerDAO.getPatternOrderBy(pattern, order).stream().map((Computer computer) -> computerMapper.createDTO(computer))
+					.collect(Collectors.toList());
+		} catch (DAOException e) {
+			logger.error(e.getMessage());
+		}
+		return result;
+	}
+
 
 	public void updateComputer(ComputerDTO cDTO) throws ItemNotUpdatedException, ItemNotFoundException {
 		try {

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,9 +25,15 @@ public class ComputerDAO {
 	static final String REQUEST_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
 	static final String REQUEST_DELETE = "DELETE FROM computer WHERE id = ?";
 	static final String REQUEST_GET_ALL = "SELECT id,name,introduced,discontinued,company_id FROM computer";
+	static final String REQUEST_GET_ALL_ORDER_BY = "SELECT id,name,introduced,discontinued,company_id FROM computer ORDER BY ";
+	static final String REQUEST_GET_ALL_ORDER_BY_COMPANY_NAME = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id FROM computer LEFT JOIN company ON company.id = computer.company_id ORDER BY company.name";
 	static final String REQUEST_GET_BY_ID = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE id = ?";
 	static final String REQUEST_GET_BY_NAME = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE name = ?";
 	static final String REQUEST_GET_LIKE = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE name LIKE ?";
+	static final String REQUEST_GET_LIKE_ORDER_BY = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE name LIKE ? ORDER BY ";
+	static final String REQUEST_GET_LIKE_ORDER_BY_COMPANY_NAME = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id FROM computer LEFT JOIN company ON company.id = computer.company_id WHERE computer.name LIKE ? ORDER BY company.name";
+
+	static final String[] COMPUTER_COLUMN = { "id", "name", "introduced", "discontinued", "company_id" };
 
 	/**
 	 * Default constructor.
@@ -135,6 +142,32 @@ public class ComputerDAO {
 		}).run(computerList).getResult();
 	}
 
+	public List<Computer> getAllOrderBy(String order) throws DAOException {
+		TransactionHandler<String, List<Computer>> transactionHandler = TransactionHandler
+				.from((Connection conn, String req) -> {
+					ArrayList<Computer> computerListArg = new ArrayList<Computer>();
+					PreparedStatement stmt = conn.prepareStatement(req);
+					ResultSet rs = stmt.executeQuery();
+					while (rs.next()) {
+						Computer computer = computerMapper.map(rs);
+						Optional<Company> company = daoFactory.getCompanyDAO().get(computer.getCompanyId());
+						if (company.isPresent()) {
+							computer.setCompany(company.get());
+						}
+						computerListArg.add(computer);
+					}
+					return computerListArg;
+				});
+
+		if (Arrays.asList(COMPUTER_COLUMN).contains(order)) {
+			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY + order).getResult();
+		} else if (order.equals("companyName")) {
+			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY_COMPANY_NAME).getResult();
+		} else {
+			return getAll();
+		}
+	}
+
 	/**
 	 * Retrieve a computer by giving its name.
 	 *
@@ -178,4 +211,33 @@ public class ComputerDAO {
 			return computerListArg;
 		}).run(result).getResult();
 	}
+
+	public List<Computer> getPatternOrderBy(String pattern, String order) throws DAOException {
+		TransactionHandler<String, List<Computer>> transactionHandler = TransactionHandler
+				.from((Connection conn, String request) -> {
+					ArrayList<Computer> computerListArg = new ArrayList<Computer>();
+					PreparedStatement stmt = conn.prepareStatement(request);
+					String patternRequest = new StringBuilder().append("%").append(pattern).append("%").toString();
+					stmt.setString(1, patternRequest);
+					ResultSet rs = stmt.executeQuery();
+					while (rs.next()) {
+						Computer computer = computerMapper.map(rs);
+						Optional<Company> company = daoFactory.getCompanyDAO().get(computer.getCompanyId());
+						if (company.isPresent()) {
+							computer.setCompany(company.get());
+						}
+						computerListArg.add(computer);
+					}
+					return computerListArg;
+				});
+
+		if (Arrays.asList(COMPUTER_COLUMN).contains(order)) {
+			return transactionHandler.run(REQUEST_GET_LIKE_ORDER_BY + order).getResult();
+		} else if (order.equals("companyName")) {
+			return transactionHandler.run(REQUEST_GET_LIKE_ORDER_BY_COMPANY_NAME).getResult();
+		} else {
+			return getPattern(pattern);
+		}
+	}
+
 }

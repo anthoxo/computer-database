@@ -61,10 +61,14 @@
 		<table class="table table-striped table-bordered">
 			<thead>
 				<tr>
-					<th>Computer name</th>
-					<th>Introduced date</th>
-					<th>Discontinued date</th>
-					<th>Company name</th>
+					<th><a href="${urlPath}?orderBy=name"><span
+							class="glyphicon glyphicon-sort"></span></a>&nbsp;Computer name</th>
+					<th><a href="${urlPath}?orderBy=introduced"><span class="glyphicon glyphicon-sort"></span></a>&nbsp;Introduced
+						date</th>
+					<th><a href="${urlPath}?orderBy=discontinued"><span class="glyphicon glyphicon-sort"></span></a>&nbsp;Discontinued
+						date</th>
+					<th><a href="${urlPath}?orderBy=companyName"><span class="glyphicon glyphicon-sort"></span></a>&nbsp;Company
+						name</th>
 					<th></th>
 				</tr>
 			</thead>

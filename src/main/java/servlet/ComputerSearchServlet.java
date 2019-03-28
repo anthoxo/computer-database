@@ -19,6 +19,7 @@ public class ComputerSearchServlet extends HttpServlet {
 	private static final long serialVersionUID = -4860354040907739312L;
 
 	public static final String GET_PARAMETER_ID = "id";
+	public static final String GET_ORDER_BY = "orderBy";
 
 	public static final String COMPUTER_LIST = "computerList";
 	public static final String NB_PAGES = "nbPages";
@@ -63,9 +64,15 @@ public class ComputerSearchServlet extends HttpServlet {
 
 		String indexPage = request.getParameter(GET_PARAMETER_ID);
 		int index;
+		String orderBy;
 		if (indexPage == null) {
 			index = 0;
-			computerPage = new Page<ComputerDTO>(computerController.getComputersByPattern(pattern));
+			orderBy = request.getParameter(GET_ORDER_BY);
+			if (orderBy != null) {
+				computerPage = new Page<ComputerDTO>(computerController.getComputersByPatternOrderBy(pattern, orderBy));
+			} else {
+				computerPage = new Page<ComputerDTO>(computerController.getComputersByPattern(pattern));
+			}
 		} else {
 			index = Integer.valueOf(indexPage) - 1;
 		}

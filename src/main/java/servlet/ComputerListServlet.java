@@ -17,6 +17,7 @@ public class ComputerListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	public static final String GET_PARAMETER_ID = "id";
+	public static final String GET_ORDER_BY = "orderBy";
 
 	public static final String COMPUTER_LIST = "computerList";
 	public static final String NB_PAGES = "nbPages";
@@ -24,7 +25,6 @@ public class ComputerListServlet extends HttpServlet {
 	public static final String URL_PATH = "urlPath";
 	public static final String IS_SEARCHING = "isSearching";
 	public static final String COMPUTER_NUMBER = "computerNumber";
-
 
 	public static final String NOTIFICATION = "notification";
 	public static final String MSG_NOTIFICATION = "msgNotification";
@@ -48,10 +48,16 @@ public class ComputerListServlet extends HttpServlet {
 			}
 
 			String indexPage = request.getParameter(GET_PARAMETER_ID);
+			String orderBy;
 			int index;
 			if (indexPage == null) {
 				index = 0;
-				computerController.refreshComputerPage();
+				orderBy = request.getParameter(GET_ORDER_BY);
+				if (orderBy != null) {
+					computerController.refreshComputerPage(orderBy);
+				} else {
+					computerController.refreshComputerPage();
+				}
 			} else {
 				index = Integer.valueOf(indexPage) - 1;
 			}
