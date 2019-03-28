@@ -43,6 +43,12 @@ public class TestComputerService {
 	}
 
 	@Test
+	public void testGetAllOrderBy() throws DAOException {
+		this.computerService.getAllComputersOrderBy("name");
+		Mockito.verify(computerDAO).getAllOrderBy("name");
+	}
+
+	@Test
 	public void testGetByName() throws DAOException, ItemNotFoundException {
 		Optional<Computer> computerOpt = Optional.of(new Computer.Builder().build());
 		Mockito.when(computerDAO.get(Mockito.anyString())).thenReturn(computerOpt);
@@ -115,4 +121,9 @@ public class TestComputerService {
 		Mockito.verify(computerDAO).getPattern("ou");
 	}
 
+	@Test
+	public void testGetPatternOrderBy() throws DAOException {
+		this.computerService.getComputersByPatternOrderBy("ou", "name");
+		Mockito.verify(computerDAO).getPatternOrderBy("ou", "name");
+	}
 }

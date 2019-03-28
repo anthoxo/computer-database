@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,6 +72,36 @@ public class TestComputerDAO {
 		List<Computer> list = this.computerDAO.getAll();
 		assertEquals(list.size(), 4);
 	}
+
+	@Test
+	public void testGetAllOrderByName() throws SQLException, DAOException {
+		List<String> l = Arrays.asList("CM-200", "CM-2a", "CM-5e", "MacBook Pro 15.4 inch");
+		List<Computer> list = this.computerDAO.getAllOrderBy("name");
+		for (int i = 0 ; i < 4 ; ++i) {
+			assertEquals(l.get(i), list.get(i).getName());
+		}
+	}
+
+	@Test
+	public void testGetPattern() throws SQLException, DAOException {
+		List<String> l = Arrays.asList("CM-2a", "CM-200");
+		List<Computer> list = this.computerDAO.getPattern("-2");
+		for (int i = 0 ; i < l.size() ; ++i) {
+			assertEquals(l.get(i), list.get(i).getName());
+		}
+	}
+
+	@Test
+	public void testGetPatternOrderBy() throws SQLException, DAOException {
+		List<String> l = Arrays.asList("CM-200", "CM-2a");
+		List<Computer> list = this.computerDAO.getPatternOrderBy("-2", "name");
+		for (int i = 0 ; i < l.size() ; ++i) {
+			assertEquals(l.get(i), list.get(i).getName());
+		}
+	}
+
+
+
 
 	@Test
 	public void testCreateAndDelete() throws SQLException {
