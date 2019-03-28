@@ -142,7 +142,7 @@ public class ComputerDAO {
 		}).run(computerList).getResult();
 	}
 
-	public List<Computer> getAllOrderBy(String order) throws DAOException {
+	public List<Computer> getAllOrderBy(String order, boolean isDesc) throws DAOException {
 		TransactionHandler<String, List<Computer>> transactionHandler = TransactionHandler
 				.from((Connection conn, String req) -> {
 					ArrayList<Computer> computerListArg = new ArrayList<Computer>();
@@ -158,11 +158,11 @@ public class ComputerDAO {
 					}
 					return computerListArg;
 				});
-
+		String desc = isDesc ? " DESC" : "";
 		if (Arrays.asList(COMPUTER_COLUMN).contains(order)) {
-			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY + order).getResult();
+			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY + order + desc).getResult();
 		} else if (order.equals("companyName")) {
-			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY_COMPANY_NAME).getResult();
+			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY_COMPANY_NAME + desc).getResult();
 		} else {
 			return getAll();
 		}
@@ -212,7 +212,7 @@ public class ComputerDAO {
 		}).run(result).getResult();
 	}
 
-	public List<Computer> getPatternOrderBy(String pattern, String order) throws DAOException {
+	public List<Computer> getPatternOrderBy(String pattern, String order, boolean isDesc) throws DAOException {
 		TransactionHandler<String, List<Computer>> transactionHandler = TransactionHandler
 				.from((Connection conn, String request) -> {
 					ArrayList<Computer> computerListArg = new ArrayList<Computer>();
@@ -230,11 +230,11 @@ public class ComputerDAO {
 					}
 					return computerListArg;
 				});
-
+		String desc = isDesc ? " DESC" : "";
 		if (Arrays.asList(COMPUTER_COLUMN).contains(order)) {
-			return transactionHandler.run(REQUEST_GET_LIKE_ORDER_BY + order).getResult();
+			return transactionHandler.run(REQUEST_GET_LIKE_ORDER_BY + order + desc).getResult();
 		} else if (order.equals("companyName")) {
-			return transactionHandler.run(REQUEST_GET_LIKE_ORDER_BY_COMPANY_NAME).getResult();
+			return transactionHandler.run(REQUEST_GET_LIKE_ORDER_BY_COMPANY_NAME + desc).getResult();
 		} else {
 			return getPattern(pattern);
 		}

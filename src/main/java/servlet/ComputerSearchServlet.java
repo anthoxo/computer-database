@@ -69,6 +69,7 @@ public class ComputerSearchServlet extends HttpServlet {
 			index = 0;
 			orderBy = request.getParameter(GET_ORDER_BY);
 			if (orderBy != null) {
+				computerController.refreshAttributeOrderBy(orderBy);
 				computerPage = new Page<ComputerDTO>(computerController.getComputersByPatternOrderBy(pattern, orderBy));
 			} else {
 				computerPage = new Page<ComputerDTO>(computerController.getComputersByPattern(pattern));

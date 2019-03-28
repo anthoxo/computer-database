@@ -18,6 +18,7 @@ import exception.ItemNotFoundException;
 import exception.ItemNotUpdatedException;
 import mapper.ComputerMapper;
 import model.Computer;
+import utils.Utils.OrderByOption;
 import validator.ComputerValidator;
 
 public class ComputerService {
@@ -114,10 +115,11 @@ public class ComputerService {
 		return result;
 	}
 
-	public List<ComputerDTO> getAllComputersOrderBy(String order) {
+	public List<ComputerDTO> getAllComputersOrderBy(String order, OrderByOption option) {
 		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
+		boolean isDesc = option == OrderByOption.DESC ? true : false;
 		try {
-			result = computerDAO.getAllOrderBy(order).stream().map((Computer computer) -> computerMapper.createDTO(computer))
+			result = computerDAO.getAllOrderBy(order, isDesc).stream().map((Computer computer) -> computerMapper.createDTO(computer))
 					.collect(Collectors.toList());
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
@@ -136,10 +138,11 @@ public class ComputerService {
 		return result;
 	}
 
-	public List<ComputerDTO> getComputersByPatternOrderBy(String pattern, String order) {
+	public List<ComputerDTO> getComputersByPatternOrderBy(String pattern, String order, OrderByOption option) {
+		boolean isDesc = option == OrderByOption.DESC ? true : false;
 		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
 		try {
-			result = computerDAO.getPatternOrderBy(pattern, order).stream().map((Computer computer) -> computerMapper.createDTO(computer))
+			result = computerDAO.getPatternOrderBy(pattern, order, isDesc).stream().map((Computer computer) -> computerMapper.createDTO(computer))
 					.collect(Collectors.toList());
 		} catch (DAOException e) {
 			logger.error(e.getMessage());

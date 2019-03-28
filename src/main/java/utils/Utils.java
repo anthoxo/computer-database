@@ -27,6 +27,10 @@ public class Utils {
 		GET_ALL, GET_ID, GET_NAME, CREATE, UPDATE, DELETE, BACK, NULL
 	};
 
+	public enum OrderByOption {
+		ASC, DESC, NULL
+	}
+
 	/**
 	 * Compute date (yyyy/mm/dd) into Timestamp type.
 	 *

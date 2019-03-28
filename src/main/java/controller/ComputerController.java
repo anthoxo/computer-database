@@ -11,12 +11,15 @@ import model.Page;
 import service.ComputerService;
 import utils.Utils;
 import utils.Utils.ChoiceActionPage;
+import utils.Utils.OrderByOption;
 
 public class ComputerController {
 
 	ComputerService computerService;
 	Page<ComputerDTO> computerPage;
 	boolean isGoingBack;
+	String orderBy;
+	OrderByOption orderByOption;
 
 	/**
 	 * Default constructor.
@@ -31,13 +34,30 @@ public class ComputerController {
 	 * Fetch computer list and fill controller field.
 	 */
 	public void refreshComputerPage() {
+		this.orderByOption = OrderByOption.NULL;
 		List<ComputerDTO> computerList = computerService.getAllComputers();
 		this.computerPage = new Page<ComputerDTO>(computerList);
 	}
 
 	public void refreshComputerPage(String order) {
-		List<ComputerDTO> computerList = computerService.getAllComputersOrderBy(order);
+		refreshAttributeOrderBy(order);
+		List<ComputerDTO> computerList = computerService.getAllComputersOrderBy(order, this.orderByOption);
 		this.computerPage = new Page<ComputerDTO>(computerList);
+	}
+
+	public void refreshAttributeOrderBy(String order) {
+		switch (this.orderByOption) {
+		case ASC:
+			this.orderByOption = OrderByOption.DESC;
+			break;
+		default:
+			this.orderByOption = OrderByOption.ASC;
+			break;
+		}
+		if (!order.equals(this.orderBy)) {
+			this.orderByOption = OrderByOption.ASC;
+		}
+		this.orderBy = order;
 	}
 
 	public Page<ComputerDTO> getComputerPage() {
@@ -49,7 +69,7 @@ public class ComputerController {
 	}
 
 	public List<ComputerDTO> getComputersByPatternOrderBy(String pattern, String order) {
-		return this.computerService.getComputersByPatternOrderBy(pattern, order);
+		return this.computerService.getComputersByPatternOrderBy(pattern, order, this.orderByOption);
 	}
 
 	/**
