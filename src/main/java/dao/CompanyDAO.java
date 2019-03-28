@@ -19,6 +19,7 @@ public class CompanyDAO {
 
 	static final String REQUEST_GET_BY_ID = "SELECT id,name FROM company WHERE id = ?";
 	static final String REQUEST_GET_ALL = "SELECT id,name FROM company";
+	static final String REQUEST_GET_ALL_ORDER_BY_NAME = "SELECT id,name FROM company ORDER BY name";
 	static final String REQUEST_GET_BY_NAME = "SELECT id,name FROM company WHERE name = ?";
 
 	/**
@@ -69,6 +70,24 @@ public class CompanyDAO {
 			}
 			return l;
 		}).run(listCompanies).getResult();
+	}
+
+	public List<Company> getAllOrderByName(boolean isDesc) throws DAOException {
+		TransactionHandler<String, List<Company>> transactionHandler = TransactionHandler.from((Connection conn, String request) -> {
+			List<Company> listCompanies = new ArrayList<Company>();
+			PreparedStatement stmt = conn.prepareStatement(request);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				Company company = companyMapper.map(rs);
+				listCompanies.add(company);
+			}
+			return listCompanies;
+		});
+		if (isDesc) {
+			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY_NAME + " DESC").getResult();
+		} else {
+			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY_NAME).getResult();
+		}
 	}
 
 	/**

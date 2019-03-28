@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import dto.CompanyDTO;
 import model.Page;
 import service.CompanyService;
+import utils.Utils.OrderByOption;
 import utils.Variable;
 
 @WebServlet("/company")
@@ -22,6 +23,7 @@ public class CompanyListServlet extends HttpServlet {
 
 	CompanyService companyService = CompanyService.getInstance();
 	Page<CompanyDTO> companyPage;
+	OrderByOption orderByOption = OrderByOption.NULL;
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -29,10 +31,25 @@ public class CompanyListServlet extends HttpServlet {
 		try {
 			String indexPage = request.getParameter(Variable.GET_PARAMETER_ID);
 			int index;
+			String orderBy;
 			if (indexPage == null) {
 				index = 0;
-				List<CompanyDTO> companyDTOList = companyService.getAllCompanies();
-				companyPage = new Page<CompanyDTO>(companyDTOList);
+				orderBy = request.getParameter(Variable.GET_ORDER_BY);
+				if ("name".equals(orderBy)) {
+					switch (this.orderByOption) {
+					case ASC:
+						this.orderByOption = OrderByOption.DESC;
+						break;
+					default:
+						this.orderByOption = OrderByOption.ASC;
+						break;
+					}
+					List<CompanyDTO> companyDTOList = companyService.getAllCompaniesOrderByName(orderByOption);
+					companyPage = new Page<CompanyDTO>(companyDTOList);
+				} else {
+					List<CompanyDTO> companyDTOList = companyService.getAllCompanies();
+					companyPage = new Page<CompanyDTO>(companyDTOList);
+				}
 			} else {
 				index = Integer.valueOf(indexPage) - 1;
 			}

@@ -25,7 +25,8 @@
 		<table class="table table-striped table-bordered">
 			<thead>
 				<tr>
-					<th>Company name</th>
+					<th><a href="${context}/company?orderBy=name"><span
+							class="glyphicon glyphicon-sort"></span></a>&nbsp;Company name</th>
 				</tr>
 			</thead>
 			<tbody>

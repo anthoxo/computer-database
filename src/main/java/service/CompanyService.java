@@ -12,6 +12,7 @@ import dto.CompanyDTO;
 import exception.DAOException;
 import mapper.CompanyMapper;
 import model.Company;
+import utils.Utils.OrderByOption;
 
 public class CompanyService {
 
@@ -53,4 +54,17 @@ public class CompanyService {
 		}
 		return result;
 	}
+
+	public List<CompanyDTO> getAllCompaniesOrderByName(OrderByOption option) {
+		List<CompanyDTO> result = new ArrayList<CompanyDTO>();
+		boolean isDesc = option == OrderByOption.DESC ? true : false;
+		try {
+			result = companyDAO.getAllOrderByName(isDesc).stream().map((Company c) -> companyMapper.createDTO(c))
+					.collect(Collectors.toList());
+		} catch (DAOException e) {
+			logger.error(e.getMessage());
+		}
+		return result;
+	}
+
 }
