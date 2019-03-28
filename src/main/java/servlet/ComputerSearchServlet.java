@@ -12,26 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 import controller.ComputerController;
 import dto.ComputerDTO;
 import model.Page;
+import utils.Variable;
 
 @WebServlet("/computer/search")
 public class ComputerSearchServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -4860354040907739312L;
-
-	public static final String GET_PARAMETER_ID = "id";
-	public static final String GET_ORDER_BY = "orderBy";
-
-	public static final String COMPUTER_LIST = "computerList";
-	public static final String NB_PAGES = "nbPages";
-	public static final String ID_PAGE = "idPage";
-	public static final String URL_PATH = "urlPath";
-	public static final String IS_SEARCHING = "isSearching";
-	public static final String COMPUTER_NUMBER = "computerNumber";
-
-	public static final String URL_COMPUTER_SEARCH = "/computer/search";
-	public static final String VIEW_COMPUTER = "/views/listComputers.jsp";
-
-	public static final String COMPUTER_CONTROLLER = "computer_controller";
 
 	ComputerController computerController;
 	String pattern = "";
@@ -40,34 +26,31 @@ public class ComputerSearchServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
 		String search = request.getParameter("search");
 		if (search != null) {
 			pattern = search;
 		} else {
 			pattern = "";
 		}
-
 		doGet(request, response);
-
 	}
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		computerController = (ComputerController) request.getSession().getAttribute(COMPUTER_CONTROLLER);
+		computerController = (ComputerController) request.getSession().getAttribute(Variable.COMPUTER_CONTROLLER);
 		if (computerController == null) {
 			computerController = new ComputerController();
-			request.getSession().setAttribute(COMPUTER_CONTROLLER, computerController);
+			request.getSession().setAttribute(Variable.COMPUTER_CONTROLLER, computerController);
 		}
 
-		String indexPage = request.getParameter(GET_PARAMETER_ID);
+		String indexPage = request.getParameter(Variable.GET_PARAMETER_ID);
 		int index;
 		String orderBy;
 		if (indexPage == null) {
 			index = 0;
-			orderBy = request.getParameter(GET_ORDER_BY);
+			orderBy = request.getParameter(Variable.GET_ORDER_BY);
 			if (orderBy != null) {
 				computerController.refreshAttributeOrderBy(orderBy);
 				computerPage = new Page<ComputerDTO>(computerController.getComputersByPatternOrderBy(pattern, orderBy));
@@ -80,17 +63,15 @@ public class ComputerSearchServlet extends HttpServlet {
 
 		computerPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
 
-		request.setAttribute(COMPUTER_LIST, computerPage.getEntitiesPage());
-		request.setAttribute(NB_PAGES, computerPage.getNbPages());
-		request.setAttribute(ID_PAGE, index + 1);
-		request.setAttribute(URL_PATH, request.getContextPath() + URL_COMPUTER_SEARCH);
-		request.setAttribute(IS_SEARCHING, "true");
-		request.setAttribute(COMPUTER_NUMBER, computerPage.getLength());
+		request.setAttribute(Variable.COMPUTER_LIST, computerPage.getEntitiesPage());
+		request.setAttribute(Variable.NB_PAGES, computerPage.getNbPages());
+		request.setAttribute(Variable.ID_PAGE, index + 1);
+		request.setAttribute(Variable.URL_PATH, request.getContextPath() + Variable.URL_COMPUTER_SEARCH);
+		request.setAttribute(Variable.IS_SEARCHING, "true");
+		request.setAttribute(Variable.COMPUTER_NUMBER, computerPage.getLength());
 
-
-		RequestDispatcher rd = this.getServletContext().getRequestDispatcher(VIEW_COMPUTER);
+		RequestDispatcher rd = this.getServletContext().getRequestDispatcher(Variable.VIEW_COMPUTER);
 		rd.forward(request, response);
 
 	}
-
 }

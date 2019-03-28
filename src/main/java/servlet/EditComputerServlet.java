@@ -16,28 +16,12 @@ import dto.CompanyDTO;
 import dto.ComputerDTO;
 import exception.ItemNotFoundException;
 import exception.ItemNotUpdatedException;
+import utils.Variable;
 
 @WebServlet("/computer/edit")
 public class EditComputerServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 8206412986998744720L;
-
-	public static final String GET_PARAMETER_ID = "id";
-	public static final String GET_PARAMETER_NAME = "computerName";
-	public static final String GET_PARAMETER_INTRODUCED = "introduced";
-	public static final String GET_PARAMETER_DISCONTINUED = "discontinued";
-	public static final String GET_PARAMETER_COMPANY_ID = "companyId";
-
-	public static final String NOTIFICATION = "notification";
-	public static final String MSG_NOTIFICATION = "msgNotification";
-	public static final String LVL_NOTIFICATION = "lvlNotification";
-
-	public static final String URL_COMPUTER = "/computer";
-	public static final String VIEW_EDIT = "/views/editComputer.jsp";
-
-	public static final String COMPUTER_CONTROLLER = "computer_controller";
-	public static final String COMPANY_CONTROLLER = "company_controller";
-	public static final String COMPANY_LIST = "companyList";
 
 	ComputerController computerController;
 	CompanyController companyController;
@@ -46,52 +30,52 @@ public class EditComputerServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String id, name, introduced, discontinued, companyId;
 
-		id = request.getParameter(GET_PARAMETER_ID);
-		name = request.getParameter(GET_PARAMETER_NAME);
-		introduced = request.getParameter(GET_PARAMETER_INTRODUCED);
-		discontinued = request.getParameter(GET_PARAMETER_DISCONTINUED);
-		companyId = request.getParameter(GET_PARAMETER_COMPANY_ID);
+		id = request.getParameter(Variable.GET_PARAMETER_ID);
+		name = request.getParameter(Variable.GET_PARAMETER_NAME);
+		introduced = request.getParameter(Variable.GET_PARAMETER_INTRODUCED);
+		discontinued = request.getParameter(Variable.GET_PARAMETER_DISCONTINUED);
+		companyId = request.getParameter(Variable.GET_PARAMETER_COMPANY_ID);
 
 		try {
 			this.computerController.updateComputer(Integer.valueOf(id), name, introduced, discontinued,
 					Integer.valueOf(companyId));
-			request.getSession().setAttribute(NOTIFICATION, "true");
-			request.getSession().setAttribute(MSG_NOTIFICATION, "This object has been correctly updated !");
-			request.getSession().setAttribute(LVL_NOTIFICATION, "success");
+			request.getSession().setAttribute(Variable.NOTIFICATION, "true");
+			request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "This object has been correctly updated !");
+			request.getSession().setAttribute(Variable.LVL_NOTIFICATION, "success");
 
 		} catch (ItemNotUpdatedException e) {
-			request.getSession().setAttribute(NOTIFICATION, "true");
+			request.getSession().setAttribute(Variable.NOTIFICATION, "true");
 			if (e.getMessage().equals("not-valid")) {
-				request.getSession().setAttribute(MSG_NOTIFICATION, "This object isn't valid.");
+				request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "This object isn't valid.");
 			} else {
-				request.getSession().setAttribute(MSG_NOTIFICATION, "This object hasn't been updated.");
+				request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "This object hasn't been updated.");
 			}
-			request.getSession().setAttribute(LVL_NOTIFICATION, "danger");
+			request.getSession().setAttribute(Variable.LVL_NOTIFICATION, "danger");
 		} catch (ItemNotFoundException e) {
-			request.getSession().setAttribute(NOTIFICATION, "true");
-			request.getSession().setAttribute(MSG_NOTIFICATION, "This object isn't in database.");
-			request.getSession().setAttribute(LVL_NOTIFICATION, "danger");
+			request.getSession().setAttribute(Variable.NOTIFICATION, "true");
+			request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "This object isn't in database.");
+			request.getSession().setAttribute(Variable.LVL_NOTIFICATION, "danger");
 		}
 
-		response.sendRedirect(request.getContextPath() + URL_COMPUTER);
+		response.sendRedirect(request.getContextPath() + Variable.URL_COMPUTER);
 	}
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		computerController = (ComputerController) request.getSession().getAttribute(COMPUTER_CONTROLLER);
+		computerController = (ComputerController) request.getSession().getAttribute(Variable.COMPUTER_CONTROLLER);
 		if (computerController == null) {
 			computerController = new ComputerController();
-			request.getSession().setAttribute(COMPUTER_CONTROLLER, computerController);
+			request.getSession().setAttribute(Variable.COMPUTER_CONTROLLER, computerController);
 		}
 
-		companyController = (CompanyController) request.getSession().getAttribute(COMPANY_CONTROLLER);
+		companyController = (CompanyController) request.getSession().getAttribute(Variable.COMPANY_CONTROLLER);
 		if (companyController == null) {
 			companyController = new CompanyController();
-			request.getSession().setAttribute(COMPANY_CONTROLLER, companyController);
+			request.getSession().setAttribute(Variable.COMPANY_CONTROLLER, companyController);
 		}
 
-		String idString = request.getParameter(GET_PARAMETER_ID);
+		String idString = request.getParameter(Variable.GET_PARAMETER_ID);
 		int id = 0;
 		if (idString != null) {
 			id = Integer.valueOf(idString);
@@ -102,15 +86,15 @@ public class EditComputerServlet extends HttpServlet {
 			request.setAttribute("computer", cDTO);
 			List<CompanyDTO> listCompanies = this.companyController.getAllCompanies();
 
-			request.setAttribute(COMPANY_LIST, listCompanies);
+			request.setAttribute(Variable.COMPANY_LIST, listCompanies);
 
-			RequestDispatcher rd = this.getServletContext().getRequestDispatcher(VIEW_EDIT);
+			RequestDispatcher rd = this.getServletContext().getRequestDispatcher(Variable.VIEW_EDIT);
 			rd.forward(request, response);
 		} catch (ItemNotFoundException e) {
-			request.getSession().setAttribute(NOTIFICATION, "true");
-			request.getSession().setAttribute(MSG_NOTIFICATION, "This object isn't in database.");
-			request.getSession().setAttribute(LVL_NOTIFICATION, "danger");
-			response.sendRedirect(request.getContextPath() + URL_COMPUTER);
+			request.getSession().setAttribute(Variable.NOTIFICATION, "true");
+			request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "This object isn't in database.");
+			request.getSession().setAttribute(Variable.LVL_NOTIFICATION, "danger");
+			response.sendRedirect(request.getContextPath() + Variable.URL_COMPUTER);
 		}
 	}
 }

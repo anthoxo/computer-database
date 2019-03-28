@@ -11,21 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import controller.CompanyController;
 import model.Page;
+import utils.Variable;
 
 @WebServlet("/company")
 public class CompanyListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-
-	public static final String GET_PARAMETER_ID = "id";
-
-	public static final String COMPANY_LIST = "companyList";
-	public static final String NB_PAGES = "nbPages";
-	public static final String ID_PAGE = "idPage";
-
-	public static final String VIEW_COMPANY = "/views/listCompanies.jsp";
-
-	public static final String COMPANY_CONTROLLER = "company_controller";
 
 	CompanyController companyController;
 
@@ -33,13 +24,13 @@ public class CompanyListServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			companyController = (CompanyController) request.getSession().getAttribute(COMPANY_CONTROLLER);
+			companyController = (CompanyController) request.getSession().getAttribute(Variable.COMPANY_CONTROLLER);
 			if (companyController == null) {
 				companyController = new CompanyController();
-				request.getSession().setAttribute(COMPANY_CONTROLLER, companyController);
+				request.getSession().setAttribute(Variable.COMPANY_CONTROLLER, companyController);
 			}
 
-			String indexPage = request.getParameter(GET_PARAMETER_ID);
+			String indexPage = request.getParameter(Variable.GET_PARAMETER_ID);
 			int index;
 			if (indexPage == null) {
 				index = 0;
@@ -50,11 +41,11 @@ public class CompanyListServlet extends HttpServlet {
 
 			this.companyController.getCompanyPage().goTo(index * Page.NB_ITEMS_PER_PAGE);
 
-			request.setAttribute(COMPANY_LIST, this.companyController.getCompanyPage().getEntitiesPage());
-			request.setAttribute(NB_PAGES, this.companyController.getCompanyPage().getNbPages());
-			request.setAttribute(ID_PAGE, index + 1);
+			request.setAttribute(Variable.COMPANY_LIST, this.companyController.getCompanyPage().getEntitiesPage());
+			request.setAttribute(Variable.NB_PAGES, this.companyController.getCompanyPage().getNbPages());
+			request.setAttribute(Variable.ID_PAGE, index + 1);
 
-			RequestDispatcher rd = this.getServletContext().getRequestDispatcher(VIEW_COMPANY);
+			RequestDispatcher rd = this.getServletContext().getRequestDispatcher(Variable.VIEW_COMPANY);
 			rd.forward(request, response);
 		} catch (ServletException e) {
 			throw new ServletException(e);
