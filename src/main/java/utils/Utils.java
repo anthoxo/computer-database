@@ -2,6 +2,7 @@ package utils;
 
 import java.sql.Timestamp;
 import java.time.DateTimeException;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -35,21 +36,15 @@ public class Utils {
 	public static Optional<Timestamp> stringToTimestamp(String date) {
 		boolean isValid = ValidatorUtil.validDateString.test(date).isValid();
 		if (isValid) {
-			String[] dateStr = date.split("/");
+			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 			Optional<Timestamp> ts;
-			if (dateStr.length != 3) {
-				return Optional.empty();
-			} else {
-				try {
-					ts = Optional.of(Timestamp.valueOf(java.time.LocalDate
-							.of(Integer.valueOf(dateStr[0]), Integer.valueOf(dateStr[1]), Integer.valueOf(dateStr[2]))
-							.atStartOfDay()));
-				} catch (DateTimeException e) {
-					ts = Optional.empty();
-					logger.warn(e.getMessage());
-				}
-				return ts;
+			try {
+				ts = Optional.of(Timestamp.valueOf(java.time.LocalDate.parse(date, dateTimeFormatter).atStartOfDay()));
+			} catch (DateTimeException e) {
+				ts = Optional.empty();
+				logger.warn(e.getMessage());
 			}
+			return ts;
 		} else {
 			return Optional.empty();
 		}

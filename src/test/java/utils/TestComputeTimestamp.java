@@ -52,12 +52,6 @@ public class TestComputeTimestamp {
 	}
 
 	@Test
-	public void testComputeTimestampBad3() {
-		Optional<Timestamp> ts = Utils.stringToTimestamp("1949/02/29");
-		assertFalse(ts.isPresent());
-	}
-
-	@Test
 	public void testComputeString1() {
 		Timestamp ts = null;
 		assertEquals(Utils.timestampToString(ts), "");
