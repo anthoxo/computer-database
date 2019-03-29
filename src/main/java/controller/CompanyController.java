@@ -3,6 +3,8 @@ package controller;
 import java.util.List;
 
 import dto.CompanyDTO;
+import exception.ItemNotDeletedException;
+import exception.ItemNotFoundException;
 import model.Page;
 import service.CompanyService;
 import utils.Utils;
@@ -38,6 +40,17 @@ public class CompanyController {
 	public List<CompanyDTO> getAllCompanies() {
 		return this.companyService.getAllCompanies();
 	}
+
+	public CompanyDTO getCompanyById(int id) throws ItemNotFoundException {
+		return this.companyService.getCompanyById(id);
+	}
+
+	public void deleteCompany(int id) throws ItemNotFoundException, ItemNotDeletedException  {
+		CompanyDTO companyDTO = new CompanyDTO();
+		companyDTO.setId(id);
+		this.companyService.deleteCompany(companyDTO);
+	}
+
 
 	/**
 	 * Choose if we select the next or previous page.

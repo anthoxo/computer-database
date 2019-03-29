@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import controller.CompanyController;
 import dto.CompanyDTO;
+import exception.ItemNotDeletedException;
+import exception.ItemNotFoundException;
+import utils.Utils;
 
 public class CompanyView {
 
@@ -19,6 +22,25 @@ public class CompanyView {
 	 */
 	public CompanyView() {
 		companyController = new CompanyController();
+	}
+
+	public void chooseAction(Scanner sc) {
+		logger.info("get-all // delete // back ?");
+		String prompt = sc.nextLine();
+		Utils.ChoiceActionCompany action = Utils.stringToEnum(Utils.ChoiceActionCompany.class, prompt);
+		switch (action) {
+		case GET_ALL:
+			printCompanies(sc);
+			break;
+		case DELETE:
+			chooseDelete(sc);
+			break;
+		case BACK:
+			break;
+		default:
+			logger.warn("Mauvaise option... Retour au menu...");
+			break;
+		}
 	}
 
 	/**
@@ -44,5 +66,33 @@ public class CompanyView {
 			}
 			stop = this.companyController.isGoingBack();
 		}
+	}
+
+	public void chooseDelete(Scanner sc) {
+		logger.info("Quel id de Company voulez-vous détruire ?");
+
+		String prompt = sc.nextLine();
+		int id = Integer.valueOf(prompt);
+
+		CompanyDTO company;
+		try {
+			company = this.companyController.getCompanyById(id);
+			logger.info(company.toString());
+			logger.info("Voulez-vous vraiment détruire cet objet ? (y/n)");
+
+			prompt = sc.nextLine();
+
+			if (prompt.equals("y")) {
+				try {
+					this.companyController.deleteCompany(company.getId());
+					logger.info("Computer deleted !");
+				} catch (ItemNotDeletedException e) {
+					logger.warn("Computer not deleted.");
+				}
+			}
+		} catch (ItemNotFoundException e) {
+			logger.warn("Computer introuvable.");
+		}
+
 	}
 }

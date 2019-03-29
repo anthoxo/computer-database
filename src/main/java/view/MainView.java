@@ -50,7 +50,8 @@ public class MainView {
 				Utils.ChoiceDatabase database = this.mainController.getDatabase();
 				if (database.equals(Utils.ChoiceDatabase.COMPANY)) {
 					CompanyView companyView = new CompanyView();
-					companyView.printCompanies(sc);
+					companyView.chooseAction(sc);
+					//companyView.printCompanies(sc);
 				} else if (database.equals(Utils.ChoiceDatabase.COMPUTER)) {
 					ComputerView computerView = new ComputerView();
 					computerView.chooseAction(sc);

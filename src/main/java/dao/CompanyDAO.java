@@ -21,6 +21,8 @@ public class CompanyDAO {
 	static final String REQUEST_GET_ALL = "SELECT id,name FROM company";
 	static final String REQUEST_GET_ALL_ORDER_BY_NAME = "SELECT id,name FROM company ORDER BY name";
 	static final String REQUEST_GET_BY_NAME = "SELECT id,name FROM company WHERE name = ?";
+	static final String REQUEST_DELETE_COMPUTER_BY_COMPANY_ID = "DELETE FROM computer WHERE company_id = ?";
+	static final String REQUEST_DELETE_COMPANY_BY_ID = "DELETE FROM company WHERE id = ?";
 
 	/**
 	 * Default constructor.
@@ -108,5 +110,17 @@ public class CompanyDAO {
 			}
 			return companyOpt;
 		}).run(company).getResult();
+	}
+
+	public void delete(Company obj) throws DAOException {
+		TransactionHandler.from((Connection conn, Company company) -> {
+			PreparedStatement stmt = conn.prepareStatement(REQUEST_DELETE_COMPUTER_BY_COMPANY_ID);
+			stmt.setInt(1, company.getId());
+			stmt.executeUpdate();
+			stmt = conn.prepareStatement(REQUEST_DELETE_COMPANY_BY_ID);
+			stmt.setInt(1, company.getId());
+			stmt.executeUpdate();
+			return Optional.empty();
+		}).run(obj);
 	}
 }

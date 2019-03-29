@@ -2,6 +2,7 @@ package service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -10,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import dao.CompanyDAO;
 import dto.CompanyDTO;
 import exception.DAOException;
+import exception.ItemNotDeletedException;
+import exception.ItemNotFoundException;
 import mapper.CompanyMapper;
 import model.Company;
 import utils.Utils.OrderByOption;
@@ -38,7 +41,6 @@ public class CompanyService {
 		return instance;
 	}
 
-
 	/**
 	 * Retrieve all companies and return a list of company dto.
 	 *
@@ -65,6 +67,35 @@ public class CompanyService {
 			logger.error(e.getMessage());
 		}
 		return result;
+	}
+
+	public CompanyDTO getCompanyById(int id) throws ItemNotFoundException {
+		try {
+			Optional<Company> companyOpt = this.companyDAO.get(id);
+			if (companyOpt.isPresent()) {
+				return companyMapper.createDTO(companyOpt.get());
+			} else {
+				throw new ItemNotFoundException("getComputerById");
+			}
+		} catch (DAOException e) {
+			logger.error(e.getMessage());
+			throw new ItemNotFoundException("dao");
+		}
+	}
+
+	public void deleteCompany(CompanyDTO companyDTO) throws ItemNotFoundException, ItemNotDeletedException {
+		try {
+			Optional<Company> companyOpt = companyDAO.get(companyDTO.getId());
+			if (companyOpt.isPresent()) {
+				Company company = companyMapper.createBean(companyDTO);
+				companyDAO.delete(company);
+			} else {
+				throw new ItemNotFoundException("deleteComputer");
+			}
+		} catch (DAOException e) {
+			logger.error(e.getMessage());
+			throw new ItemNotDeletedException("dao");
+		}
 	}
 
 }
