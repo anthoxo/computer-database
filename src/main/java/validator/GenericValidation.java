@@ -16,7 +16,7 @@ public class GenericValidation<T> {
 
 	public GenericValidation<T> and(GenericValidation<T> other) {
 		return GenericValidation.from((T param) -> {
-			return this.predicate.test(param) ? other.predicate.test(param) : false;
+			return this.predicate.test(param) && other.predicate.test(param);
 		});
 	}
 

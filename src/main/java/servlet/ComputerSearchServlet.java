@@ -24,12 +24,12 @@ public class ComputerSearchServlet extends HttpServlet {
 	String pattern = "";
 	Page<ComputerDTO> computerPage;
 	String orderBy;
-	OrderByOption orderByOption;
+	OrderByOption orderByOption = OrderByOption.NULL;
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String search = request.getParameter("search");
+		String search = request.getParameter(Variable.GET_PARAMETER_SEARCH);
 		if (search != null) {
 			pattern = search;
 		} else {

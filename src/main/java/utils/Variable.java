@@ -7,6 +7,7 @@ public class Variable {
 	public static final String GET_PARAMETER_INTRODUCED = "introduced";
 	public static final String GET_PARAMETER_DISCONTINUED = "discontinued";
 	public static final String GET_PARAMETER_COMPANY_ID = "companyId";
+	public static final String GET_PARAMETER_SEARCH = "search";
 	public static final String GET_ORDER_BY = "orderBy";
 
 	public static final String COMPANY_LIST = "companyList";

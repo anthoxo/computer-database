@@ -31,7 +31,8 @@
 		</div>
 	</header>
 	<div class="container">
-		<h1 id="homeTitle">${computerNumber} computers found</h1>
+		<h1 id="homeTitle">${computerNumber} computer<c:if test="${computerNumber > 1}">s</c:if> found
+		</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
 				<form id="searchForm" action="${context}/computer/search"
@@ -63,12 +64,12 @@
 				<tr>
 					<th><a href="${urlPath}?orderBy=name"><span
 							class="glyphicon glyphicon-sort"></span></a>&nbsp;Computer name</th>
-					<th><a href="${urlPath}?orderBy=introduced"><span class="glyphicon glyphicon-sort"></span></a>&nbsp;Introduced
-						date</th>
-					<th><a href="${urlPath}?orderBy=discontinued"><span class="glyphicon glyphicon-sort"></span></a>&nbsp;Discontinued
-						date</th>
-					<th><a href="${urlPath}?orderBy=companyName"><span class="glyphicon glyphicon-sort"></span></a>&nbsp;Company
-						name</th>
+					<th><a href="${urlPath}?orderBy=introduced"><span
+							class="glyphicon glyphicon-sort"></span></a>&nbsp;Introduced date</th>
+					<th><a href="${urlPath}?orderBy=discontinued"><span
+							class="glyphicon glyphicon-sort"></span></a>&nbsp;Discontinued date</th>
+					<th><a href="${urlPath}?orderBy=companyName"><span
+							class="glyphicon glyphicon-sort"></span></a>&nbsp;Company name</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -80,7 +81,7 @@
 						<td><c:out value="${c.introducedDate}" /></td>
 						<td><c:out value="${c.discontinuedDate}" /></td>
 						<td><c:out value="${c.companyName}" /></td>
-						<td><a type="button" class="btn btn-primary btn-sm"
+						<td><a type="button" class="btn btn-danger btn-sm"
 							data-toggle="modal" data-target="#modalDelete_${c.id}"> <i
 								class="fa fa-trash-o fa-lg"></i>
 						</a></td>
@@ -102,21 +103,23 @@
 								</div>
 								<div class="modal-body">
 									<c:out value="${c.name}" />
-									<br> Introduced:
-									<c:out value="${c.introducedDate}" />
-									<br> Discontinued:
-									<c:out value="${c.discontinuedDate}" />
-									<br> Company:
-									<c:out value="${c.companyName}" />
-									<br>
+									<c:if test="${c.introducedDate != ''}">
+										<br>Introduced in <c:out value="${c.introducedDate}" />
+									</c:if>
+									<c:if test="${c.discontinuedDate != ''}">
+										<br>Discontinued in <c:out value="${c.discontinuedDate}" />
+									</c:if>
+									<c:if test="${c.companyName != null && c.companyName != ''}">
+										<br>Company : <c:out value="${c.companyName}" />
+									</c:if>
 								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-light"
-										data-dismiss="modal">Close</button>
+								<div class="modal-footer form-inline">
 									<form action="${context}/computer/delete" method="POST">
 										<input type="hidden" value="${c.id}" id="id_delete"
 											name="id_delete" /> <input type="submit"
-											class="btn btn-primary" value="Delete" />
+											class="btn btn-danger" value="Delete" />
+										<button type="button" class="btn btn-default"
+											data-dismiss="modal">Close</button>
 									</form>
 								</div>
 							</div>
