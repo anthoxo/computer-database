@@ -16,6 +16,7 @@ import exception.ItemNotFoundException;
 import exception.ItemNotUpdatedException;
 import service.CompanyService;
 import service.ComputerService;
+import service.NotificationService;
 import utils.Variable;
 
 @WebServlet("/computer/edit")
@@ -25,6 +26,7 @@ public class EditComputerServlet extends HttpServlet {
 
 	ComputerService computerService = ComputerService.getInstance();
 	CompanyService companyService = CompanyService.getInstance();
+	NotificationService notificationService = NotificationService.getInstance();
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -38,24 +40,16 @@ public class EditComputerServlet extends HttpServlet {
 		computerDTO.setCompanyId(Integer.valueOf(companyId));
 		try {
 			this.computerService.updateComputer(computerDTO);
-			request.getSession().setAttribute(Variable.NOTIFICATION, "true");
-			request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "This object has been correctly updated !");
-			request.getSession().setAttribute(Variable.LVL_NOTIFICATION, "success");
-
+			this.notificationService.generateNotification("success", "This object has been correctly updated !");
 		} catch (ItemNotUpdatedException e) {
-			request.getSession().setAttribute(Variable.NOTIFICATION, "true");
 			if (e.getMessage().equals("not-valid")) {
-				request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "This object isn't valid.");
+				this.notificationService.generateNotification("danger", "This object isn't valid.");
 			} else {
-				request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "This object hasn't been updated.");
+				this.notificationService.generateNotification("danger", "This object hasn't been updated.");
 			}
-			request.getSession().setAttribute(Variable.LVL_NOTIFICATION, "danger");
 		} catch (ItemNotFoundException e) {
-			request.getSession().setAttribute(Variable.NOTIFICATION, "true");
-			request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "This object isn't in database.");
-			request.getSession().setAttribute(Variable.LVL_NOTIFICATION, "danger");
+			this.notificationService.generateNotification("danger", "This object isn't in database.");
 		}
-
 		response.sendRedirect(request.getContextPath() + Variable.URL_COMPUTER);
 	}
 
@@ -67,7 +61,6 @@ public class EditComputerServlet extends HttpServlet {
 		if (idString != null) {
 			id = Integer.valueOf(idString);
 		}
-
 		try {
 			ComputerDTO cDTO = this.computerService.getComputerById(id);
 			request.setAttribute("computer", cDTO);
@@ -78,9 +71,7 @@ public class EditComputerServlet extends HttpServlet {
 			RequestDispatcher rd = this.getServletContext().getRequestDispatcher(Variable.VIEW_EDIT);
 			rd.forward(request, response);
 		} catch (ItemNotFoundException e) {
-			request.getSession().setAttribute(Variable.NOTIFICATION, "true");
-			request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "This object isn't in database.");
-			request.getSession().setAttribute(Variable.LVL_NOTIFICATION, "danger");
+			this.notificationService.generateNotification("danger", "This object isn't in database.");
 			response.sendRedirect(request.getContextPath() + Variable.URL_COMPUTER);
 		}
 	}

@@ -15,6 +15,7 @@ import dto.ComputerDTO;
 import exception.ItemBadCreatedException;
 import service.CompanyService;
 import service.ComputerService;
+import service.NotificationService;
 import utils.Variable;
 
 @WebServlet("/computer/add")
@@ -24,6 +25,7 @@ public class AddComputerServlet extends HttpServlet {
 
 	ComputerService computerService = ComputerService.getInstance();
 	CompanyService companyService = CompanyService.getInstance();
+	NotificationService notificationService = NotificationService.getInstance();
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -42,20 +44,14 @@ public class AddComputerServlet extends HttpServlet {
 		computerDTO.setCompanyId(companyId);
 		try {
 			this.computerService.createComputer(computerDTO);
-			request.getSession().setAttribute(Variable.NOTIFICATION, "true");
-			request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "This object has been correctly created !");
-			request.getSession().setAttribute(Variable.LVL_NOTIFICATION, "success");
-
+			this.notificationService.generateNotification("success", "This object has been correctly created !");
 		} catch (ItemBadCreatedException e) {
-			request.getSession().setAttribute(Variable.NOTIFICATION, "true");
 			if (e.getMessage().equals("not-valid")) {
-				request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "This object isn't valid.");
+				this.notificationService.generateNotification("danger", "This object isn't valid.");
 			} else {
-				request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "This object hasn't been created.");
+				this.notificationService.generateNotification("danger", "This object hasn't been created.");
 			}
-			request.getSession().setAttribute(Variable.LVL_NOTIFICATION, "danger");
 		}
-
 		response.sendRedirect(request.getContextPath() + Variable.URL_COMPUTER);
 	}
 

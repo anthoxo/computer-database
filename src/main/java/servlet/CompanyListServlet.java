@@ -1,7 +1,6 @@
 package servlet;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -44,11 +43,9 @@ public class CompanyListServlet extends HttpServlet {
 						this.orderByOption = OrderByOption.ASC;
 						break;
 					}
-					List<CompanyDTO> companyDTOList = companyService.getAllCompaniesOrderByName(orderByOption);
-					companyPage = new Page<CompanyDTO>(companyDTOList);
+					companyPage = new Page<CompanyDTO>(companyService.getAllCompaniesOrderByName(orderByOption));
 				} else {
-					List<CompanyDTO> companyDTOList = companyService.getAllCompanies();
-					companyPage = new Page<CompanyDTO>(companyDTOList);
+					companyPage = new Page<CompanyDTO>(companyService.getAllCompanies());
 				}
 			} else {
 				index = Integer.valueOf(indexPage) - 1;

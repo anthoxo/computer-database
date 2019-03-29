@@ -11,6 +11,7 @@ import dto.ComputerDTO;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
 import service.ComputerService;
+import service.NotificationService;
 import utils.Variable;
 
 @WebServlet("/computer/delete")
@@ -19,6 +20,7 @@ public class DeleteComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 6846348527025452256L;
 
 	ComputerService computerService = ComputerService.getInstance();
+	NotificationService notificationService = NotificationService.getInstance();
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -27,18 +29,12 @@ public class DeleteComputerServlet extends HttpServlet {
 		computerDTO.setId(Integer.valueOf(id));
 		try {
 			this.computerService.deleteComputer(computerDTO);
-			request.getSession().setAttribute(Variable.NOTIFICATION, "true");
-			request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "This object has been correctly deleted !");
-			request.getSession().setAttribute(Variable.LVL_NOTIFICATION, "success");
+			this.notificationService.generateNotification("success", "This object has been correctly deleted !");
 		} catch (ItemNotFoundException e) {
-			request.getSession().setAttribute(Variable.NOTIFICATION, "true");
-			request.getSession().setAttribute(Variable.MSG_NOTIFICATION,
+			this.notificationService.generateNotification("danger",
 					"This object you want to delete is not found in database.");
-			request.getSession().setAttribute(Variable.LVL_NOTIFICATION, "danger");
 		} catch (ItemNotDeletedException e) {
-			request.getSession().setAttribute(Variable.NOTIFICATION, "true");
-			request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "This object hasn't been deleted.");
-			request.getSession().setAttribute(Variable.LVL_NOTIFICATION, "danger");
+			this.notificationService.generateNotification("danger", "This object hasn't been deleted.");
 		}
 		response.sendRedirect(request.getContextPath() + Variable.URL_COMPUTER);
 	}

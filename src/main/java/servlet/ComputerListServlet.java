@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import dto.ComputerDTO;
 import model.Page;
 import service.ComputerService;
+import service.NotificationService;
 import utils.Utils.OrderByOption;
 import utils.Variable;
 
@@ -20,21 +21,22 @@ public class ComputerListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	ComputerService computerService = ComputerService.getInstance();
+	NotificationService notificationService = NotificationService.getInstance();
 	Page<ComputerDTO> computerPage;
 	OrderByOption orderByOption;
-	String orderBy;
+	String orderColumn;
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
 			String indexPage = request.getParameter(Variable.GET_PARAMETER_ID);
-			String orderByTmp;
+			String orderColumnTmp;
 			int index;
 			if (indexPage == null) {
 				index = 0;
-				orderByTmp = request.getParameter(Variable.GET_ORDER_BY);
-				if (orderByTmp != null) {
+				orderColumnTmp = request.getParameter(Variable.GET_ORDER_BY);
+				if (orderColumnTmp != null) {
 					switch (this.orderByOption) {
 					case ASC:
 						this.orderByOption = OrderByOption.DESC;
@@ -43,12 +45,12 @@ public class ComputerListServlet extends HttpServlet {
 						this.orderByOption = OrderByOption.ASC;
 						break;
 					}
-					if (!orderByTmp.equals(orderBy)) {
+					if (!orderColumnTmp.equals(orderColumn)) {
 						this.orderByOption = OrderByOption.ASC;
 					}
-					this.orderBy = orderByTmp;
+					this.orderColumn = orderColumnTmp;
 					this.computerPage = new Page<ComputerDTO>(
-							computerService.getAllComputersOrderBy(orderBy, orderByOption));
+							computerService.getAllComputersOrderBy(orderColumn, orderByOption));
 				} else {
 					orderByOption = OrderByOption.NULL;
 					this.computerPage = new Page<ComputerDTO>(computerService.getAllComputers());
@@ -66,20 +68,13 @@ public class ComputerListServlet extends HttpServlet {
 			request.setAttribute(Variable.IS_SEARCHING, "false");
 			request.setAttribute(Variable.COMPUTER_NUMBER, computerPage.getLength());
 
-			String notification = (String) request.getSession().getAttribute(Variable.NOTIFICATION);
-
-			if (notification == null || notification == "false") {
-				request.setAttribute(Variable.NOTIFICATION, false);
-			} else {
-				String msgNotification = (String) request.getSession().getAttribute(Variable.MSG_NOTIFICATION);
-				String lvlNotification = (String) request.getSession().getAttribute(Variable.LVL_NOTIFICATION);
+			if (this.notificationService.isNotifying()) {
 				request.setAttribute(Variable.NOTIFICATION, true);
-				request.setAttribute(Variable.MSG_NOTIFICATION, msgNotification);
-				request.setAttribute(Variable.LVL_NOTIFICATION, lvlNotification);
-
-				request.getSession().setAttribute(Variable.NOTIFICATION, "false");
-				request.getSession().setAttribute(Variable.MSG_NOTIFICATION, "");
-				request.getSession().setAttribute(Variable.LVL_NOTIFICATION, "");
+				request.setAttribute(Variable.MSG_NOTIFICATION, this.notificationService.getMessage());
+				request.setAttribute(Variable.LVL_NOTIFICATION, this.notificationService.getLevel());
+				this.notificationService.clean();
+			} else {
+				request.setAttribute(Variable.NOTIFICATION, false);
 			}
 
 			RequestDispatcher rd = this.getServletContext().getRequestDispatcher(Variable.VIEW_COMPUTER);
