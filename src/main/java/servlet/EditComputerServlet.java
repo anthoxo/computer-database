@@ -40,15 +40,19 @@ public class EditComputerServlet extends HttpServlet {
 		computerDTO.setCompanyId(Integer.valueOf(companyId));
 		try {
 			this.computerService.updateComputer(computerDTO);
-			this.notificationService.generateNotification("success", "This object has been correctly updated !");
+			this.notificationService.generateNotification("success", this, serialVersionUID,
+					"This object has been correctly updated !");
 		} catch (ItemNotUpdatedException e) {
 			if (e.getMessage().equals("not-valid")) {
-				this.notificationService.generateNotification("danger", "This object isn't valid.");
+				this.notificationService.generateNotification("danger", this, serialVersionUID,
+						"This object isn't valid.");
 			} else {
-				this.notificationService.generateNotification("danger", "This object hasn't been updated.");
+				this.notificationService.generateNotification("danger", this, serialVersionUID,
+						"This object hasn't been updated.");
 			}
 		} catch (ItemNotFoundException e) {
-			this.notificationService.generateNotification("danger", "This object isn't in database.");
+			this.notificationService.generateNotification("danger", this, serialVersionUID,
+					"This object isn't in database.");
 		}
 		response.sendRedirect(request.getContextPath() + Variable.URL_COMPUTER);
 	}
@@ -71,7 +75,8 @@ public class EditComputerServlet extends HttpServlet {
 			RequestDispatcher rd = this.getServletContext().getRequestDispatcher(Variable.VIEW_EDIT);
 			rd.forward(request, response);
 		} catch (ItemNotFoundException e) {
-			this.notificationService.generateNotification("danger", "This object isn't in database.");
+			this.notificationService.generateNotification("danger", this, serialVersionUID,
+					"This object isn't in database.");
 			response.sendRedirect(request.getContextPath() + Variable.URL_COMPUTER);
 		}
 	}

@@ -23,9 +23,9 @@ public class NotificationService {
 		return isNotifying;
 	}
 
-	public void generateNotification(String type, String message) {
+	public void generateNotification(String type, Object source, long sequenceNumber, String message) {
 		this.isNotifying = true;
-		this.notification = new Notification(type, 1, 1, message);
+		this.notification = new Notification(type, source, sequenceNumber, message);
 	}
 
 	public void clean() {

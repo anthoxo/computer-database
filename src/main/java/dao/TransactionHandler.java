@@ -11,16 +11,16 @@ public class TransactionHandler<U,R> {
 		public R accept(Connection t, U u) throws SQLException, DAOException;
 	};
 
+	DAOFactory daoFactory;
 	MyConsumer<U,R> myConsumer;
 	R result;
-	DAOFactory daoFactory;
 
 	private TransactionHandler(MyConsumer<U,R> myConsumer) {
 		this.myConsumer = myConsumer;
 		this.daoFactory = DAOFactory.getInstance();
 	}
 
-	public static <U,R> TransactionHandler<U,R> from(MyConsumer<U,R> myConsumer) {
+	public static <U,R> TransactionHandler<U,R> create(MyConsumer<U,R> myConsumer) {
 		return new TransactionHandler<U,R>(myConsumer);
 	}
 

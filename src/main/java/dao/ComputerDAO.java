@@ -26,12 +26,12 @@ public class ComputerDAO {
 	static final String REQUEST_DELETE = "DELETE FROM computer WHERE id = ?";
 	static final String REQUEST_GET_ALL = "SELECT id,name,introduced,discontinued,company_id FROM computer";
 	static final String REQUEST_GET_ALL_ORDER_BY = "SELECT id,name,introduced,discontinued,company_id FROM computer ORDER BY ";
-	static final String REQUEST_GET_ALL_ORDER_BY_COMPANY_NAME = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id FROM computer LEFT JOIN company ON company.id = computer.company_id ORDER BY company.name";
+	static final String REQUEST_GET_ALL_ORDER_BY_COMPANY_NAME = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id FROM computer LEFT JOIN company ON company.id = computer.company_id ORDER BY company.name IS NULL ASC, company.name";
 	static final String REQUEST_GET_BY_ID = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE id = ?";
 	static final String REQUEST_GET_BY_NAME = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE name = ?";
 	static final String REQUEST_GET_LIKE = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE name LIKE ?";
 	static final String REQUEST_GET_LIKE_ORDER_BY = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE name LIKE ? ORDER BY ";
-	static final String REQUEST_GET_LIKE_ORDER_BY_COMPANY_NAME = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id FROM computer LEFT JOIN company ON company.id = computer.company_id WHERE computer.name LIKE ? ORDER BY company.name";
+	static final String REQUEST_GET_LIKE_ORDER_BY_COMPANY_NAME = "SELECT computer.id,computer.name,computer.introduced,computer.discontinued,computer.company_id FROM computer LEFT JOIN company ON company.id = computer.company_id WHERE computer.name LIKE ? ORDER BY company.name IS NULL ASC, company.name";
 
 	static final String[] COMPUTER_COLUMN = { "id", "name", "introduced", "discontinued", "company_id" };
 
@@ -54,7 +54,7 @@ public class ComputerDAO {
 	}
 
 	public void create(Computer obj) throws DAOException {
-		TransactionHandler.from((Connection conn, Computer computerArg) -> {
+		TransactionHandler.create((Connection conn, Computer computerArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_CREATE);
 			stmt.setInt(1, computerArg.getId());
 			stmt.setString(2, computerArg.getName());
@@ -72,7 +72,7 @@ public class ComputerDAO {
 
 	public Optional<Computer> get(int id) throws DAOException {
 		Optional<Computer> computerOpt = Optional.empty();
-		return TransactionHandler.from((Connection conn, Optional<Computer> computerOptArg) -> {
+		return TransactionHandler.create((Connection conn, Optional<Computer> computerOptArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_ID);
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
@@ -91,7 +91,7 @@ public class ComputerDAO {
 	public void update(Computer obj) throws DAOException, ItemNotFoundException {
 		Optional<Computer> computerOpt = this.get(obj.getId());
 		if (computerOpt.isPresent()) {
-			TransactionHandler.from((Connection conn, Computer computerArg) -> {
+			TransactionHandler.create((Connection conn, Computer computerArg) -> {
 				PreparedStatement stmt = conn.prepareStatement(REQUEST_UPDATE);
 				stmt.setString(1, computerArg.getName());
 				stmt.setTimestamp(2, computerArg.getIntroduced());
@@ -111,7 +111,7 @@ public class ComputerDAO {
 	}
 
 	public void delete(Computer obj) throws DAOException {
-		TransactionHandler.from((Connection conn, Computer computerArg) -> {
+		TransactionHandler.create((Connection conn, Computer computerArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_DELETE);
 			stmt.setInt(1, computerArg.getId());
 			stmt.executeUpdate();
@@ -127,7 +127,7 @@ public class ComputerDAO {
 	 */
 	public List<Computer> getAll() throws DAOException {
 		ArrayList<Computer> computerList = new ArrayList<Computer>();
-		return TransactionHandler.from((Connection conn, ArrayList<Computer> computerListArg) -> {
+		return TransactionHandler.create((Connection conn, ArrayList<Computer> computerListArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_ALL);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -144,7 +144,7 @@ public class ComputerDAO {
 
 	public List<Computer> getAllOrderBy(String order, boolean isDesc) throws DAOException {
 		TransactionHandler<String, List<Computer>> transactionHandler = TransactionHandler
-				.from((Connection conn, String req) -> {
+				.create((Connection conn, String req) -> {
 					ArrayList<Computer> computerListArg = new ArrayList<Computer>();
 					PreparedStatement stmt = conn.prepareStatement(req);
 					ResultSet rs = stmt.executeQuery();
@@ -160,7 +160,8 @@ public class ComputerDAO {
 				});
 		String desc = isDesc ? " DESC" : "";
 		if (Arrays.asList(COMPUTER_COLUMN).contains(order)) {
-			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY + order + desc).getResult();
+			StringBuilder req = new StringBuilder().append(REQUEST_GET_ALL_ORDER_BY).append(order).append(" IS NULL ASC, ").append(order).append(desc);
+			return transactionHandler.run(req.toString()).getResult();
 		} else if (order.equals("companyName")) {
 			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY_COMPANY_NAME + desc).getResult();
 		} else {
@@ -177,7 +178,7 @@ public class ComputerDAO {
 	 */
 	public Optional<Computer> get(String name) throws DAOException {
 		Optional<Computer> computerOpt = Optional.empty();
-		return TransactionHandler.from((Connection conn, Optional<Computer> computerOptArg) -> {
+		return TransactionHandler.create((Connection conn, Optional<Computer> computerOptArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_NAME);
 			stmt.setString(1, name);
 			ResultSet rs = stmt.executeQuery();
@@ -195,7 +196,7 @@ public class ComputerDAO {
 
 	public List<Computer> getPattern(String pattern) throws DAOException {
 		List<Computer> result = new ArrayList<Computer>();
-		return TransactionHandler.from((Connection conn, List<Computer> computerListArg) -> {
+		return TransactionHandler.create((Connection conn, List<Computer> computerListArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_LIKE);
 			String patternRequest = new StringBuilder().append("%").append(pattern).append("%").toString();
 			stmt.setString(1, patternRequest);
@@ -214,7 +215,7 @@ public class ComputerDAO {
 
 	public List<Computer> getPatternOrderBy(String pattern, String order, boolean isDesc) throws DAOException {
 		TransactionHandler<String, List<Computer>> transactionHandler = TransactionHandler
-				.from((Connection conn, String request) -> {
+				.create((Connection conn, String request) -> {
 					ArrayList<Computer> computerListArg = new ArrayList<Computer>();
 					PreparedStatement stmt = conn.prepareStatement(request);
 					String patternRequest = new StringBuilder().append("%").append(pattern).append("%").toString();
@@ -232,7 +233,8 @@ public class ComputerDAO {
 				});
 		String desc = isDesc ? " DESC" : "";
 		if (Arrays.asList(COMPUTER_COLUMN).contains(order)) {
-			return transactionHandler.run(REQUEST_GET_LIKE_ORDER_BY + order + desc).getResult();
+			StringBuilder req = new StringBuilder().append(REQUEST_GET_LIKE_ORDER_BY).append(order).append(" IS NULL ASC, ").append(order).append(desc);
+			return transactionHandler.run(req.toString()).getResult();
 		} else if (order.equals("companyName")) {
 			return transactionHandler.run(REQUEST_GET_LIKE_ORDER_BY_COMPANY_NAME + desc).getResult();
 		} else {

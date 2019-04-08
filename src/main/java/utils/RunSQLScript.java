@@ -8,7 +8,11 @@ import java.sql.PreparedStatement;
 
 import dao.TransactionHandler;
 import exception.DAOException;
-
+/**
+ * This class is used only during tests.
+ * @author excilys
+ *
+ */
 public class RunSQLScript {
 
 	static final String CONFIG_FILE_PATH = "src/main/resources/config/db/4-TEST-2.sql";
@@ -19,7 +23,7 @@ public class RunSQLScript {
 		bufferedReader.lines().forEach((String s) -> result.append(s));
 		bufferedReader.close();
 		for (String str : result.toString().split(";")) {
-			TransactionHandler.from((Connection conn, String query) -> {
+			TransactionHandler.create((Connection conn, String query) -> {
 				PreparedStatement stmt = conn.prepareStatement(query);
 				stmt.executeUpdate();
 				return query;

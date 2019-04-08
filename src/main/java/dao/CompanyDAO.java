@@ -44,7 +44,7 @@ public class CompanyDAO {
 
 	public Optional<Company> get(int id) throws DAOException {
 		Optional<Company> company = Optional.empty();
-		return TransactionHandler.from((Connection conn, Optional<Company> companyArg) -> {
+		return TransactionHandler.create((Connection conn, Optional<Company> companyArg) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_ID);
 			stmt.setInt(1, id);
 			ResultSet rs = stmt.executeQuery();
@@ -63,7 +63,7 @@ public class CompanyDAO {
 	 */
 	public List<Company> getAll() throws DAOException {
 		List<Company> listCompanies = new ArrayList<Company>();
-		return TransactionHandler.from((Connection conn, List<Company> l) -> {
+		return TransactionHandler.create((Connection conn, List<Company> l) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_ALL);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -75,7 +75,7 @@ public class CompanyDAO {
 	}
 
 	public List<Company> getAllOrderByName(boolean isDesc) throws DAOException {
-		TransactionHandler<String, List<Company>> transactionHandler = TransactionHandler.from((Connection conn, String request) -> {
+		TransactionHandler<String, List<Company>> transactionHandler = TransactionHandler.create((Connection conn, String request) -> {
 			List<Company> listCompanies = new ArrayList<Company>();
 			PreparedStatement stmt = conn.prepareStatement(request);
 			ResultSet rs = stmt.executeQuery();
@@ -101,7 +101,7 @@ public class CompanyDAO {
 	 */
 	public Optional<Company> get(String name) throws DAOException {
 		Optional<Company> company = Optional.empty();
-		return TransactionHandler.from((Connection conn, Optional<Company> companyOpt) -> {
+		return TransactionHandler.create((Connection conn, Optional<Company> companyOpt) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_NAME);
 			stmt.setString(1, name);
 			ResultSet rs = stmt.executeQuery();
@@ -113,7 +113,7 @@ public class CompanyDAO {
 	}
 
 	public void delete(Company obj) throws DAOException {
-		TransactionHandler.from((Connection conn, Company company) -> {
+		TransactionHandler.create((Connection conn, Company company) -> {
 			PreparedStatement stmt = conn.prepareStatement(REQUEST_DELETE_COMPUTER_BY_COMPANY_ID);
 			stmt.setInt(1, company.getId());
 			stmt.executeUpdate();

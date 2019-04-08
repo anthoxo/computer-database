@@ -29,12 +29,14 @@ public class DeleteComputerServlet extends HttpServlet {
 		computerDTO.setId(Integer.valueOf(id));
 		try {
 			this.computerService.deleteComputer(computerDTO);
-			this.notificationService.generateNotification("success", "This object has been correctly deleted !");
+			this.notificationService.generateNotification("success", this, serialVersionUID,
+					"This object has been correctly deleted !");
 		} catch (ItemNotFoundException e) {
-			this.notificationService.generateNotification("danger",
+			this.notificationService.generateNotification("danger", this, serialVersionUID,
 					"This object you want to delete is not found in database.");
 		} catch (ItemNotDeletedException e) {
-			this.notificationService.generateNotification("danger", "This object hasn't been deleted.");
+			this.notificationService.generateNotification("danger", this, serialVersionUID,
+					"This object hasn't been deleted.");
 		}
 		response.sendRedirect(request.getContextPath() + Variable.URL_COMPUTER);
 	}

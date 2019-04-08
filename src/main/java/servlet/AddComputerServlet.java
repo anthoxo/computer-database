@@ -44,12 +44,15 @@ public class AddComputerServlet extends HttpServlet {
 		computerDTO.setCompanyId(companyId);
 		try {
 			this.computerService.createComputer(computerDTO);
-			this.notificationService.generateNotification("success", "This object has been correctly created !");
+			this.notificationService.generateNotification("success", this, serialVersionUID,
+					"This object has been correctly created !");
 		} catch (ItemBadCreatedException e) {
 			if (e.getMessage().equals("not-valid")) {
-				this.notificationService.generateNotification("danger", "This object isn't valid.");
+				this.notificationService.generateNotification("danger", this, serialVersionUID,
+						"This object isn't valid.");
 			} else {
-				this.notificationService.generateNotification("danger", "This object hasn't been created.");
+				this.notificationService.generateNotification("danger", this, serialVersionUID,
+						"This object hasn't been created.");
 			}
 		}
 		response.sendRedirect(request.getContextPath() + Variable.URL_COMPUTER);

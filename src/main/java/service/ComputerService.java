@@ -161,7 +161,6 @@ public class ComputerService {
 		return result;
 	}
 
-
 	public void updateComputer(ComputerDTO cDTO) throws ItemNotUpdatedException, ItemNotFoundException {
 		try {
 			Computer computer = computerMapper.createBean(cDTO);
