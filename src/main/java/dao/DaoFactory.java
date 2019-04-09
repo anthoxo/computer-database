@@ -8,31 +8,32 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-public class DAOFactory {
-
-	private CompanyDAO companyDAO;
-	private ComputerDAO computerDAO;
-
-	private static DAOFactory instance = null;
+@Component
+public class DaoFactory {
 
 	public static final String DAO_PROPERTIES = "dao.properties";
 	public static final String DAO_TEST_PROPERTIES = "dao-test.properties";
 
-	private Logger logger = LoggerFactory.getLogger(DAOFactory.class);
+	@Autowired
+	private CompanyDao companyDao;
+
+	@Autowired
+	private ComputerDao computerDao;
+
+	private Logger logger = LoggerFactory.getLogger(DaoFactory.class);
 	private HikariDataSource hikariDataSource;
 
-	/**
-	 * Default constructor.
-	 */
-	private DAOFactory() {
+	DaoFactory() {
 		this(DAO_PROPERTIES);
 	}
 
-	private DAOFactory(String propertiesPath) {
+	DaoFactory(String propertiesPath) {
 		Properties properties = new Properties();
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		InputStream fichierProperties = classLoader.getResourceAsStream(propertiesPath);
@@ -46,33 +47,17 @@ public class DAOFactory {
 	}
 
 	/**
-	 * @return The only instance of DAOFactory.
-	 */
-	public static DAOFactory getInstance() {
-		if (instance == null) {
-			instance = new DAOFactory();
-		}
-		return instance;
-	}
-
-	/**
 	 * @return A CompanyDAO object related to DAOFactory.
 	 */
-	public CompanyDAO getCompanyDAO() {
-		if (this.companyDAO == null) {
-			this.companyDAO = CompanyDAO.getInstance();
-		}
-		return this.companyDAO;
+	public CompanyDao getCompanyDAO() {
+		return this.companyDao;
 	}
 
 	/**
 	 * @return A ComputerDAO object related to DAOFactory.
 	 */
-	public ComputerDAO getComputerDAO() {
-		if (this.computerDAO == null) {
-			this.computerDAO = ComputerDAO.getInstance();
-		}
-		return this.computerDAO;
+	public ComputerDao getComputerDAO() {
+		return this.computerDao;
 	}
 
 	/**
@@ -91,12 +76,12 @@ public class DAOFactory {
 	}
 
 	public static void startTest() {
-		instance = new DAOFactory(DAO_TEST_PROPERTIES);
-		ComputerDAO.getInstance().daoFactory = instance;
+		//instance = new DAOFactory(DAO_TEST_PROPERTIES);
+		//ComputerDAO.getInstance().daoFactory = instance;
 	}
 
 	public static void stopTest() {
-		instance = new DAOFactory();
-		ComputerDAO.getInstance().daoFactory = instance;
+		//instance = new DAOFactory();
+		//ComputerDAO.getInstance().daoFactory = instance;
 	}
 }

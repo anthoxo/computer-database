@@ -7,15 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import exception.DAOException;
 import mapper.CompanyMapper;
 import model.Company;
 
-public class CompanyDAO {
-
-	private static CompanyDAO instance = null;
-
-	CompanyMapper companyMapper = CompanyMapper.getInstance();
+@Component
+public class CompanyDao {
 
 	static final String REQUEST_GET_BY_ID = "SELECT id,name FROM company WHERE id = ?";
 	static final String REQUEST_GET_ALL = "SELECT id,name FROM company";
@@ -24,22 +24,13 @@ public class CompanyDAO {
 	static final String REQUEST_DELETE_COMPUTER_BY_COMPANY_ID = "DELETE FROM computer WHERE company_id = ?";
 	static final String REQUEST_DELETE_COMPANY_BY_ID = "DELETE FROM company WHERE id = ?";
 
-	/**
-	 * Default constructor.
-	 */
-	private CompanyDAO() {
-	}
+	@Autowired
+	DaoFactory daoFactory;
 
-	/**
-	 * Method to retrieve instance of Company DAO.
-	 *
-	 * @return The only instance of CompanyDAO.
-	 */
-	public static CompanyDAO getInstance() {
-		if (instance == null) {
-			instance = new CompanyDAO();
-		}
-		return instance;
+	@Autowired
+	CompanyMapper companyMapper;
+
+	private CompanyDao() {
 	}
 
 	public Optional<Company> get(int id) throws DAOException {
@@ -52,7 +43,7 @@ public class CompanyDAO {
 				companyArg = Optional.ofNullable(companyMapper.map(rs));
 			}
 			return companyArg;
-		}).run(company).getResult();
+		}).run(daoFactory, company).getResult();
 	}
 
 	/**
@@ -71,7 +62,7 @@ public class CompanyDAO {
 				l.add(company);
 			}
 			return l;
-		}).run(listCompanies).getResult();
+		}).run(daoFactory, listCompanies).getResult();
 	}
 
 	public List<Company> getAllOrderByName(boolean isDesc) throws DAOException {
@@ -86,9 +77,9 @@ public class CompanyDAO {
 			return listCompanies;
 		});
 		if (isDesc) {
-			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY_NAME + " DESC").getResult();
+			return transactionHandler.run(daoFactory, REQUEST_GET_ALL_ORDER_BY_NAME + " DESC").getResult();
 		} else {
-			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY_NAME).getResult();
+			return transactionHandler.run(daoFactory, REQUEST_GET_ALL_ORDER_BY_NAME).getResult();
 		}
 	}
 
@@ -109,7 +100,7 @@ public class CompanyDAO {
 				companyOpt = Optional.ofNullable(companyMapper.map(rs));
 			}
 			return companyOpt;
-		}).run(company).getResult();
+		}).run(daoFactory, company).getResult();
 	}
 
 	public void delete(Company obj) throws DAOException {
@@ -121,6 +112,6 @@ public class CompanyDAO {
 			stmt.setInt(1, company.getId());
 			stmt.executeUpdate();
 			return Optional.empty();
-		}).run(obj);
+		}).run(daoFactory, obj);
 	}
 }

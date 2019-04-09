@@ -8,12 +8,12 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dao.DAOFactory;
+import dao.DaoFactory;
 import validator.ValidatorUtil;
 
 public class Utils {
 
-	private static Logger logger = LoggerFactory.getLogger(DAOFactory.class);
+	private static Logger logger = LoggerFactory.getLogger(DaoFactory.class);
 
 	public enum ChoiceDatabase {
 		COMPANY, COMPUTER, QUIT, NULL

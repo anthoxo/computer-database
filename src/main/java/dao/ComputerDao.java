@@ -8,18 +8,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import exception.DAOException;
 import exception.ItemNotFoundException;
 import mapper.ComputerMapper;
 import model.Company;
 import model.Computer;
 
-public class ComputerDAO {
-
-	private static ComputerDAO instance = null;
-
-	DAOFactory daoFactory = DAOFactory.getInstance();
-	ComputerMapper computerMapper = ComputerMapper.getInstance();
+@Component
+public class ComputerDao {
 
 	static final String REQUEST_CREATE = "INSERT INTO computer VALUES (?,?,?,?,?)";
 	static final String REQUEST_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
@@ -35,22 +34,17 @@ public class ComputerDAO {
 
 	static final String[] COMPUTER_COLUMN = { "id", "name", "introduced", "discontinued", "company_id" };
 
-	/**
-	 * Default constructor.
-	 */
-	private ComputerDAO() {
-	}
+	@Autowired
+	DaoFactory daoFactory;
 
-	/**
-	 * Get the only instance of ComputerDAO.
-	 *
-	 * @return The instance of ComputerDAO.
-	 */
-	public static ComputerDAO getInstance() {
-		if (instance == null) {
-			instance = new ComputerDAO();
-		}
-		return instance;
+	@Autowired
+	CompanyDao companyDao;
+
+	@Autowired
+	public ComputerMapper computerMapper;
+
+
+	private ComputerDao() {
 	}
 
 	public void create(Computer obj) throws DAOException {
@@ -60,14 +54,14 @@ public class ComputerDAO {
 			stmt.setString(2, computerArg.getName());
 			stmt.setTimestamp(3, computerArg.getIntroduced());
 			stmt.setTimestamp(4, computerArg.getDiscontinued());
-			if (daoFactory.getCompanyDAO().get(computerArg.getCompanyId()).isPresent()) {
+			if (companyDao.get(computerArg.getCompanyId()).isPresent()) {
 				stmt.setInt(5, computerArg.getCompanyId());
 			} else {
 				stmt.setObject(5, null);
 			}
 			stmt.executeUpdate();
 			return Optional.empty();
-		}).run(obj);
+		}).run(daoFactory, obj);
 	}
 
 	public Optional<Computer> get(int id) throws DAOException {
@@ -78,14 +72,14 @@ public class ComputerDAO {
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				Computer computer = computerMapper.map(rs);
-				Optional<Company> companyOpt = daoFactory.getCompanyDAO().get(computer.getCompanyId());
+				Optional<Company> companyOpt = companyDao.get(computer.getCompanyId());
 				if (companyOpt.isPresent()) {
 					computer.setCompany(companyOpt.get());
 				}
 				computerOptArg = Optional.ofNullable(computer);
 			}
 			return computerOptArg;
-		}).run(computerOpt).getResult();
+		}).run(daoFactory, computerOpt).getResult();
 	}
 
 	public void update(Computer obj) throws DAOException, ItemNotFoundException {
@@ -96,7 +90,7 @@ public class ComputerDAO {
 				stmt.setString(1, computerArg.getName());
 				stmt.setTimestamp(2, computerArg.getIntroduced());
 				stmt.setTimestamp(3, computerArg.getDiscontinued());
-				if (daoFactory.getCompanyDAO().get(computerArg.getCompanyId()).isPresent()) {
+				if (companyDao.get(computerArg.getCompanyId()).isPresent()) {
 					stmt.setInt(4, computerArg.getCompanyId());
 				} else {
 					stmt.setObject(4, null);
@@ -104,7 +98,7 @@ public class ComputerDAO {
 				stmt.setInt(5, obj.getId());
 				stmt.executeUpdate();
 				return Optional.empty();
-			}).run(obj);
+			}).run(daoFactory, obj);
 		} else {
 			throw new ItemNotFoundException("update");
 		}
@@ -116,7 +110,7 @@ public class ComputerDAO {
 			stmt.setInt(1, computerArg.getId());
 			stmt.executeUpdate();
 			return Optional.empty();
-		}).run(obj);
+		}).run(daoFactory, obj);
 	}
 
 	/**
@@ -132,14 +126,14 @@ public class ComputerDAO {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				Computer computer = computerMapper.map(rs);
-				Optional<Company> company = daoFactory.getCompanyDAO().get(computer.getCompanyId());
+				Optional<Company> company = companyDao.get(computer.getCompanyId());
 				if (company.isPresent()) {
 					computer.setCompany(company.get());
 				}
 				computerListArg.add(computer);
 			}
 			return computerListArg;
-		}).run(computerList).getResult();
+		}).run(daoFactory, computerList).getResult();
 	}
 
 	public List<Computer> getAllOrderBy(String order, boolean isDesc) throws DAOException {
@@ -150,7 +144,7 @@ public class ComputerDAO {
 					ResultSet rs = stmt.executeQuery();
 					while (rs.next()) {
 						Computer computer = computerMapper.map(rs);
-						Optional<Company> company = daoFactory.getCompanyDAO().get(computer.getCompanyId());
+						Optional<Company> company = companyDao.get(computer.getCompanyId());
 						if (company.isPresent()) {
 							computer.setCompany(company.get());
 						}
@@ -161,9 +155,9 @@ public class ComputerDAO {
 		String desc = isDesc ? " DESC" : "";
 		if (Arrays.asList(COMPUTER_COLUMN).contains(order)) {
 			StringBuilder req = new StringBuilder().append(REQUEST_GET_ALL_ORDER_BY).append(order).append(" IS NULL ASC, ").append(order).append(desc);
-			return transactionHandler.run(req.toString()).getResult();
+			return transactionHandler.run(daoFactory, req.toString()).getResult();
 		} else if (order.equals("companyName")) {
-			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY_COMPANY_NAME + desc).getResult();
+			return transactionHandler.run(daoFactory, REQUEST_GET_ALL_ORDER_BY_COMPANY_NAME + desc).getResult();
 		} else {
 			return getAll();
 		}
@@ -184,14 +178,14 @@ public class ComputerDAO {
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				Computer computer = computerMapper.map(rs);
-				Optional<Company> company = daoFactory.getCompanyDAO().get(computer.getCompanyId());
+				Optional<Company> company = companyDao.get(computer.getCompanyId());
 				if (company.isPresent()) {
 					computer.setCompany(company.get());
 				}
 				computerOptArg = Optional.ofNullable(computer);
 			}
 			return computerOptArg;
-		}).run(computerOpt).getResult();
+		}).run(daoFactory, computerOpt).getResult();
 	}
 
 	public List<Computer> getPattern(String pattern) throws DAOException {
@@ -203,14 +197,14 @@ public class ComputerDAO {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				Computer computer = computerMapper.map(rs);
-				Optional<Company> companyOpt = daoFactory.getCompanyDAO().get(computer.getCompanyId());
+				Optional<Company> companyOpt = companyDao.get(computer.getCompanyId());
 				if (companyOpt.isPresent()) {
 					computer.setCompany(companyOpt.get());
 				}
 				computerListArg.add(computer);
 			}
 			return computerListArg;
-		}).run(result).getResult();
+		}).run(daoFactory, result).getResult();
 	}
 
 	public List<Computer> getPatternOrderBy(String pattern, String order, boolean isDesc) throws DAOException {
@@ -223,7 +217,7 @@ public class ComputerDAO {
 					ResultSet rs = stmt.executeQuery();
 					while (rs.next()) {
 						Computer computer = computerMapper.map(rs);
-						Optional<Company> company = daoFactory.getCompanyDAO().get(computer.getCompanyId());
+						Optional<Company> company = companyDao.get(computer.getCompanyId());
 						if (company.isPresent()) {
 							computer.setCompany(company.get());
 						}
@@ -234,9 +228,9 @@ public class ComputerDAO {
 		String desc = isDesc ? " DESC" : "";
 		if (Arrays.asList(COMPUTER_COLUMN).contains(order)) {
 			StringBuilder req = new StringBuilder().append(REQUEST_GET_LIKE_ORDER_BY).append(order).append(" IS NULL ASC, ").append(order).append(desc);
-			return transactionHandler.run(req.toString()).getResult();
+			return transactionHandler.run(daoFactory, req.toString()).getResult();
 		} else if (order.equals("companyName")) {
-			return transactionHandler.run(REQUEST_GET_LIKE_ORDER_BY_COMPANY_NAME + desc).getResult();
+			return transactionHandler.run(daoFactory, REQUEST_GET_LIKE_ORDER_BY_COMPANY_NAME + desc).getResult();
 		} else {
 			return getPattern(pattern);
 		}

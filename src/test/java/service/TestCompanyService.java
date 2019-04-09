@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import dao.CompanyDAO;
+import dao.CompanyDao;
 import exception.DAOException;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
@@ -23,7 +23,7 @@ import utils.Utils.OrderByOption;
 public class TestCompanyService {
 
 	@Mock
-	CompanyDAO companyDAO;
+	CompanyDao companyDAO;
 
 	@InjectMocks
 	CompanyService companyService;

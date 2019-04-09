@@ -5,31 +5,18 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Optional;
 
+import org.springframework.stereotype.Component;
+
 import dto.ComputerDTO;
 import exception.DAOException;
 import model.Company;
 import model.Computer;
 import utils.Utils;
 
+@Component
 public class ComputerMapper {
 
-	private static ComputerMapper instance = null;
-
-	/**
-	 * Default constructor.
-	 */
 	private ComputerMapper() {
-
-	}
-
-	/**
-	 * @return The only instance of ComputerMapper.
-	 */
-	public static ComputerMapper getInstance() {
-		if (instance == null) {
-			instance = new ComputerMapper();
-		}
-		return instance;
 	}
 
 	/**

@@ -2,21 +2,16 @@ package service;
 
 import javax.management.Notification;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class NotificationService {
 
-	private static NotificationService instance = null;
 	Notification notification;
 	boolean isNotifying;
 
 	private NotificationService() {
 		this.isNotifying = false;
-	}
-
-	public static NotificationService getInstance() {
-		if (instance == null) {
-			instance = new NotificationService();
-		}
-		return instance;
 	}
 
 	public boolean isNotifying() {

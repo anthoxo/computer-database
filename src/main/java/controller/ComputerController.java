@@ -2,6 +2,9 @@ package controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import dto.ComputerDTO;
 import exception.ItemBadCreatedException;
 import exception.ItemNotDeletedException;
@@ -12,19 +15,20 @@ import service.ComputerService;
 import utils.Utils;
 import utils.Utils.ChoiceActionPage;
 
+@Component
 public class ComputerController {
 
+	@Autowired
 	ComputerService computerService;
+
 	Page<ComputerDTO> computerPage;
 	boolean isGoingBack;
 
 	/**
 	 * Default constructor.
 	 */
-	public ComputerController() {
-		computerService = ComputerService.getInstance();
+	private ComputerController() {
 		this.isGoingBack = false;
-		this.refreshComputerPage();
 	}
 
 	/**

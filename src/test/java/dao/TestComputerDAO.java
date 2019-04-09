@@ -25,22 +25,22 @@ import utils.Utils;
 @ExtendWith(MockitoExtension.class)
 public class TestComputerDAO {
 
-	ComputerDAO computerDAO;
+	ComputerDao computerDAO;
 
 	@BeforeAll
 	public static void setUp() throws IOException, DAOException {
-		DAOFactory.startTest();
+		DaoFactory.startTest();
 		RunSQLScript.run();
 	}
 
 	@AfterAll
 	public static void stop() {
-		DAOFactory.stopTest();
+		DaoFactory.stopTest();
 	}
 
 	@BeforeEach
 	public void init() {
-		this.computerDAO = ComputerDAO.getInstance();
+		this.computerDAO = ComputerDao.getInstance();
 	}
 
 	@Test

@@ -2,6 +2,9 @@ package controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import dto.CompanyDTO;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
@@ -10,19 +13,18 @@ import service.CompanyService;
 import utils.Utils;
 import utils.Utils.ChoiceActionPage;
 
+@Component
 public class CompanyController {
 
-	CompanyService companyService;
+	public CompanyService companyService;
+
 	Page<CompanyDTO> companyPage;
 	boolean isGoingBack;
 
-	/**
-	 * Default constructor.
-	 */
-	public CompanyController() {
-		companyService = CompanyService.getInstance();
+	@Autowired
+	CompanyController(CompanyService companyService) {
+		this.companyService = companyService;
 		this.isGoingBack = false;
-		this.refreshCompanyPage();
 	}
 
 	/**

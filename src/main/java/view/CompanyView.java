@@ -20,8 +20,8 @@ public class CompanyView {
 	/**
 	 * Default constructor.
 	 */
-	public CompanyView() {
-		companyController = new CompanyController();
+	public CompanyView(CompanyController companyController) {
+		this.companyController = companyController;
 	}
 
 	public void chooseAction(Scanner sc) {
@@ -30,6 +30,7 @@ public class CompanyView {
 		Utils.ChoiceActionCompany action = Utils.stringToEnum(Utils.ChoiceActionCompany.class, prompt);
 		switch (action) {
 		case GET_ALL:
+			companyController.refreshCompanyPage();
 			printCompanies(sc);
 			break;
 		case DELETE:

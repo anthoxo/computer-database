@@ -23,8 +23,8 @@ public class ComputerView {
 	/**
 	 * Default constructor.
 	 */
-	public ComputerView() {
-		computerController = new ComputerController();
+	public ComputerView(ComputerController computerController) {
+		this.computerController = computerController;
 	}
 
 	/**

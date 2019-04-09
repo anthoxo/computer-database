@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import dao.CompanyDAO;
+import dao.CompanyDao;
 import dto.CompanyDTO;
 import exception.DAOException;
 import exception.ItemNotDeletedException;
@@ -17,28 +19,18 @@ import mapper.CompanyMapper;
 import model.Company;
 import utils.Utils.OrderByOption;
 
+@Service
 public class CompanyService {
 
-	private static CompanyService instance = null;
+	@Autowired
+	CompanyDao companyDao;
 
-	CompanyDAO companyDAO;
+	@Autowired
 	CompanyMapper companyMapper;
 
 	private Logger logger = LoggerFactory.getLogger(CompanyService.class);
 
-	/**
-	 * Default constructor.
-	 */
 	private CompanyService() {
-		companyDAO = CompanyDAO.getInstance();
-		companyMapper = CompanyMapper.getInstance();
-	}
-
-	public static CompanyService getInstance() {
-		if (instance == null) {
-			instance = new CompanyService();
-		}
-		return instance;
 	}
 
 	/**
@@ -49,7 +41,7 @@ public class CompanyService {
 	public List<CompanyDTO> getAllCompanies() {
 		List<CompanyDTO> result = new ArrayList<CompanyDTO>();
 		try {
-			result = companyDAO.getAll().stream().map((Company c) -> companyMapper.createDTO(c))
+			result = companyDao.getAll().stream().map((Company c) -> companyMapper.createDTO(c))
 					.collect(Collectors.toList());
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
@@ -61,7 +53,7 @@ public class CompanyService {
 		List<CompanyDTO> result = new ArrayList<CompanyDTO>();
 		boolean isDesc = option == OrderByOption.DESC ? true : false;
 		try {
-			result = companyDAO.getAllOrderByName(isDesc).stream().map((Company c) -> companyMapper.createDTO(c))
+			result = companyDao.getAllOrderByName(isDesc).stream().map((Company c) -> companyMapper.createDTO(c))
 					.collect(Collectors.toList());
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
@@ -71,7 +63,7 @@ public class CompanyService {
 
 	public CompanyDTO getCompanyById(int id) throws ItemNotFoundException {
 		try {
-			Optional<Company> companyOpt = this.companyDAO.get(id);
+			Optional<Company> companyOpt = this.companyDao.get(id);
 			if (companyOpt.isPresent()) {
 				return companyMapper.createDTO(companyOpt.get());
 			} else {
@@ -85,10 +77,10 @@ public class CompanyService {
 
 	public void deleteCompany(CompanyDTO companyDTO) throws ItemNotFoundException, ItemNotDeletedException {
 		try {
-			Optional<Company> companyOpt = companyDAO.get(companyDTO.getId());
+			Optional<Company> companyOpt = companyDao.get(companyDTO.getId());
 			if (companyOpt.isPresent()) {
 				Company company = companyMapper.createBean(companyDTO);
-				companyDAO.delete(company);
+				companyDao.delete(company);
 			} else {
 				throw new ItemNotFoundException("deleteComputer");
 			}

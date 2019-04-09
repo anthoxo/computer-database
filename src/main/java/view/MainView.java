@@ -4,7 +4,10 @@ import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import controller.CompanyController;
+import controller.ComputerController;
 import controller.MainController;
 import utils.Utils;
 
@@ -12,14 +15,16 @@ public class MainView {
 
 	private static Logger logger = LoggerFactory.getLogger(MainView.class);
 	private MainController mainController;
+	private AnnotationConfigApplicationContext context;
 	private Scanner sc;
 
 	/**
 	 * Default constructor.
 	 */
-	public MainView() {
+	public MainView(AnnotationConfigApplicationContext context) {
 		this.mainController = new MainController();
 		this.sc = new Scanner(System.in);
+		this.context = context;
 	}
 
 	/**
@@ -49,11 +54,11 @@ public class MainView {
 			if (choice) {
 				Utils.ChoiceDatabase database = this.mainController.getDatabase();
 				if (database.equals(Utils.ChoiceDatabase.COMPANY)) {
-					CompanyView companyView = new CompanyView();
+					CompanyView companyView = new CompanyView(context.getBean(CompanyController.class));
 					companyView.chooseAction(sc);
 					//companyView.printCompanies(sc);
 				} else if (database.equals(Utils.ChoiceDatabase.COMPUTER)) {
-					ComputerView computerView = new ComputerView();
+					ComputerView computerView = new ComputerView(context.getBean(ComputerController.class));
 					computerView.chooseAction(sc);
 				} else {
 					logger.info("Bye");

@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import dao.ComputerDAO;
+import dao.ComputerDao;
 import dto.ComputerDTO;
 import exception.DAOException;
 import exception.ItemBadCreatedException;
@@ -24,7 +24,7 @@ import utils.Utils.OrderByOption;
 @ExtendWith(MockitoExtension.class)
 public class TestComputerService {
 	@Mock
-	ComputerDAO computerDAO;
+	ComputerDao computerDAO;
 
 	@InjectMocks
 	ComputerService computerService;

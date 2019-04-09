@@ -3,27 +3,15 @@ package mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.stereotype.Component;
+
 import dto.CompanyDTO;
 import model.Company;
 
+@Component
 public class CompanyMapper {
 
-	private static CompanyMapper instance = null;
-
-	/**
-	 * Default constructor.
-	 */
 	private CompanyMapper() {
-	}
-
-	/**
-	 * @return The only instance of CompanyMapper.
-	 */
-	public static CompanyMapper getInstance() {
-		if (instance == null) {
-			instance = new CompanyMapper();
-		}
-		return instance;
 	}
 
 	/**

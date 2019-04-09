@@ -13,8 +13,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import dao.CompanyDAO;
-import dao.DAOFactory;
+import dao.CompanyDao;
+import dao.DaoFactory;
 import dto.ComputerDTO;
 import exception.DAOException;
 import model.Company;
@@ -28,10 +28,10 @@ public class TestComputerMapper {
 	ResultSet rs;
 
 	@Mock
-	DAOFactory dao;
+	DaoFactory dao;
 
 	@Mock
-	CompanyDAO companyDAO;
+	CompanyDao companyDAO;
 
 	ComputerMapper computerMapper;
 

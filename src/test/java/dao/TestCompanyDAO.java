@@ -21,24 +21,24 @@ import utils.RunSQLScript;
 
 public class TestCompanyDAO {
 
-	CompanyDAO companyDAO;
-	ComputerDAO computerDAO;
+	CompanyDao companyDAO;
+	ComputerDao computerDAO;
 
 	@BeforeAll
 	public static void setUp() {
-		DAOFactory.startTest();
+		DaoFactory.startTest();
 	}
 
 	@AfterAll
 	public static void stop() {
-		DAOFactory.stopTest();
+		DaoFactory.stopTest();
 	}
 
 	@BeforeEach
 	public void init() throws IOException, DAOException {
 		RunSQLScript.run();
-		this.companyDAO = CompanyDAO.getInstance();
-		this.computerDAO = ComputerDAO.getInstance();
+		this.companyDAO = CompanyDao.getInstance();
+		this.computerDAO = ComputerDao.getInstance();
 	}
 
 	@Test

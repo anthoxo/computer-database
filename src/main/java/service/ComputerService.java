@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import dao.ComputerDAO;
+import dao.ComputerDao;
 import dto.ComputerDTO;
 import exception.ComputerException;
 import exception.DAOException;
@@ -21,32 +23,22 @@ import model.Computer;
 import utils.Utils.OrderByOption;
 import validator.ComputerValidator;
 
+@Service
 public class ComputerService {
 
-	private static ComputerService instance = null;
+	@Autowired
+	ComputerDao computerDao;
 
-	ComputerDAO computerDAO;
+	@Autowired
 	ComputerMapper computerMapper;
+
 	ComputerValidator computerValidator;
 
 	private Logger logger = LoggerFactory.getLogger(ComputerService.class);
 
-	/**
-	 * Default constructor.
-	 */
 	private ComputerService() {
-		computerDAO = ComputerDAO.getInstance();
-		computerMapper = ComputerMapper.getInstance();
 		computerValidator = new ComputerValidator();
 	}
-
-	public static ComputerService getInstance() {
-		if (instance == null) {
-			instance = new ComputerService();
-		}
-		return instance;
-	}
-
 
 	/**
 	 * Create a new Computer in database using its DTO.
@@ -59,7 +51,7 @@ public class ComputerService {
 		try {
 			Computer computer = computerMapper.createBean(computerDTO);
 			computerValidator.validate(computer);
-			computerDAO.create(computer);
+			computerDao.create(computer);
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 			throw new ItemBadCreatedException("dao");
@@ -77,7 +69,7 @@ public class ComputerService {
 	 */
 	public ComputerDTO getComputerByName(String name) throws ItemNotFoundException {
 		try {
-			Optional<Computer> computerOpt = computerDAO.get(name);
+			Optional<Computer> computerOpt = computerDao.get(name);
 			if (computerOpt.isPresent()) {
 				return computerMapper.createDTO(computerOpt.get());
 			} else {
@@ -98,7 +90,7 @@ public class ComputerService {
 	 */
 	public ComputerDTO getComputerById(int id) throws ItemNotFoundException {
 		try {
-			Optional<Computer> computerOpt = computerDAO.get(id);
+			Optional<Computer> computerOpt = computerDao.get(id);
 			if (computerOpt.isPresent()) {
 				return computerMapper.createDTO(computerOpt.get());
 			} else {
@@ -118,7 +110,7 @@ public class ComputerService {
 	public List<ComputerDTO> getAllComputers() {
 		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
 		try {
-			result = computerDAO.getAll().stream().map((Computer computer) -> computerMapper.createDTO(computer))
+			result = computerDao.getAll().stream().map((Computer computer) -> computerMapper.createDTO(computer))
 					.collect(Collectors.toList());
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
@@ -130,7 +122,7 @@ public class ComputerService {
 		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
 		boolean isDesc = option == OrderByOption.DESC ? true : false;
 		try {
-			result = computerDAO.getAllOrderBy(order, isDesc).stream().map((Computer computer) -> computerMapper.createDTO(computer))
+			result = computerDao.getAllOrderBy(order, isDesc).stream().map((Computer computer) -> computerMapper.createDTO(computer))
 					.collect(Collectors.toList());
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
@@ -141,7 +133,7 @@ public class ComputerService {
 	public List<ComputerDTO> getComputersByPattern(String pattern) {
 		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
 		try {
-			result = computerDAO.getPattern(pattern).stream().map((Computer computer) -> computerMapper.createDTO(computer))
+			result = computerDao.getPattern(pattern).stream().map((Computer computer) -> computerMapper.createDTO(computer))
 					.collect(Collectors.toList());
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
@@ -153,7 +145,7 @@ public class ComputerService {
 		boolean isDesc = option == OrderByOption.DESC ? true : false;
 		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
 		try {
-			result = computerDAO.getPatternOrderBy(pattern, order, isDesc).stream().map((Computer computer) -> computerMapper.createDTO(computer))
+			result = computerDao.getPatternOrderBy(pattern, order, isDesc).stream().map((Computer computer) -> computerMapper.createDTO(computer))
 					.collect(Collectors.toList());
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
@@ -165,7 +157,7 @@ public class ComputerService {
 		try {
 			Computer computer = computerMapper.createBean(cDTO);
 			computerValidator.validate(computer);
-			computerDAO.update(computer);
+			computerDao.update(computer);
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotUpdatedException("dao");
@@ -176,10 +168,10 @@ public class ComputerService {
 
 	public void deleteComputer(ComputerDTO cDTO) throws ItemNotFoundException, ItemNotDeletedException {
 		try {
-			Optional<Computer> computerOpt = computerDAO.get(cDTO.getId());
+			Optional<Computer> computerOpt = computerDao.get(cDTO.getId());
 			if (computerOpt.isPresent()) {
 				Computer computer = computerMapper.createBean(cDTO);
-				computerDAO.delete(computer);
+				computerDao.delete(computer);
 			} else {
 				throw new ItemNotFoundException("deleteComputer");
 			}

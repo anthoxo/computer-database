@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import dao.DAOFactory;
+import dao.DaoFactory;
 import dto.CompanyDTO;
 import model.Page;
 
@@ -30,7 +30,7 @@ public class TestCompanyController {
 	@BeforeEach
 	public void init()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		DAOFactory.getInstance();
+		DaoFactory.getInstance();
 
 		companyList = new ArrayList<CompanyDTO>();
 		for (int i = 0; i < 40; ++i) {

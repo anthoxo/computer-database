@@ -1,7 +1,10 @@
 package controller;
 
+import org.springframework.stereotype.Component;
+
 import utils.Utils;
 
+@Component
 public class MainController {
 
 	Utils.ChoiceDatabase database;
