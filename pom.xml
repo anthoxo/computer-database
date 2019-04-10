@@ -31,6 +31,7 @@
 		<commons.lang.version>2.5</commons.lang.version>
 		<hikaricp.version>3.3.1</hikaricp.version>
 		<spring.version>5.1.6.RELEASE</spring.version>
+		<spring.boot.starter.jdbc>2.1.4.RELEASE</spring.boot.starter.jdbc>
 	</properties>
 
 	<dependencies>
@@ -142,6 +143,13 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-jdbc -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
 	</dependencies>

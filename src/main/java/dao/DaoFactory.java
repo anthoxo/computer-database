@@ -9,10 +9,8 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Component;
-
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 
 @Component
 public class DaoFactory {
@@ -26,24 +24,13 @@ public class DaoFactory {
 	@Autowired
 	private ComputerDao computerDao;
 
+	@Autowired
+	private DriverManagerDataSource driverManagerDataSource;
+
 	private Logger logger = LoggerFactory.getLogger(DaoFactory.class);
-	private HikariDataSource hikariDataSource;
+
 
 	DaoFactory() {
-		this(DAO_PROPERTIES);
-	}
-
-	DaoFactory(String propertiesPath) {
-		Properties properties = new Properties();
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		InputStream fichierProperties = classLoader.getResourceAsStream(propertiesPath);
-		try {
-			properties.load(fichierProperties);
-			HikariConfig hikariCfg = new HikariConfig(properties);
-			this.hikariDataSource = new HikariDataSource(hikariCfg);
-		} catch (IOException e1) {
-			logger.error(e1.getMessage());
-		}
 	}
 
 	/**
@@ -65,7 +52,7 @@ public class DaoFactory {
 	 * @throws SQLException If it's impossible to create this connection.
 	 */
 	public Connection getConnection() throws SQLException {
-		return hikariDataSource.getConnection();
+		return this.driverManagerDataSource.getConnection();
 	}
 
 	/**
@@ -81,8 +68,7 @@ public class DaoFactory {
 		InputStream fichierProperties = classLoader.getResourceAsStream(DAO_TEST_PROPERTIES);
 		try {
 			properties.load(fichierProperties);
-			HikariConfig hikariCfg = new HikariConfig(properties);
-			this.hikariDataSource = new HikariDataSource(hikariCfg);
+			this.driverManagerDataSource = new DriverManagerDataSource("jdbc:mysql://localhost/computer-database-db-test?serverTimezone=UTC", properties);
 		} catch (IOException e1) {
 			logger.error(e1.getMessage());
 		}
@@ -94,8 +80,7 @@ public class DaoFactory {
 		InputStream fichierProperties = classLoader.getResourceAsStream(DAO_PROPERTIES);
 		try {
 			properties.load(fichierProperties);
-			HikariConfig hikariCfg = new HikariConfig(properties);
-			this.hikariDataSource = new HikariDataSource(hikariCfg);
+			this.driverManagerDataSource = new DriverManagerDataSource("jdbc:mysql://localhost/computer-database-db?serverTimezone=UTC", properties);
 		} catch (IOException e1) {
 			logger.error(e1.getMessage());
 		}
