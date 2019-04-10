@@ -10,9 +10,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import dto.CompanyDTO;
 import dto.ComputerDTO;
 import exception.ItemBadCreatedException;
+import main.MainConfig;
 import service.CompanyService;
 import service.ComputerService;
 import service.NotificationService;
@@ -23,13 +26,18 @@ public class AddComputerServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -690181327611746612L;
 
-	ComputerService computerService = ComputerService.getInstance();
-	CompanyService companyService = CompanyService.getInstance();
-	NotificationService notificationService = NotificationService.getInstance();
+	AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
+
+	ComputerService computerService;
+	CompanyService companyService;
+	NotificationService notificationService;
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
+
+		initService();
+
 		ComputerDTO computerDTO = new ComputerDTO();
 		computerDTO.setName(request.getParameter(Variable.GET_PARAMETER_NAME));
 		computerDTO.setIntroducedDate(request.getParameter(Variable.GET_PARAMETER_INTRODUCED));
@@ -61,10 +69,19 @@ public class AddComputerServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		initService();
+
 		List<CompanyDTO> companyList = this.companyService.getAllCompanies();
 		request.setAttribute(Variable.COMPANY_LIST, companyList);
 
 		RequestDispatcher rd = this.getServletContext().getRequestDispatcher(Variable.VIEW_ADD);
 		rd.forward(request, response);
+	}
+
+	protected void initService() {
+		this.companyService = applicationContext.getBean(CompanyService.class);
+		this.computerService = applicationContext.getBean(ComputerService.class);
+		this.notificationService = applicationContext.getBean(NotificationService.class);
 	}
 }

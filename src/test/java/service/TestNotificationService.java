@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import main.MainConfig;
 
 public class TestNotificationService {
 
@@ -13,7 +16,8 @@ public class TestNotificationService {
 
 	@BeforeEach
 	public void init() {
-		notificationService = NotificationService.getInstance();
+		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
+		notificationService = context.getBean(NotificationService.class);
 		notificationService.clean();
 	}
 

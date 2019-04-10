@@ -12,9 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import dao.DaoFactory;
 import dto.CompanyDTO;
+import main.MainConfig;
 import model.Page;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,7 +31,8 @@ public class TestCompanyController {
 	@BeforeEach
 	public void init()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		DaoFactory.getInstance();
+
+		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
 
 		companyList = new ArrayList<CompanyDTO>();
 		for (int i = 0; i < 40; ++i) {
@@ -42,7 +44,7 @@ public class TestCompanyController {
 
 		companyPage = new Page<CompanyDTO>(companyList);
 
-		companyController = new CompanyController();
+		companyController = context.getBean(CompanyController.class);
 		companyController.companyPage = companyPage;
 	}
 

@@ -9,7 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import dto.ComputerDTO;
+import main.MainConfig;
 import model.Page;
 import service.ComputerService;
 import utils.Utils.OrderByOption;
@@ -20,7 +23,10 @@ public class ComputerSearchServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -4860354040907739312L;
 
-	ComputerService computerService = ComputerService.getInstance();
+	AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
+
+	ComputerService computerService;
+
 	String pattern = "";
 	Page<ComputerDTO> computerPage;
 	String orderBy;
@@ -29,6 +35,9 @@ public class ComputerSearchServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		initService();
+
 		String search = request.getParameter(Variable.GET_PARAMETER_SEARCH);
 		if (search != null) {
 			pattern = search;
@@ -41,6 +50,9 @@ public class ComputerSearchServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		initService();
+
 		String indexPage = request.getParameter(Variable.GET_PARAMETER_ID);
 		int index;
 		String orderByTmp;
@@ -80,6 +92,10 @@ public class ComputerSearchServlet extends HttpServlet {
 
 		RequestDispatcher rd = this.getServletContext().getRequestDispatcher(Variable.VIEW_COMPUTER);
 		rd.forward(request, response);
-
 	}
+
+	protected void initService() {
+		this.computerService = applicationContext.getBean(ComputerService.class);
+	}
+
 }

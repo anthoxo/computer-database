@@ -7,9 +7,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import dto.ComputerDTO;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
+import main.MainConfig;
 import service.ComputerService;
 import service.NotificationService;
 import utils.Variable;
@@ -19,11 +22,16 @@ public class DeleteComputerServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 6846348527025452256L;
 
-	ComputerService computerService = ComputerService.getInstance();
-	NotificationService notificationService = NotificationService.getInstance();
+	AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
+
+	ComputerService computerService;
+	NotificationService notificationService;
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+		initService();
+
 		ComputerDTO computerDTO = new ComputerDTO();
 		String id = request.getParameter(Variable.GET_PARAMETER_ID_DELETE);
 		computerDTO.setId(Integer.valueOf(id));
@@ -41,4 +49,8 @@ public class DeleteComputerServlet extends HttpServlet {
 		response.sendRedirect(request.getContextPath() + Variable.URL_COMPUTER);
 	}
 
+	protected void initService() {
+		this.computerService = applicationContext.getBean(ComputerService.class);
+		this.notificationService = applicationContext.getBean(NotificationService.class);
+	}
 }

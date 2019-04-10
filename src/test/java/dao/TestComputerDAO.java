@@ -15,9 +15,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import exception.DAOException;
 import exception.ItemNotFoundException;
+import main.MainConfig;
 import model.Computer;
 import utils.RunSQLScript;
 import utils.Utils;
@@ -27,20 +29,27 @@ public class TestComputerDAO {
 
 	ComputerDao computerDAO;
 
+	static DaoFactory daoFactory;
+
 	@BeforeAll
 	public static void setUp() throws IOException, DAOException {
-		DaoFactory.startTest();
-		RunSQLScript.run();
+
+		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
+		daoFactory = context.getBean(DaoFactory.class);
+		daoFactory.startTest();
+
 	}
 
 	@AfterAll
 	public static void stop() {
-		DaoFactory.stopTest();
+		daoFactory.stopTest();
 	}
 
 	@BeforeEach
-	public void init() {
-		this.computerDAO = ComputerDao.getInstance();
+	public void init() throws IOException, DAOException {
+		RunSQLScript.run(daoFactory);
+		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
+		this.computerDAO = context.getBean(ComputerDao.class);
 	}
 
 	@Test
@@ -77,7 +86,7 @@ public class TestComputerDAO {
 	public void testGetAllOrderByName() throws SQLException, DAOException {
 		List<String> l = Arrays.asList("CM-200", "CM-2a", "CM-5e", "MacBook Pro 15.4 inch");
 		List<Computer> list = this.computerDAO.getAllOrderBy("name", false);
-		for (int i = 0 ; i < 4 ; ++i) {
+		for (int i = 0; i < 4; ++i) {
 			assertEquals(l.get(i), list.get(i).getName());
 		}
 	}
@@ -86,7 +95,7 @@ public class TestComputerDAO {
 	public void testGetPattern() throws SQLException, DAOException {
 		List<String> l = Arrays.asList("CM-2a", "CM-200");
 		List<Computer> list = this.computerDAO.getPattern("-2");
-		for (int i = 0 ; i < l.size() ; ++i) {
+		for (int i = 0; i < l.size(); ++i) {
 			assertEquals(l.get(i), list.get(i).getName());
 		}
 	}
@@ -95,13 +104,10 @@ public class TestComputerDAO {
 	public void testGetPatternOrderBy() throws SQLException, DAOException {
 		List<String> l = Arrays.asList("CM-200", "CM-2a");
 		List<Computer> list = this.computerDAO.getPatternOrderBy("-2", "name", false);
-		for (int i = 0 ; i < l.size() ; ++i) {
+		for (int i = 0; i < l.size(); ++i) {
 			assertEquals(l.get(i), list.get(i).getName());
 		}
 	}
-
-
-
 
 	@Test
 	public void testCreateAndDelete() throws SQLException {

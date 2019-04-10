@@ -9,7 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import dto.CompanyDTO;
+import main.MainConfig;
 import model.Page;
 import service.CompanyService;
 import utils.Utils.OrderByOption;
@@ -20,13 +23,19 @@ public class CompanyListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	CompanyService companyService = CompanyService.getInstance();
+	AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
+
+	CompanyService companyService;
+
 	Page<CompanyDTO> companyPage;
 	OrderByOption orderByOption = OrderByOption.NULL;
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		initService();
+
 		try {
 			String indexPage = request.getParameter(Variable.GET_PARAMETER_ID);
 			int index;
@@ -62,6 +71,10 @@ public class CompanyListServlet extends HttpServlet {
 		} catch (ServletException e) {
 			throw new ServletException(e);
 		}
+	}
+
+	protected void initService() {
+		this.companyService = applicationContext.getBean(CompanyService.class);
 	}
 
 }

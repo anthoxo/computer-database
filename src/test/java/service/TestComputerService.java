@@ -18,13 +18,21 @@ import exception.ItemBadCreatedException;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
 import exception.ItemNotUpdatedException;
+import mapper.ComputerMapper;
 import model.Computer;
 import utils.Utils.OrderByOption;
+import validator.ComputerValidator;
 
 @ExtendWith(MockitoExtension.class)
 public class TestComputerService {
 	@Mock
-	ComputerDao computerDAO;
+	ComputerDao computerDao;
+
+	@Mock
+	ComputerMapper computerMapper;
+
+	@Mock
+	ComputerValidator computerValidator;
 
 	@InjectMocks
 	ComputerService computerService;
@@ -32,29 +40,29 @@ public class TestComputerService {
 	@BeforeEach
 	public void init() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException,
 			DAOException {
-		Field field = ComputerService.class.getDeclaredField("computerDAO");
+		Field field = ComputerService.class.getDeclaredField("computerDao");
 		field.setAccessible(true);
-		field.set(computerService, computerDAO);
+		field.set(computerService, computerDao);
 	}
 
 	@Test
 	public void testGetAll() throws DAOException {
 		this.computerService.getAllComputers();
-		Mockito.verify(computerDAO).getAll();
+		Mockito.verify(computerDao).getAll();
 	}
 
 	@Test
 	public void testGetAllOrderBy() throws DAOException {
 		this.computerService.getAllComputersOrderBy("name", OrderByOption.ASC);
-		Mockito.verify(computerDAO).getAllOrderBy("name", false);
+		Mockito.verify(computerDao).getAllOrderBy("name", false);
 	}
 
 	@Test
 	public void testGetByName() throws DAOException, ItemNotFoundException {
 		Optional<Computer> computerOpt = Optional.of(new Computer.Builder().build());
-		Mockito.when(computerDAO.get(Mockito.anyString())).thenReturn(computerOpt);
+		Mockito.when(computerDao.get(Mockito.anyString())).thenReturn(computerOpt);
 		this.computerService.getComputerByName("ouais");
-		Mockito.verify(computerDAO).get(Mockito.anyString());
+		Mockito.verify(computerDao).get(Mockito.anyString());
 	}
 
 	@Test
@@ -62,16 +70,16 @@ public class TestComputerService {
 		try {
 			this.computerService.getComputerByName("ouais");
 		} catch (ItemNotFoundException e) {
-			Mockito.verify(computerDAO).get(Mockito.anyString());
+			Mockito.verify(computerDao).get(Mockito.anyString());
 		}
 	}
 
 	@Test
 	public void testGetById() throws DAOException, ItemNotFoundException {
 		Optional<Computer> computerOpt = Optional.of(new Computer.Builder().build());
-		Mockito.when(computerDAO.get(Mockito.anyInt())).thenReturn(computerOpt);
+		Mockito.when(computerDao.get(Mockito.anyInt())).thenReturn(computerOpt);
 		this.computerService.getComputerById(1);
-		Mockito.verify(computerDAO).get(Mockito.anyInt());
+		Mockito.verify(computerDao).get(Mockito.anyInt());
 	}
 
 	@Test
@@ -79,7 +87,7 @@ public class TestComputerService {
 		try {
 			this.computerService.getComputerById(1);
 		} catch (ItemNotFoundException e) {
-			Mockito.verify(computerDAO).get(Mockito.anyInt());
+			Mockito.verify(computerDao).get(Mockito.anyInt());
 		}
 	}
 
@@ -88,7 +96,7 @@ public class TestComputerService {
 		ComputerDTO computerDTO = new ComputerDTO();
 		computerDTO.setName("oui");
 		this.computerService.createComputer(computerDTO);
-		Mockito.verify(computerDAO).create(Mockito.any());
+		Mockito.verify(computerDao).create(Mockito.any());
 	}
 
 	@Test
@@ -96,15 +104,15 @@ public class TestComputerService {
 		ComputerDTO computerDTO = new ComputerDTO();
 		computerDTO.setName("oui");
 		this.computerService.updateComputer(computerDTO);
-		Mockito.verify(computerDAO).update(Mockito.any());
+		Mockito.verify(computerDao).update(Mockito.any());
 	}
 
 	@Test
 	public void testDelete() throws DAOException, ItemNotFoundException, ItemNotDeletedException {
 		Optional<Computer> computerOpt = Optional.of(new Computer.Builder().build());
-		Mockito.when(computerDAO.get(Mockito.anyInt())).thenReturn(computerOpt);
+		Mockito.when(computerDao.get(Mockito.anyInt())).thenReturn(computerOpt);
 		this.computerService.deleteComputer(new ComputerDTO());
-		Mockito.verify(computerDAO).delete(Mockito.any());
+		Mockito.verify(computerDao).delete(Mockito.any());
 	}
 
 	@Test
@@ -112,19 +120,19 @@ public class TestComputerService {
 		try {
 			this.computerService.deleteComputer(new ComputerDTO());
 		} catch (ItemNotFoundException e) {
-			Mockito.verify(computerDAO).get(Mockito.anyInt());
+			Mockito.verify(computerDao).get(Mockito.anyInt());
 		}
 	}
 
 	@Test
 	public void testGetPattern() throws DAOException {
 		this.computerService.getComputersByPattern("ou");
-		Mockito.verify(computerDAO).getPattern("ou");
+		Mockito.verify(computerDao).getPattern("ou");
 	}
 
 	@Test
 	public void testGetPatternOrderBy() throws DAOException {
 		this.computerService.getComputersByPatternOrderBy("ou", "name", OrderByOption.ASC);
-		Mockito.verify(computerDAO).getPatternOrderBy("ou", "name", false);
+		Mockito.verify(computerDao).getPatternOrderBy("ou", "name", false);
 	}
 }

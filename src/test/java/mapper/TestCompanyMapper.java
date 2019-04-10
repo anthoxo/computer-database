@@ -11,8 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import dto.CompanyDTO;
+import main.MainConfig;
 import model.Company;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,7 +27,8 @@ public class TestCompanyMapper {
 
 	@BeforeEach
 	public void init() throws SQLException {
-		companyMapper = CompanyMapper.getInstance();
+		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
+		companyMapper = context.getBean(CompanyMapper.class);
 	}
 
 	@Test

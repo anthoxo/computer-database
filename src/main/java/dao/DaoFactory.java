@@ -75,13 +75,29 @@ public class DaoFactory {
 		return this.logger;
 	}
 
-	public static void startTest() {
-		//instance = new DAOFactory(DAO_TEST_PROPERTIES);
-		//ComputerDAO.getInstance().daoFactory = instance;
+	public void startTest() {
+		Properties properties = new Properties();
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		InputStream fichierProperties = classLoader.getResourceAsStream(DAO_TEST_PROPERTIES);
+		try {
+			properties.load(fichierProperties);
+			HikariConfig hikariCfg = new HikariConfig(properties);
+			this.hikariDataSource = new HikariDataSource(hikariCfg);
+		} catch (IOException e1) {
+			logger.error(e1.getMessage());
+		}
 	}
 
-	public static void stopTest() {
-		//instance = new DAOFactory();
-		//ComputerDAO.getInstance().daoFactory = instance;
+	public void stopTest() {
+		Properties properties = new Properties();
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		InputStream fichierProperties = classLoader.getResourceAsStream(DAO_PROPERTIES);
+		try {
+			properties.load(fichierProperties);
+			HikariConfig hikariCfg = new HikariConfig(properties);
+			this.hikariDataSource = new HikariDataSource(hikariCfg);
+		} catch (IOException e1) {
+			logger.error(e1.getMessage());
+		}
 	}
 }

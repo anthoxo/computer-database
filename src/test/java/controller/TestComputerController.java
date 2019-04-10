@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import dto.ComputerDTO;
 import exception.DAOException;
@@ -21,6 +22,7 @@ import exception.ItemBadCreatedException;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
 import exception.ItemNotUpdatedException;
+import main.MainConfig;
 import model.Computer;
 import model.Page;
 import service.ComputerService;
@@ -46,6 +48,8 @@ public class TestComputerController {
 	public void init()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 
+		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
+
 		computerList = new ArrayList<ComputerDTO>();
 		for (int i = 0; i < 40; ++i) {
 			ComputerDTO computerDTO = new ComputerDTO();
@@ -57,7 +61,7 @@ public class TestComputerController {
 
 		computerPage = new Page<ComputerDTO>(computerList);
 
-		computerController = new ComputerController();
+		computerController = context.getBean(ComputerController.class);
 		computerController.computerPage = computerPage;
 
 		Field field = ComputerController.class.getDeclaredField("computerService");

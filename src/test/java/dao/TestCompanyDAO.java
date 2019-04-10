@@ -13,8 +13,10 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import exception.DAOException;
+import main.MainConfig;
 import model.Company;
 import model.Computer;
 import utils.RunSQLScript;
@@ -24,21 +26,26 @@ public class TestCompanyDAO {
 	CompanyDao companyDAO;
 	ComputerDao computerDAO;
 
+	static DaoFactory daoFactory;
+
 	@BeforeAll
 	public static void setUp() {
-		DaoFactory.startTest();
+		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
+		daoFactory = context.getBean(DaoFactory.class);
+		daoFactory.startTest();
 	}
 
 	@AfterAll
 	public static void stop() {
-		DaoFactory.stopTest();
+		daoFactory.stopTest();
 	}
 
 	@BeforeEach
 	public void init() throws IOException, DAOException {
-		RunSQLScript.run();
-		this.companyDAO = CompanyDao.getInstance();
-		this.computerDAO = ComputerDao.getInstance();
+		RunSQLScript.run(daoFactory);
+		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
+		this.companyDAO = context.getBean(CompanyDao.class);
+		this.computerDAO = context.getBean(ComputerDao.class);
 	}
 
 	@Test

@@ -9,7 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import dto.ComputerDTO;
+import main.MainConfig;
 import model.Page;
 import service.ComputerService;
 import service.NotificationService;
@@ -20,8 +23,11 @@ import utils.Variable;
 public class ComputerListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	ComputerService computerService = ComputerService.getInstance();
-	NotificationService notificationService = NotificationService.getInstance();
+	AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
+
+	ComputerService computerService;
+	NotificationService notificationService;
+
 	Page<ComputerDTO> computerPage;
 	OrderByOption orderByOption;
 	String orderColumn;
@@ -29,6 +35,9 @@ public class ComputerListServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		initService();
+
 		try {
 			String indexPage = request.getParameter(Variable.GET_PARAMETER_ID);
 			String orderColumnTmp;
@@ -83,4 +92,10 @@ public class ComputerListServlet extends HttpServlet {
 			throw new ServletException(e);
 		}
 	}
+
+	protected void initService() {
+		this.computerService = applicationContext.getBean(ComputerService.class);
+		this.notificationService = applicationContext.getBean(NotificationService.class);
+	}
+
 }

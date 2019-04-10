@@ -12,11 +12,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import dao.CompanyDao;
 import dao.DaoFactory;
 import dto.ComputerDTO;
 import exception.DAOException;
+import main.MainConfig;
 import model.Company;
 import model.Computer;
 import utils.Utils;
@@ -37,8 +39,8 @@ public class TestComputerMapper {
 
 	@BeforeEach
 	public void init() {
-		computerMapper = ComputerMapper.getInstance();
-
+		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
+		computerMapper = context.getBean(ComputerMapper.class);
 	}
 
 	public void initMap() throws SQLException {
