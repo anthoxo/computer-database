@@ -43,7 +43,7 @@ public class CompanyDao {
 				companyArg = Optional.ofNullable(companyMapper.map(rs));
 			}
 			return companyArg;
-		}).run(daoFactory, company).getResult();
+		}).withDao(daoFactory).run(company).getResult();
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class CompanyDao {
 				l.add(company);
 			}
 			return l;
-		}).run(daoFactory, listCompanies).getResult();
+		}).withDao(daoFactory).run(listCompanies).getResult();
 	}
 
 	public List<Company> getAllOrderByName(boolean isDesc) throws DAOException {
@@ -75,11 +75,11 @@ public class CompanyDao {
 				listCompanies.add(company);
 			}
 			return listCompanies;
-		});
+		}).withDao(daoFactory);
 		if (isDesc) {
-			return transactionHandler.run(daoFactory, REQUEST_GET_ALL_ORDER_BY_NAME + " DESC").getResult();
+			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY_NAME + " DESC").getResult();
 		} else {
-			return transactionHandler.run(daoFactory, REQUEST_GET_ALL_ORDER_BY_NAME).getResult();
+			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY_NAME).getResult();
 		}
 	}
 
@@ -100,7 +100,7 @@ public class CompanyDao {
 				companyOpt = Optional.ofNullable(companyMapper.map(rs));
 			}
 			return companyOpt;
-		}).run(daoFactory, company).getResult();
+		}).withDao(daoFactory).run(company).getResult();
 	}
 
 	public void delete(Company obj) throws DAOException {
@@ -112,6 +112,6 @@ public class CompanyDao {
 			stmt.setInt(1, company.getId());
 			stmt.executeUpdate();
 			return Optional.empty();
-		}).run(daoFactory, obj);
+		}).withDao(daoFactory).run(obj);
 	}
 }

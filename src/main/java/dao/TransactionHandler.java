@@ -3,17 +3,15 @@ package dao;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.springframework.context.annotation.Scope;
-
 import exception.DAOException;
 
-@Scope("prototype")
 public class TransactionHandler<U,R> {
 
 	public interface MyConsumer<U,R> {
 		public R accept(Connection t, U u) throws SQLException, DAOException;
 	};
 
+	DaoFactory daoFactory;
 	MyConsumer<U,R> myConsumer;
 	R result;
 
@@ -25,8 +23,13 @@ public class TransactionHandler<U,R> {
 		return new TransactionHandler<U,R>(myConsumer);
 	}
 
-	public TransactionHandler<U,R> run(DaoFactory daoFactory, U u) throws DAOException {
-		try (Connection conn = daoFactory.getConnection()) {
+	public TransactionHandler<U,R> withDao(DaoFactory daoFactory) {
+		this.daoFactory = daoFactory;
+		return this;
+	}
+
+	public TransactionHandler<U,R> run(U u) throws DAOException {
+		try (Connection conn = this.daoFactory.getConnection()) {
 			conn.setAutoCommit(false);
 			try {
 				this.result = this.myConsumer.accept(conn, u);

@@ -61,7 +61,7 @@ public class ComputerDao {
 			}
 			stmt.executeUpdate();
 			return Optional.empty();
-		}).run(daoFactory, obj);
+		}).withDao(daoFactory).run(obj);
 	}
 
 	public Optional<Computer> get(int id) throws DAOException {
@@ -79,7 +79,7 @@ public class ComputerDao {
 				computerOptArg = Optional.ofNullable(computer);
 			}
 			return computerOptArg;
-		}).run(daoFactory, computerOpt).getResult();
+		}).withDao(daoFactory).run(computerOpt).getResult();
 	}
 
 	public void update(Computer obj) throws DAOException, ItemNotFoundException {
@@ -98,7 +98,7 @@ public class ComputerDao {
 				stmt.setInt(5, obj.getId());
 				stmt.executeUpdate();
 				return Optional.empty();
-			}).run(daoFactory, obj);
+			}).withDao(daoFactory).run(obj);
 		} else {
 			throw new ItemNotFoundException("update");
 		}
@@ -110,7 +110,7 @@ public class ComputerDao {
 			stmt.setInt(1, computerArg.getId());
 			stmt.executeUpdate();
 			return Optional.empty();
-		}).run(daoFactory, obj);
+		}).withDao(daoFactory).run(obj);
 	}
 
 	/**
@@ -133,11 +133,11 @@ public class ComputerDao {
 				computerListArg.add(computer);
 			}
 			return computerListArg;
-		}).run(daoFactory, computerList).getResult();
+		}).withDao(daoFactory).run(computerList).getResult();
 	}
 
 	public List<Computer> getAllOrderBy(String order, boolean isDesc) throws DAOException {
-		TransactionHandler<String, List<Computer>> transactionHandler = TransactionHandler
+		TransactionHandler<String, ArrayList<Computer>> transactionHandler = TransactionHandler
 				.create((Connection conn, String req) -> {
 					ArrayList<Computer> computerListArg = new ArrayList<Computer>();
 					PreparedStatement stmt = conn.prepareStatement(req);
@@ -151,13 +151,13 @@ public class ComputerDao {
 						computerListArg.add(computer);
 					}
 					return computerListArg;
-				});
+				}).withDao(daoFactory);
 		String desc = isDesc ? " DESC" : "";
 		if (Arrays.asList(COMPUTER_COLUMN).contains(order)) {
 			StringBuilder req = new StringBuilder().append(REQUEST_GET_ALL_ORDER_BY).append(order).append(" IS NULL ASC, ").append(order).append(desc);
-			return transactionHandler.run(daoFactory, req.toString()).getResult();
+			return transactionHandler.run(req.toString()).getResult();
 		} else if (order.equals("companyName")) {
-			return transactionHandler.run(daoFactory, REQUEST_GET_ALL_ORDER_BY_COMPANY_NAME + desc).getResult();
+			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY_COMPANY_NAME + desc).getResult();
 		} else {
 			return getAll();
 		}
@@ -185,7 +185,7 @@ public class ComputerDao {
 				computerOptArg = Optional.ofNullable(computer);
 			}
 			return computerOptArg;
-		}).run(daoFactory, computerOpt).getResult();
+		}).withDao(daoFactory).run(computerOpt).getResult();
 	}
 
 	public List<Computer> getPattern(String pattern) throws DAOException {
@@ -204,11 +204,11 @@ public class ComputerDao {
 				computerListArg.add(computer);
 			}
 			return computerListArg;
-		}).run(daoFactory, result).getResult();
+		}).withDao(daoFactory).run(result).getResult();
 	}
 
 	public List<Computer> getPatternOrderBy(String pattern, String order, boolean isDesc) throws DAOException {
-		TransactionHandler<String, List<Computer>> transactionHandler = TransactionHandler
+		TransactionHandler<String, ArrayList<Computer>> transactionHandler = TransactionHandler
 				.create((Connection conn, String request) -> {
 					ArrayList<Computer> computerListArg = new ArrayList<Computer>();
 					PreparedStatement stmt = conn.prepareStatement(request);
@@ -224,13 +224,13 @@ public class ComputerDao {
 						computerListArg.add(computer);
 					}
 					return computerListArg;
-				});
+				}).withDao(daoFactory);
 		String desc = isDesc ? " DESC" : "";
 		if (Arrays.asList(COMPUTER_COLUMN).contains(order)) {
 			StringBuilder req = new StringBuilder().append(REQUEST_GET_LIKE_ORDER_BY).append(order).append(" IS NULL ASC, ").append(order).append(desc);
-			return transactionHandler.run(daoFactory, req.toString()).getResult();
+			return transactionHandler.run(req.toString()).getResult();
 		} else if (order.equals("companyName")) {
-			return transactionHandler.run(daoFactory, REQUEST_GET_LIKE_ORDER_BY_COMPANY_NAME + desc).getResult();
+			return transactionHandler.run(REQUEST_GET_LIKE_ORDER_BY_COMPANY_NAME + desc).getResult();
 		} else {
 			return getPattern(pattern);
 		}

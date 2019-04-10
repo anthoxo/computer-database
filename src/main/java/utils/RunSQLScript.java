@@ -28,7 +28,7 @@ public class RunSQLScript {
 				PreparedStatement stmt = conn.prepareStatement(query);
 				stmt.executeUpdate();
 				return query;
-			}).run(daoFactory, str);
+			}).withDao(daoFactory).run(str);
 		}
 	}
 }
