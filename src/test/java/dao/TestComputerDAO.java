@@ -34,10 +34,10 @@ public class TestComputerDAO {
 	@BeforeAll
 	public static void setUp() throws IOException, DAOException {
 
-		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MainConfig.class);
 		daoFactory = context.getBean(DaoFactory.class);
 		daoFactory.startTest();
-
+		context.close();
 	}
 
 	@AfterAll
@@ -48,8 +48,9 @@ public class TestComputerDAO {
 	@BeforeEach
 	public void init() throws IOException, DAOException {
 		RunSQLScript.run(daoFactory);
-		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MainConfig.class);
 		this.computerDAO = context.getBean(ComputerDao.class);
+		context.close();
 	}
 
 	@Test

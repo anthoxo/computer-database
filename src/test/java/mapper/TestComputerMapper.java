@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import dao.CompanyDao;
-import dao.DaoFactory;
 import dto.ComputerDTO;
 import exception.DAOException;
 import main.MainConfig;
@@ -30,17 +29,15 @@ public class TestComputerMapper {
 	ResultSet rs;
 
 	@Mock
-	DaoFactory dao;
-
-	@Mock
 	CompanyDao companyDAO;
 
 	ComputerMapper computerMapper;
 
 	@BeforeEach
 	public void init() {
-		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MainConfig.class);
 		computerMapper = context.getBean(ComputerMapper.class);
+		context.close();
 	}
 
 	public void initMap() throws SQLException {

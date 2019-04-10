@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import dto.ComputerDTO;
-import main.MainConfig;
 import model.Page;
 import service.ComputerService;
 import service.NotificationService;
@@ -24,7 +24,10 @@ import utils.Variable;
 public class ComputerListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	@Autowired
 	ComputerService computerService;
+
+	@Autowired
 	NotificationService notificationService;
 
 	Page<ComputerDTO> computerPage;
@@ -34,9 +37,7 @@ public class ComputerListServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
-		this.computerService = applicationContext.getBean(ComputerService.class);
-		this.notificationService = applicationContext.getBean(NotificationService.class);
+		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 	}
 
 	@Override

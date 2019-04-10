@@ -9,12 +9,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import dto.ComputerDTO;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
-import main.MainConfig;
 import service.ComputerService;
 import service.NotificationService;
 import utils.Variable;
@@ -24,15 +24,16 @@ public class DeleteComputerServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 6846348527025452256L;
 
+	@Autowired
 	ComputerService computerService;
+
+	@Autowired
 	NotificationService notificationService;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
-		this.computerService = applicationContext.getBean(ComputerService.class);
-		this.notificationService = applicationContext.getBean(NotificationService.class);
+		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 	}
 
 	@Override

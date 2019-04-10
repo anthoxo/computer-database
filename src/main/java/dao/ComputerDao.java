@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +37,7 @@ public class ComputerDao {
 	static final String[] COMPUTER_COLUMN = { "id", "name", "introduced", "discontinued", "company_id" };
 
 	@Autowired
-	DaoFactory daoFactory;
+	DataSource dataSource;
 
 	@Autowired
 	CompanyDao companyDao;
@@ -61,7 +63,7 @@ public class ComputerDao {
 			}
 			stmt.executeUpdate();
 			return Optional.empty();
-		}).withDao(daoFactory).run(obj);
+		}).withDataSource(dataSource).run(obj);
 	}
 
 	public Optional<Computer> get(int id) throws DAOException {
@@ -79,7 +81,7 @@ public class ComputerDao {
 				computerOptArg = Optional.ofNullable(computer);
 			}
 			return computerOptArg;
-		}).withDao(daoFactory).run(computerOpt).getResult();
+		}).withDataSource(dataSource).run(computerOpt).getResult();
 	}
 
 	public void update(Computer obj) throws DAOException, ItemNotFoundException {
@@ -98,7 +100,7 @@ public class ComputerDao {
 				stmt.setInt(5, obj.getId());
 				stmt.executeUpdate();
 				return Optional.empty();
-			}).withDao(daoFactory).run(obj);
+			}).withDataSource(dataSource).run(obj);
 		} else {
 			throw new ItemNotFoundException("update");
 		}
@@ -110,7 +112,7 @@ public class ComputerDao {
 			stmt.setInt(1, computerArg.getId());
 			stmt.executeUpdate();
 			return Optional.empty();
-		}).withDao(daoFactory).run(obj);
+		}).withDataSource(dataSource).run(obj);
 	}
 
 	/**
@@ -133,7 +135,7 @@ public class ComputerDao {
 				computerListArg.add(computer);
 			}
 			return computerListArg;
-		}).withDao(daoFactory).run(computerList).getResult();
+		}).withDataSource(dataSource).run(computerList).getResult();
 	}
 
 	public List<Computer> getAllOrderBy(String order, boolean isDesc) throws DAOException {
@@ -151,7 +153,7 @@ public class ComputerDao {
 						computerListArg.add(computer);
 					}
 					return computerListArg;
-				}).withDao(daoFactory);
+				}).withDataSource(dataSource);
 		String desc = isDesc ? " DESC" : "";
 		if (Arrays.asList(COMPUTER_COLUMN).contains(order)) {
 			StringBuilder req = new StringBuilder().append(REQUEST_GET_ALL_ORDER_BY).append(order).append(" IS NULL ASC, ").append(order).append(desc);
@@ -185,7 +187,7 @@ public class ComputerDao {
 				computerOptArg = Optional.ofNullable(computer);
 			}
 			return computerOptArg;
-		}).withDao(daoFactory).run(computerOpt).getResult();
+		}).withDataSource(dataSource).run(computerOpt).getResult();
 	}
 
 	public List<Computer> getPattern(String pattern) throws DAOException {
@@ -204,7 +206,7 @@ public class ComputerDao {
 				computerListArg.add(computer);
 			}
 			return computerListArg;
-		}).withDao(daoFactory).run(result).getResult();
+		}).withDataSource(dataSource).run(result).getResult();
 	}
 
 	public List<Computer> getPatternOrderBy(String pattern, String order, boolean isDesc) throws DAOException {
@@ -224,7 +226,7 @@ public class ComputerDao {
 						computerListArg.add(computer);
 					}
 					return computerListArg;
-				}).withDao(daoFactory);
+				}).withDataSource(dataSource);
 		String desc = isDesc ? " DESC" : "";
 		if (Arrays.asList(COMPUTER_COLUMN).contains(order)) {
 			StringBuilder req = new StringBuilder().append(REQUEST_GET_LIKE_ORDER_BY).append(order).append(" IS NULL ASC, ").append(order).append(desc);

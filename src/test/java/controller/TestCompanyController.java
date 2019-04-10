@@ -32,7 +32,7 @@ public class TestCompanyController {
 	public void init()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 
-		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MainConfig.class);
 
 		companyList = new ArrayList<CompanyDTO>();
 		for (int i = 0; i < 40; ++i) {
@@ -46,6 +46,7 @@ public class TestCompanyController {
 
 		companyController = context.getBean(CompanyController.class);
 		companyController.companyPage = companyPage;
+		context.close();
 	}
 
 	@Test

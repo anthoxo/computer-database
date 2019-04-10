@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import dto.CompanyDTO;
-import main.MainConfig;
 import model.Page;
 import service.CompanyService;
 import utils.Utils.OrderByOption;
@@ -24,6 +24,7 @@ public class CompanyListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
+	@Autowired
 	CompanyService companyService;
 
 	Page<CompanyDTO> companyPage;
@@ -32,8 +33,7 @@ public class CompanyListServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
-		this.companyService = applicationContext.getBean(CompanyService.class);
+		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 	}
 
 

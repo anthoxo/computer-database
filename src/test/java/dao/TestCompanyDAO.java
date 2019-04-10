@@ -4,13 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import javax.sql.DataSource;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -26,26 +27,18 @@ public class TestCompanyDAO {
 	CompanyDao companyDAO;
 	ComputerDao computerDAO;
 
-	static DaoFactory daoFactory;
-
-	@BeforeAll
-	public static void setUp() {
-		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
-		daoFactory = context.getBean(DaoFactory.class);
-		daoFactory.startTest();
-	}
-
-	@AfterAll
-	public static void stop() {
-		daoFactory.stopTest();
-	}
+	DataSource dataSourceTest;
 
 	@BeforeEach
-	public void init() throws IOException, DAOException {
-		RunSQLScript.run(daoFactory);
-		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
+	public void init() throws IOException, DAOException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MainConfig.class);
+		dataSourceTest = (DataSource)context.getBean("dataSourceTest");
+		RunSQLScript.run(dataSourceTest);
 		this.companyDAO = context.getBean(CompanyDao.class);
 		this.computerDAO = context.getBean(ComputerDao.class);
+		Field field = CompanyDao.class.getDeclaredField("dataSource");
+		field.setAccessible(true);
+		field.set(companyDAO, dataSourceTest);
 	}
 
 	@Test

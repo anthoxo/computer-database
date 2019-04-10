@@ -35,12 +35,13 @@ public class TestCompanyService {
 	@BeforeEach
 	public void init()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MainConfig.class);
 		companyService = context.getBean(CompanyService.class);
 		companyMapper = context.getBean(CompanyMapper.class);
 		Field field = CompanyService.class.getDeclaredField("companyDao");
 		field.setAccessible(true);
 		field.set(companyService, companyDao);
+		context.close();
 	}
 
 	@Test

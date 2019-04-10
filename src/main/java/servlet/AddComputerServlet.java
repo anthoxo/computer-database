@@ -11,12 +11,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import dto.CompanyDTO;
 import dto.ComputerDTO;
 import exception.ItemBadCreatedException;
-import main.MainConfig;
 import service.CompanyService;
 import service.ComputerService;
 import service.NotificationService;
@@ -27,17 +27,19 @@ public class AddComputerServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -690181327611746612L;
 
+	@Autowired
 	ComputerService computerService;
+
+	@Autowired
 	CompanyService companyService;
+
+	@Autowired
 	NotificationService notificationService;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
-		this.companyService = applicationContext.getBean(CompanyService.class);
-		this.computerService = applicationContext.getBean(ComputerService.class);
-		this.notificationService = applicationContext.getBean(NotificationService.class);
+		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 	}
 
 	@Override

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +27,7 @@ public class CompanyDao {
 	static final String REQUEST_DELETE_COMPANY_BY_ID = "DELETE FROM company WHERE id = ?";
 
 	@Autowired
-	DaoFactory daoFactory;
+	DataSource dataSource;
 
 	@Autowired
 	CompanyMapper companyMapper;
@@ -43,7 +45,7 @@ public class CompanyDao {
 				companyArg = Optional.ofNullable(companyMapper.map(rs));
 			}
 			return companyArg;
-		}).withDao(daoFactory).run(company).getResult();
+		}).withDataSource(dataSource).run(company).getResult();
 	}
 
 	/**
@@ -62,7 +64,7 @@ public class CompanyDao {
 				l.add(company);
 			}
 			return l;
-		}).withDao(daoFactory).run(listCompanies).getResult();
+		}).withDataSource(dataSource).run(listCompanies).getResult();
 	}
 
 	public List<Company> getAllOrderByName(boolean isDesc) throws DAOException {
@@ -75,7 +77,7 @@ public class CompanyDao {
 				listCompanies.add(company);
 			}
 			return listCompanies;
-		}).withDao(daoFactory);
+		}).withDataSource(dataSource);
 		if (isDesc) {
 			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY_NAME + " DESC").getResult();
 		} else {
@@ -100,7 +102,7 @@ public class CompanyDao {
 				companyOpt = Optional.ofNullable(companyMapper.map(rs));
 			}
 			return companyOpt;
-		}).withDao(daoFactory).run(company).getResult();
+		}).withDataSource(dataSource).run(company).getResult();
 	}
 
 	public void delete(Company obj) throws DAOException {
@@ -112,6 +114,6 @@ public class CompanyDao {
 			stmt.setInt(1, company.getId());
 			stmt.executeUpdate();
 			return Optional.empty();
-		}).withDao(daoFactory).run(obj);
+		}).withDataSource(dataSource).run(obj);
 	}
 }

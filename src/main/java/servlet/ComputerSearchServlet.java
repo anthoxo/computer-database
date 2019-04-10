@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import dto.ComputerDTO;
-import main.MainConfig;
 import model.Page;
 import service.ComputerService;
 import utils.Utils.OrderByOption;
@@ -24,6 +24,7 @@ public class ComputerSearchServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -4860354040907739312L;
 
+	@Autowired
 	ComputerService computerService;
 
 	String pattern = "";
@@ -34,8 +35,7 @@ public class ComputerSearchServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
-		this.computerService = applicationContext.getBean(ComputerService.class);
+		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 	}
 
 

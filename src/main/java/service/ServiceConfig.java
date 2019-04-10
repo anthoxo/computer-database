@@ -4,6 +4,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan(basePackages = {"dao", "mapper"})
+@ComponentScan(basePackages = {"service", "dao", "mapper"})
 public class ServiceConfig {
 }

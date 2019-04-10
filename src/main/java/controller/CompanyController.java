@@ -16,14 +16,13 @@ import utils.Utils.ChoiceActionPage;
 @Component
 public class CompanyController {
 
+	@Autowired
 	public CompanyService companyService;
 
 	Page<CompanyDTO> companyPage;
 	boolean isGoingBack;
 
-	@Autowired
-	CompanyController(CompanyService companyService) {
-		this.companyService = companyService;
+	CompanyController() {
 		this.isGoingBack = false;
 	}
 

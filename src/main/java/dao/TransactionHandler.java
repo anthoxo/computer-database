@@ -3,6 +3,8 @@ package dao;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import exception.DAOException;
 
 public class TransactionHandler<U,R> {
@@ -11,7 +13,7 @@ public class TransactionHandler<U,R> {
 		public R accept(Connection t, U u) throws SQLException, DAOException;
 	};
 
-	DaoFactory daoFactory;
+	DataSource dataSource;
 	MyConsumer<U,R> myConsumer;
 	R result;
 
@@ -23,13 +25,13 @@ public class TransactionHandler<U,R> {
 		return new TransactionHandler<U,R>(myConsumer);
 	}
 
-	public TransactionHandler<U,R> withDao(DaoFactory daoFactory) {
-		this.daoFactory = daoFactory;
+	public TransactionHandler<U,R> withDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
 		return this;
 	}
 
 	public TransactionHandler<U,R> run(U u) throws DAOException {
-		try (Connection conn = this.daoFactory.getConnection()) {
+		try (Connection conn = this.dataSource.getConnection()) {
 			conn.setAutoCommit(false);
 			try {
 				this.result = this.myConsumer.accept(conn, u);

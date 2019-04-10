@@ -27,8 +27,9 @@ public class TestCompanyMapper {
 
 	@BeforeEach
 	public void init() throws SQLException {
-		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MainConfig.class);
 		companyMapper = context.getBean(CompanyMapper.class);
+		context.close();
 	}
 
 	@Test

@@ -16,9 +16,10 @@ public class TestNotificationService {
 
 	@BeforeEach
 	public void init() {
-		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MainConfig.class);
 		notificationService = context.getBean(NotificationService.class);
 		notificationService.clean();
+		context.close();
 	}
 
 	@Test

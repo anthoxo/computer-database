@@ -48,7 +48,7 @@ public class TestComputerController {
 	public void init()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 
-		AnnotationConfigApplicationContext context = MainConfig.getApplicationContext();
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MainConfig.class);
 
 		computerList = new ArrayList<ComputerDTO>();
 		for (int i = 0; i < 40; ++i) {
@@ -67,6 +67,8 @@ public class TestComputerController {
 		Field field = ComputerController.class.getDeclaredField("computerService");
 		field.setAccessible(true);
 		field.set(computerController, computerService);
+
+		context.close();
 	}
 
 	@Test
