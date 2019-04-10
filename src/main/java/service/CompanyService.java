@@ -39,6 +39,7 @@ public class CompanyService {
 	 * @return List of companies DTO.
 	 */
 	public List<CompanyDTO> getAllCompanies() {
+		logger.error("BONJOUR");
 		List<CompanyDTO> result = new ArrayList<CompanyDTO>();
 		try {
 			result = companyDao.getAll().stream().map((Company c) -> companyMapper.createDTO(c))

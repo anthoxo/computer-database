@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,16 +28,21 @@ public class EditComputerServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 8206412986998744720L;
 
-	AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
-
 	ComputerService computerService;
 	CompanyService companyService;
 	NotificationService notificationService;
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
+		this.companyService = applicationContext.getBean(CompanyService.class);
+		this.computerService = applicationContext.getBean(ComputerService.class);
+		this.notificationService = applicationContext.getBean(NotificationService.class);
+	}
 
-		initService();
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		String id = request.getParameter(Variable.GET_PARAMETER_ID);
 		String companyId = request.getParameter(Variable.GET_PARAMETER_COMPANY_ID);
@@ -69,8 +75,6 @@ public class EditComputerServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		initService();
-
 		String idString = request.getParameter(Variable.GET_PARAMETER_ID);
 		int id = 0;
 		if (idString != null) {
@@ -91,11 +95,4 @@ public class EditComputerServlet extends HttpServlet {
 			response.sendRedirect(request.getContextPath() + Variable.URL_COMPUTER);
 		}
 	}
-
-	protected void initService() {
-		this.companyService = applicationContext.getBean(CompanyService.class);
-		this.computerService = applicationContext.getBean(ComputerService.class);
-		this.notificationService = applicationContext.getBean(NotificationService.class);
-	}
-
 }

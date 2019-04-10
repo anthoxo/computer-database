@@ -3,6 +3,7 @@ package servlet;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,8 +24,6 @@ public class ComputerSearchServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -4860354040907739312L;
 
-	AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
-
 	ComputerService computerService;
 
 	String pattern = "";
@@ -33,10 +32,16 @@ public class ComputerSearchServlet extends HttpServlet {
 	OrderByOption orderByOption = OrderByOption.NULL;
 
 	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
+		this.computerService = applicationContext.getBean(ComputerService.class);
+	}
+
+
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		initService();
 
 		String search = request.getParameter(Variable.GET_PARAMETER_SEARCH);
 		if (search != null) {
@@ -50,8 +55,6 @@ public class ComputerSearchServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		initService();
 
 		String indexPage = request.getParameter(Variable.GET_PARAMETER_ID);
 		int index;
@@ -93,9 +96,4 @@ public class ComputerSearchServlet extends HttpServlet {
 		RequestDispatcher rd = this.getServletContext().getRequestDispatcher(Variable.VIEW_COMPUTER);
 		rd.forward(request, response);
 	}
-
-	protected void initService() {
-		this.computerService = applicationContext.getBean(ComputerService.class);
-	}
-
 }

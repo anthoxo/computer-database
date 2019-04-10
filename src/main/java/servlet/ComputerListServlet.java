@@ -3,6 +3,7 @@ package servlet;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,8 +24,6 @@ import utils.Variable;
 public class ComputerListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
-
 	ComputerService computerService;
 	NotificationService notificationService;
 
@@ -33,10 +32,16 @@ public class ComputerListServlet extends HttpServlet {
 	String orderColumn;
 
 	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
+		this.computerService = applicationContext.getBean(ComputerService.class);
+		this.notificationService = applicationContext.getBean(NotificationService.class);
+	}
+
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		initService();
 
 		try {
 			String indexPage = request.getParameter(Variable.GET_PARAMETER_ID);
@@ -92,10 +97,4 @@ public class ComputerListServlet extends HttpServlet {
 			throw new ServletException(e);
 		}
 	}
-
-	protected void initService() {
-		this.computerService = applicationContext.getBean(ComputerService.class);
-		this.notificationService = applicationContext.getBean(NotificationService.class);
-	}
-
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -26,17 +27,22 @@ public class AddComputerServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -690181327611746612L;
 
-	AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
-
 	ComputerService computerService;
 	CompanyService companyService;
 	NotificationService notificationService;
 
 	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
+		this.companyService = applicationContext.getBean(CompanyService.class);
+		this.computerService = applicationContext.getBean(ComputerService.class);
+		this.notificationService = applicationContext.getBean(NotificationService.class);
+	}
+
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-
-		initService();
 
 		ComputerDTO computerDTO = new ComputerDTO();
 		computerDTO.setName(request.getParameter(Variable.GET_PARAMETER_NAME));
@@ -70,18 +76,10 @@ public class AddComputerServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		initService();
-
 		List<CompanyDTO> companyList = this.companyService.getAllCompanies();
 		request.setAttribute(Variable.COMPANY_LIST, companyList);
 
 		RequestDispatcher rd = this.getServletContext().getRequestDispatcher(Variable.VIEW_ADD);
 		rd.forward(request, response);
-	}
-
-	protected void initService() {
-		this.companyService = applicationContext.getBean(CompanyService.class);
-		this.computerService = applicationContext.getBean(ComputerService.class);
-		this.notificationService = applicationContext.getBean(NotificationService.class);
 	}
 }

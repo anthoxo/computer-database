@@ -3,6 +3,7 @@ package servlet;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,18 +24,22 @@ public class CompanyListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
-
 	CompanyService companyService;
 
 	Page<CompanyDTO> companyPage;
 	OrderByOption orderByOption = OrderByOption.NULL;
 
 	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
+		this.companyService = applicationContext.getBean(CompanyService.class);
+	}
+
+
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		initService();
 
 		try {
 			String indexPage = request.getParameter(Variable.GET_PARAMETER_ID);
@@ -72,9 +77,4 @@ public class CompanyListServlet extends HttpServlet {
 			throw new ServletException(e);
 		}
 	}
-
-	protected void initService() {
-		this.companyService = applicationContext.getBean(CompanyService.class);
-	}
-
 }

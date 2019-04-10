@@ -26,5 +26,4 @@ public class IndexServlet extends HttpServlet {
 			throw new ServletException(e);
 		}
 	}
-
 }

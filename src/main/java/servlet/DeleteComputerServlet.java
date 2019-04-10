@@ -2,6 +2,8 @@ package servlet;
 
 import java.io.IOException;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,15 +24,19 @@ public class DeleteComputerServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 6846348527025452256L;
 
-	AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
-
 	ComputerService computerService;
 	NotificationService notificationService;
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		AnnotationConfigApplicationContext applicationContext = MainConfig.getApplicationContext();
+		this.computerService = applicationContext.getBean(ComputerService.class);
+		this.notificationService = applicationContext.getBean(NotificationService.class);
+	}
 
-		initService();
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		ComputerDTO computerDTO = new ComputerDTO();
 		String id = request.getParameter(Variable.GET_PARAMETER_ID_DELETE);
@@ -47,10 +53,5 @@ public class DeleteComputerServlet extends HttpServlet {
 					"This object hasn't been deleted.");
 		}
 		response.sendRedirect(request.getContextPath() + Variable.URL_COMPUTER);
-	}
-
-	protected void initService() {
-		this.computerService = applicationContext.getBean(ComputerService.class);
-		this.notificationService = applicationContext.getBean(NotificationService.class);
 	}
 }
