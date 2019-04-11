@@ -11,7 +11,7 @@ import java.util.Optional;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import exception.DAOException;
 import exception.ItemNotFoundException;
@@ -19,7 +19,7 @@ import mapper.ComputerMapper;
 import model.Company;
 import model.Computer;
 
-@Component
+@Repository
 public class ComputerDao {
 
 	static final String REQUEST_CREATE = "INSERT INTO computer VALUES (?,?,?,?,?)";

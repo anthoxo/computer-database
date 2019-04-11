@@ -14,26 +14,27 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
 @Configuration
 @ComponentScan(basePackages = { "dao", "mapper" })
 @PropertySource("classpath:dao.properties")
 public class DaoConfig {
 
+	public static final String DAO_TEST_PROPERTIES = "dao-test.properties";
+	public static final String JDBC_URL_PROPERTY = "jdbcUrl";
+	public static final String USERNAME_PROPERTY = "dataSource.user";
+	public static final String PASSWORD_PROPERTY = "dataSource.password";
+	public static final String DRIVER_CLASS_PROPERTY = "driverClassName";
+
 	@Autowired
 	Environment env;
-
-	public static final String DAO_TEST_PROPERTIES = "dao-test.properties";
 
 	@Bean
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setUrl(env.getProperty("jdbcUrl"));
-		dataSource.setUsername(env.getProperty("dataSource.user"));
-		dataSource.setPassword(env.getProperty("dataSource.password"));
-		dataSource.setDriverClassName(env.getProperty("driverClassName"));
+		dataSource.setUrl(env.getProperty(JDBC_URL_PROPERTY));
+		dataSource.setUsername(env.getProperty(USERNAME_PROPERTY));
+		dataSource.setPassword(env.getProperty(PASSWORD_PROPERTY));
+		dataSource.setDriverClassName(env.getProperty(DRIVER_CLASS_PROPERTY));
 		return dataSource;
 	}
 
@@ -43,9 +44,12 @@ public class DaoConfig {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		InputStream fichierProperties = classLoader.getResourceAsStream(DAO_TEST_PROPERTIES);
 		properties.load(fichierProperties);
-		HikariConfig hikariCfg = new HikariConfig(properties);
-		HikariDataSource hikariDataSource = new HikariDataSource(hikariCfg);
-		return hikariDataSource;
+		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+		dataSource.setUrl(properties.getProperty(JDBC_URL_PROPERTY));
+		dataSource.setUsername(properties.getProperty(USERNAME_PROPERTY));
+		dataSource.setPassword(properties.getProperty(PASSWORD_PROPERTY));
+		dataSource.setDriverClassName(properties.getProperty(DRIVER_CLASS_PROPERTY));
+		return dataSource;
 	}
 
 }

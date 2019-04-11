@@ -10,13 +10,13 @@ import java.util.Optional;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import exception.DAOException;
 import mapper.CompanyMapper;
 import model.Company;
 
-@Component
+@Repository
 public class CompanyDao {
 
 	static final String REQUEST_GET_BY_ID = "SELECT id,name FROM company WHERE id = ?";
