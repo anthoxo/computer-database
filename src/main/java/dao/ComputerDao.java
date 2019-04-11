@@ -43,10 +43,13 @@ public class ComputerDao {
 	CompanyDao companyDao;
 
 	@Autowired
-	public ComputerMapper computerMapper;
-
+	ComputerMapper computerMapper;
 
 	private ComputerDao() {
+	}
+
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 
 	public void create(Computer obj) throws DAOException {

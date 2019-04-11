@@ -35,6 +35,10 @@ public class CompanyDao {
 	private CompanyDao() {
 	}
 
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+
 	public Optional<Company> get(int id) throws DAOException {
 		Optional<Company> company = Optional.empty();
 		return TransactionHandler.create((Connection conn, Optional<Company> companyArg) -> {
