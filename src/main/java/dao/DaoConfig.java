@@ -7,6 +7,7 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -20,9 +21,9 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 public class DaoConfig {
 
 	public static final String DAO_TEST_PROPERTIES = "dao-test.properties";
-	public static final String JDBC_URL_PROPERTY = "jdbcUrl";
-	public static final String USERNAME_PROPERTY = "dataSource.user";
-	public static final String PASSWORD_PROPERTY = "dataSource.password";
+	public static final String JDBC_URL_PROPERTY = "spring.datasource.url";
+	public static final String USERNAME_PROPERTY = "spring.datasource.username";
+	public static final String PASSWORD_PROPERTY = "spring.datasource.password";
 	public static final String DRIVER_CLASS_PROPERTY = "driverClassName";
 
 	@Autowired
@@ -30,12 +31,9 @@ public class DaoConfig {
 
 	@Bean
 	public DataSource dataSource() {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setUrl(env.getProperty(JDBC_URL_PROPERTY));
-		dataSource.setUsername(env.getProperty(USERNAME_PROPERTY));
-		dataSource.setPassword(env.getProperty(PASSWORD_PROPERTY));
-		dataSource.setDriverClassName(env.getProperty(DRIVER_CLASS_PROPERTY));
-		return dataSource;
+		return DataSourceBuilder.create().url(env.getProperty(JDBC_URL_PROPERTY))
+				.username(env.getProperty(USERNAME_PROPERTY)).password(env.getProperty(PASSWORD_PROPERTY))
+				.driverClassName(env.getProperty(DRIVER_CLASS_PROPERTY)).build();
 	}
 
 	@Bean
