@@ -17,8 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import console.MainConfig;
 import exception.DAOException;
-import main.MainConfig;
 import model.Company;
 import model.Computer;
 import utils.RunSQLScript;

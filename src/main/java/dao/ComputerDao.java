@@ -37,7 +37,7 @@ public class ComputerDao {
 	CompanyDao companyDao;
 	ComputerMapper computerMapper;
 
-	private ComputerDao(JdbcTemplate jdbcTemplate, CompanyDao companyDao, ComputerMapper computerMapper) {
+	public ComputerDao(JdbcTemplate jdbcTemplate, CompanyDao companyDao, ComputerMapper computerMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.companyDao = companyDao;
 		this.computerMapper = computerMapper;

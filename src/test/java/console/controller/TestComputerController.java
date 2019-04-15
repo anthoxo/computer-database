@@ -16,14 +16,13 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import console.controller.ComputerController;
+import console.MainConfig;
 import dto.ComputerDTO;
 import exception.DAOException;
 import exception.ItemBadCreatedException;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
 import exception.ItemNotUpdatedException;
-import main.MainConfig;
 import model.Computer;
 import model.Page;
 import service.ComputerService;

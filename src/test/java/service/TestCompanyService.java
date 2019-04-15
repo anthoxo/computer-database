@@ -12,11 +12,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import console.MainConfig;
 import dao.CompanyDao;
 import exception.DAOException;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
-import main.MainConfig;
 import mapper.CompanyMapper;
 import model.Company;
 import utils.Utils.OrderByOption;

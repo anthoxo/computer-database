@@ -26,7 +26,7 @@ public class CompanyDao {
 	JdbcTemplate jdbcTemplate;
 	CompanyMapper companyMapper;
 
-	private CompanyDao(JdbcTemplate jdbcTemplate, CompanyMapper companyMapper) {
+	public CompanyDao(JdbcTemplate jdbcTemplate, CompanyMapper companyMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.companyMapper = companyMapper;
 	}
@@ -75,7 +75,7 @@ public class CompanyDao {
 		}
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = DAOException.class)
 	public void delete(Company obj) throws DAOException {
 		try {
 			jdbcTemplate.update(REQUEST_DELETE_COMPUTER_BY_COMPANY_ID, obj.getId());

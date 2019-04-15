@@ -15,8 +15,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import console.MainConfig;
 import dto.CompanyDTO;
-import main.MainConfig;
 import model.Company;
 
 @ExtendWith(MockitoExtension.class)

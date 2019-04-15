@@ -19,9 +19,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import console.MainConfig;
 import exception.DAOException;
 import exception.ItemNotFoundException;
-import main.MainConfig;
 import model.Computer;
 import utils.RunSQLScript;
 import utils.Utils;
