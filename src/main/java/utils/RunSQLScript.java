@@ -10,8 +10,10 @@ import javax.sql.DataSource;
 
 import dao.TransactionHandler;
 import exception.DAOException;
+
 /**
  * This class is used only during tests.
+ *
  * @author excilys
  *
  */

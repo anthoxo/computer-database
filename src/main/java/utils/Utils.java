@@ -30,7 +30,6 @@ public class Utils {
 		GET_ALL, DELETE, BACK, NULL
 	};
 
-
 	public enum OrderByOption {
 		ASC, DESC, NULL
 	}

@@ -19,8 +19,7 @@ public class TestHomePage {
 		/**
 		 * You must put your chromedriver in the same level of your repo git
 		 */
-		System.setProperty("webdriver.chrome.driver",
-				"./../chromedriver");
+		System.setProperty("webdriver.chrome.driver", "./../chromedriver");
 	}
 
 	@BeforeEach

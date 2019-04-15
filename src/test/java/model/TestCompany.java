@@ -24,7 +24,6 @@ public class TestCompany {
 		assertEquals(company.getName(), "Apple");
 	}
 
-
 	@Test
 	public void testEquals1() {
 		Company company2 = (new Company.Builder()).build();
@@ -45,7 +44,8 @@ public class TestCompany {
 
 	@Test
 	public void testEquals4() {
-		Company company2 = (new Company.Builder()).withId(1).withName("Apple").build();;
+		Company company2 = (new Company.Builder()).withId(1).withName("Apple").build();
+		;
 		assertTrue(company.equals(company2));
 	}
 

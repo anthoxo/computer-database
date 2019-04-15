@@ -30,10 +30,8 @@ public class TestComputerValidator {
 
 	@Test
 	public void testGoodComputer2() {
-		Computer computer = new Computer.Builder().withId(1)
-				.withName("Ordi")
-				.withIntroducedDate(Utils.stringToTimestamp("2020/01/01").get())
-				.build();
+		Computer computer = new Computer.Builder().withId(1).withName("Ordi")
+				.withIntroducedDate(Utils.stringToTimestamp("2020/01/01").get()).build();
 		try {
 			computerValidator.validate(computer);
 			assertTrue(true);
@@ -44,11 +42,9 @@ public class TestComputerValidator {
 
 	@Test
 	public void testGoodComputer3() {
-		Computer computer = new Computer.Builder().withId(1)
-				.withName("Ordi")
+		Computer computer = new Computer.Builder().withId(1).withName("Ordi")
 				.withIntroducedDate(Utils.stringToTimestamp("2020/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("2030/01/01").get())
-				.build();
+				.withDiscontinuedDate(Utils.stringToTimestamp("2030/01/01").get()).build();
 		try {
 			computerValidator.validate(computer);
 			assertTrue(true);
@@ -61,8 +57,7 @@ public class TestComputerValidator {
 	public void testBadComputer1() {
 		Computer computer = new Computer.Builder().withId(1)
 				.withIntroducedDate(Utils.stringToTimestamp("2020/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("2030/01/01").get())
-				.build();
+				.withDiscontinuedDate(Utils.stringToTimestamp("2030/01/01").get()).build();
 		try {
 			computerValidator.validate(computer);
 			assertTrue(false);
@@ -73,11 +68,9 @@ public class TestComputerValidator {
 
 	@Test
 	public void testBadComputer2() {
-		Computer computer = new Computer.Builder().withId(1)
-				.withName("")
+		Computer computer = new Computer.Builder().withId(1).withName("")
 				.withIntroducedDate(Utils.stringToTimestamp("2020/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("2030/01/01").get())
-				.build();
+				.withDiscontinuedDate(Utils.stringToTimestamp("2030/01/01").get()).build();
 		try {
 			computerValidator.validate(computer);
 			assertTrue(false);
@@ -88,11 +81,9 @@ public class TestComputerValidator {
 
 	@Test
 	public void testBadComputer3() {
-		Computer computer = new Computer.Builder().withId(1)
-				.withName("Ordi")
+		Computer computer = new Computer.Builder().withId(1).withName("Ordi")
 				.withIntroducedDate(Utils.stringToTimestamp("2035/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("2030/01/01").get())
-				.build();
+				.withDiscontinuedDate(Utils.stringToTimestamp("2030/01/01").get()).build();
 		try {
 			computerValidator.validate(computer);
 			assertTrue(false);

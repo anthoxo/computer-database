@@ -2,7 +2,6 @@ package controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import dto.CompanyDTO;
@@ -16,13 +15,13 @@ import utils.Utils.ChoiceActionPage;
 @Component
 public class CompanyController {
 
-	@Autowired
 	public CompanyService companyService;
 
 	Page<CompanyDTO> companyPage;
 	boolean isGoingBack;
 
-	CompanyController() {
+	CompanyController(CompanyService companyService) {
+		this.companyService = companyService;
 		this.isGoingBack = false;
 	}
 
@@ -46,12 +45,11 @@ public class CompanyController {
 		return this.companyService.getCompanyById(id);
 	}
 
-	public void deleteCompany(int id) throws ItemNotFoundException, ItemNotDeletedException  {
+	public void deleteCompany(int id) throws ItemNotFoundException, ItemNotDeletedException {
 		CompanyDTO companyDTO = new CompanyDTO();
 		companyDTO.setId(id);
 		this.companyService.deleteCompany(companyDTO);
 	}
-
 
 	/**
 	 * Choose if we select the next or previous page.

@@ -56,7 +56,7 @@ public class MainView {
 				if (database.equals(Utils.ChoiceDatabase.COMPANY)) {
 					CompanyView companyView = new CompanyView(context.getBean(CompanyController.class));
 					companyView.chooseAction(sc);
-					//companyView.printCompanies(sc);
+					// companyView.printCompanies(sc);
 				} else if (database.equals(Utils.ChoiceDatabase.COMPUTER)) {
 					ComputerView computerView = new ComputerView(context.getBean(ComputerController.class));
 					computerView.chooseAction(sc);

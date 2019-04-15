@@ -50,7 +50,7 @@ public class TestComputerDAO {
 	@BeforeEach
 	public void init() throws IOException, DAOException {
 		this.computerDao = context.getBean(ComputerDao.class);
-		dataSourceTest = (DataSource)context.getBean("dataSourceTest");
+		dataSourceTest = (DataSource) context.getBean("dataSourceTest");
 		dataSource = this.computerDao.dataSource;
 		this.computerDao.setDataSource(dataSourceTest);
 		RunSQLScript.run(dataSourceTest);
@@ -60,7 +60,6 @@ public class TestComputerDAO {
 	public void stop() {
 		this.computerDao.setDataSource(dataSource);
 	}
-
 
 	@Test
 	public void testGetById() throws SQLException, DAOException {

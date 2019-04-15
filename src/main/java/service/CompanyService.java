@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dao.CompanyDao;
@@ -22,15 +21,14 @@ import utils.Utils.OrderByOption;
 @Service
 public class CompanyService {
 
-	@Autowired
 	CompanyDao companyDao;
-
-	@Autowired
 	CompanyMapper companyMapper;
 
 	private Logger logger = LoggerFactory.getLogger(CompanyService.class);
 
-	private CompanyService() {
+	private CompanyService(CompanyDao companyDao, CompanyMapper companyMapper) {
+		this.companyDao = companyDao;
+		this.companyMapper = companyMapper;
 	}
 
 	/**

@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import exception.DAOException;
@@ -26,13 +25,13 @@ public class CompanyDao {
 	static final String REQUEST_DELETE_COMPUTER_BY_COMPANY_ID = "DELETE FROM computer WHERE company_id = ?";
 	static final String REQUEST_DELETE_COMPANY_BY_ID = "DELETE FROM company WHERE id = ?";
 
-	@Autowired
 	DataSource dataSource;
-
-	@Autowired
 	CompanyMapper companyMapper;
 
-	private CompanyDao() {
+	private CompanyDao(DataSource dataSource, CompanyMapper companyMapper) {
+		this.dataSource = dataSource;
+		this.companyMapper = companyMapper;
+
 	}
 
 	public void setDataSource(DataSource dataSource) {
@@ -72,16 +71,17 @@ public class CompanyDao {
 	}
 
 	public List<Company> getAllOrderByName(boolean isDesc) throws DAOException {
-		TransactionHandler<String, List<Company>> transactionHandler = TransactionHandler.create((Connection conn, String request) -> {
-			List<Company> listCompanies = new ArrayList<Company>();
-			PreparedStatement stmt = conn.prepareStatement(request);
-			ResultSet rs = stmt.executeQuery();
-			while (rs.next()) {
-				Company company = companyMapper.map(rs);
-				listCompanies.add(company);
-			}
-			return listCompanies;
-		}).withDataSource(dataSource);
+		TransactionHandler<String, List<Company>> transactionHandler = TransactionHandler
+				.create((Connection conn, String request) -> {
+					List<Company> listCompanies = new ArrayList<Company>();
+					PreparedStatement stmt = conn.prepareStatement(request);
+					ResultSet rs = stmt.executeQuery();
+					while (rs.next()) {
+						Company company = companyMapper.map(rs);
+						listCompanies.add(company);
+					}
+					return listCompanies;
+				}).withDataSource(dataSource);
 		if (isDesc) {
 			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY_NAME + " DESC").getResult();
 		} else {

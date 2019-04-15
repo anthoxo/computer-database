@@ -43,7 +43,7 @@ public class TestCompanyDAO {
 	public void init() throws IOException, DAOException {
 		this.companyDao = context.getBean(CompanyDao.class);
 		this.computerDao = context.getBean(ComputerDao.class);
-		dataSourceTest = (DataSource)context.getBean("dataSourceTest");
+		dataSourceTest = (DataSource) context.getBean("dataSourceTest");
 		dataSource = this.companyDao.dataSource;
 		this.companyDao.setDataSource(dataSourceTest);
 		this.computerDao.setDataSource(dataSourceTest);
@@ -95,18 +95,17 @@ public class TestCompanyDAO {
 	public void testGetAllOrderByName() throws SQLException, DAOException {
 		List<String> sortedCompanyList = Arrays.asList("Apple Inc.", "Netronics", "RCA", "Thinking Machines");
 		List<Company> listCompany = this.companyDao.getAllOrderByName(false);
-		for (int i = 0 ; i < 4 ; ++i) {
+		for (int i = 0; i < 4; ++i) {
 			assertEquals(sortedCompanyList.get(i), listCompany.get(i).getName());
 		}
 	}
-
 
 	@Test
 	public void testDeleteCompany() throws SQLException, DAOException, IOException {
 		List<Company> companyList;
 		List<Computer> computerList = this.computerDao.getAll();
 		assertEquals(computerList.size(), 4);
-		for (int i = 0 ; i < 10 ; ++i) {
+		for (int i = 0; i < 10; ++i) {
 			Computer computer = new Computer.Builder().withName("Computer_" + i).withCompanyId(3).build();
 			this.computerDao.create(computer);
 		}

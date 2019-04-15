@@ -10,7 +10,6 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import exception.DAOException;
@@ -36,16 +35,14 @@ public class ComputerDao {
 
 	static final String[] COMPUTER_COLUMN = { "id", "name", "introduced", "discontinued", "company_id" };
 
-	@Autowired
 	DataSource dataSource;
-
-	@Autowired
 	CompanyDao companyDao;
-
-	@Autowired
 	ComputerMapper computerMapper;
 
-	private ComputerDao() {
+	private ComputerDao(DataSource dataSource, CompanyDao companyDao, ComputerMapper computerMapper) {
+		this.dataSource = dataSource;
+		this.companyDao = companyDao;
+		this.computerMapper = computerMapper;
 	}
 
 	public void setDataSource(DataSource dataSource) {
@@ -159,7 +156,8 @@ public class ComputerDao {
 				}).withDataSource(dataSource);
 		String desc = isDesc ? " DESC" : "";
 		if (Arrays.asList(COMPUTER_COLUMN).contains(order)) {
-			StringBuilder req = new StringBuilder().append(REQUEST_GET_ALL_ORDER_BY).append(order).append(" IS NULL ASC, ").append(order).append(desc);
+			StringBuilder req = new StringBuilder().append(REQUEST_GET_ALL_ORDER_BY).append(order)
+					.append(" IS NULL ASC, ").append(order).append(desc);
 			return transactionHandler.run(req.toString()).getResult();
 		} else if (order.equals("companyName")) {
 			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY_COMPANY_NAME + desc).getResult();
@@ -232,7 +230,8 @@ public class ComputerDao {
 				}).withDataSource(dataSource);
 		String desc = isDesc ? " DESC" : "";
 		if (Arrays.asList(COMPUTER_COLUMN).contains(order)) {
-			StringBuilder req = new StringBuilder().append(REQUEST_GET_LIKE_ORDER_BY).append(order).append(" IS NULL ASC, ").append(order).append(desc);
+			StringBuilder req = new StringBuilder().append(REQUEST_GET_LIKE_ORDER_BY).append(order)
+					.append(" IS NULL ASC, ").append(order).append(desc);
 			return transactionHandler.run(req.toString()).getResult();
 		} else if (order.equals("companyName")) {
 			return transactionHandler.run(REQUEST_GET_LIKE_ORDER_BY_COMPANY_NAME + desc).getResult();

@@ -45,17 +45,15 @@ public class TestComputerPage {
 		WebElement webElement = driver.findElement(By.id("homeTitle"));
 		int n = Integer.parseInt(webElement.getText().split(" ")[0]);
 
-
 		webElement = driver.findElement(By.className("pagination"));
 		List<WebElement> l = webElement.findElements(By.tagName("a"));
-		int nbPages = Integer.parseInt(l.get(l.size()-2).getText());
+		int nbPages = Integer.parseInt(l.get(l.size() - 2).getText());
 
-		assertTrue(n > (nbPages-1)*Page.NB_ITEMS_PER_PAGE);
+		assertTrue(n > (nbPages - 1) * Page.NB_ITEMS_PER_PAGE);
 
 		driver.close();
 		driver.quit();
 	}
-
 
 	@Test
 	public void testHaveTenComputers() {

@@ -192,7 +192,8 @@ public class ComputerView {
 			companyId = companyId == "" ? String.valueOf(c.getCompanyId()) : companyId;
 
 			try {
-				this.computerController.updateComputer(c.getId(), name, introduced, discontinued, Integer.valueOf(companyId));
+				this.computerController.updateComputer(c.getId(), name, introduced, discontinued,
+						Integer.valueOf(companyId));
 				logger.info("Done !");
 			} catch (ItemNotUpdatedException e) {
 				logger.warn("Object not updated !");

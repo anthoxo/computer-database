@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dao.ComputerDao;
@@ -26,17 +25,16 @@ import validator.ComputerValidator;
 @Service
 public class ComputerService {
 
-	@Autowired
 	ComputerDao computerDao;
-
-	@Autowired
 	ComputerMapper computerMapper;
 
 	ComputerValidator computerValidator;
 
 	private Logger logger = LoggerFactory.getLogger(ComputerService.class);
 
-	private ComputerService() {
+	private ComputerService(ComputerDao computerDao, ComputerMapper computerMapper) {
+		this.computerDao = computerDao;
+		this.computerMapper = computerMapper;
 		computerValidator = new ComputerValidator();
 	}
 
@@ -122,8 +120,8 @@ public class ComputerService {
 		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
 		boolean isDesc = option == OrderByOption.DESC ? true : false;
 		try {
-			result = computerDao.getAllOrderBy(order, isDesc).stream().map((Computer computer) -> computerMapper.createDTO(computer))
-					.collect(Collectors.toList());
+			result = computerDao.getAllOrderBy(order, isDesc).stream()
+					.map((Computer computer) -> computerMapper.createDTO(computer)).collect(Collectors.toList());
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 		}
@@ -133,8 +131,8 @@ public class ComputerService {
 	public List<ComputerDTO> getComputersByPattern(String pattern) {
 		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
 		try {
-			result = computerDao.getPattern(pattern).stream().map((Computer computer) -> computerMapper.createDTO(computer))
-					.collect(Collectors.toList());
+			result = computerDao.getPattern(pattern).stream()
+					.map((Computer computer) -> computerMapper.createDTO(computer)).collect(Collectors.toList());
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 		}
@@ -145,8 +143,8 @@ public class ComputerService {
 		boolean isDesc = option == OrderByOption.DESC ? true : false;
 		List<ComputerDTO> result = new ArrayList<ComputerDTO>();
 		try {
-			result = computerDao.getPatternOrderBy(pattern, order, isDesc).stream().map((Computer computer) -> computerMapper.createDTO(computer))
-					.collect(Collectors.toList());
+			result = computerDao.getPatternOrderBy(pattern, order, isDesc).stream()
+					.map((Computer computer) -> computerMapper.createDTO(computer)).collect(Collectors.toList());
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 		}

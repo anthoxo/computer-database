@@ -2,7 +2,6 @@ package controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import dto.ComputerDTO;
@@ -18,7 +17,6 @@ import utils.Utils.ChoiceActionPage;
 @Component
 public class ComputerController {
 
-	@Autowired
 	ComputerService computerService;
 
 	Page<ComputerDTO> computerPage;
@@ -27,7 +25,8 @@ public class ComputerController {
 	/**
 	 * Default constructor.
 	 */
-	private ComputerController() {
+	private ComputerController(ComputerService computerService) {
+		this.computerService = computerService;
 		this.isGoingBack = false;
 	}
 

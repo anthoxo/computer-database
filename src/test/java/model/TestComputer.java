@@ -19,14 +19,11 @@ public class TestComputer {
 	@BeforeEach
 	public void init() {
 		company = (new Company.Builder()).withId(1).withName("Apple").build();
-		computer = (new Computer.Builder()).withId(1)
-				.withName("MacBook")
+		computer = (new Computer.Builder()).withId(1).withName("MacBook")
 				.withIntroducedDate(Utils.stringToTimestamp("2000/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("2001/01/01").get())
-				.withCompanyId(1)
-				.withCompany(company)
+				.withDiscontinuedDate(Utils.stringToTimestamp("2001/01/01").get()).withCompanyId(1).withCompany(company)
 				.build();
-		}
+	}
 
 	@Test
 	public void testParam() {
@@ -37,7 +34,6 @@ public class TestComputer {
 		assertEquals(computer.getCompanyId(), 1);
 		assertEquals(computer.getCompany(), company);
 	}
-
 
 	@Test
 	public void testEquals1() {
@@ -53,24 +49,18 @@ public class TestComputer {
 
 	@Test
 	public void testEquals3() {
-		Computer computer2 = (new Computer.Builder()).withId(1)
-				.withName("Macbook")
+		Computer computer2 = (new Computer.Builder()).withId(1).withName("Macbook")
 				.withIntroducedDate(Utils.stringToTimestamp("2000/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("2001/01/01").get())
-				.withCompanyId(1)
-				.withCompany(company)
+				.withDiscontinuedDate(Utils.stringToTimestamp("2001/01/01").get()).withCompanyId(1).withCompany(company)
 				.build();
 		assertFalse(computer.equals(computer2));
 	}
 
 	@Test
 	public void testEquals4() {
-		Computer computer2 = (new Computer.Builder()).withId(1)
-				.withName("MacBook")
+		Computer computer2 = (new Computer.Builder()).withId(1).withName("MacBook")
 				.withIntroducedDate(Utils.stringToTimestamp("2000/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("2001/01/01").get())
-				.withCompanyId(1)
-				.withCompany(company)
+				.withDiscontinuedDate(Utils.stringToTimestamp("2001/01/01").get()).withCompanyId(1).withCompany(company)
 				.build();
 		assertTrue(computer.equals(computer2));
 	}
