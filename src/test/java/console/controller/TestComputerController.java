@@ -1,4 +1,4 @@
-package controller;
+package console.controller;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import console.controller.ComputerController;
 import dto.ComputerDTO;
 import exception.DAOException;
 import exception.ItemBadCreatedException;

@@ -1,4 +1,4 @@
-package controller;
+package console.controller;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import console.controller.CompanyController;
 import dto.CompanyDTO;
 import main.MainConfig;
 import model.Page;

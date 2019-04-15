@@ -1,4 +1,4 @@
-package controller;
+package console.controller;
 
 import java.util.List;
 

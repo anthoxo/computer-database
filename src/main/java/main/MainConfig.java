@@ -5,6 +5,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ComponentScan(basePackageClasses = { mapper.MapperConfig.class, dao.DaoConfig.class, service.ServiceConfig.class,
-		controller.ControllerConfig.class })
+		console.controller.ControllerConfig.class })
 public class MainConfig {
 }

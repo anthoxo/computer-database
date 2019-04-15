@@ -32,9 +32,6 @@ public class TestComputerService {
 	@Mock
 	ComputerMapper computerMapper;
 
-	@Mock
-	ComputerValidator computerValidator;
-
 	@InjectMocks
 	ComputerService computerService;
 
@@ -44,6 +41,7 @@ public class TestComputerService {
 		Field field = ComputerService.class.getDeclaredField("computerDao");
 		field.setAccessible(true);
 		field.set(computerService, computerDao);
+		computerService.computerValidator = new ComputerValidator();
 	}
 
 	@Test
@@ -96,7 +94,6 @@ public class TestComputerService {
 	public void testCreate() throws DAOException, ItemBadCreatedException, ComputerException {
 		ComputerDTO computerDTO = new ComputerDTO();
 		computerDTO.setName("oui");
-		Mockito.doNothing().when(computerValidator).validate(Mockito.any());
 		this.computerService.createComputer(computerDTO);
 		Mockito.verify(computerDao).create(Mockito.any());
 	}

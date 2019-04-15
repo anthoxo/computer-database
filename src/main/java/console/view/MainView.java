@@ -1,4 +1,4 @@
-package view;
+package console.view;
 
 import java.util.Scanner;
 
@@ -6,9 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import controller.CompanyController;
-import controller.ComputerController;
-import controller.MainController;
+import console.controller.CompanyController;
+import console.controller.ComputerController;
+import console.controller.MainController;
 import utils.Utils;
 
 public class MainView {

@@ -2,7 +2,7 @@ package main;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import view.MainView;
+import console.view.MainView;
 
 public class Main {
 	public static void main(String[] args) {

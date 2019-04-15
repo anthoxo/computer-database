@@ -1,4 +1,4 @@
-package view;
+package console.view;
 
 import java.util.List;
 import java.util.Scanner;
@@ -6,7 +6,7 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import controller.CompanyController;
+import console.controller.CompanyController;
 import dto.CompanyDTO;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
