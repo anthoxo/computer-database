@@ -9,14 +9,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import javax.sql.DataSource;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import exception.DAOException;
 import main.MainConfig;
@@ -31,8 +30,8 @@ public class TestCompanyDAO {
 	CompanyDao companyDao;
 	ComputerDao computerDao;
 
-	DataSource dataSourceTest;
-	DataSource dataSource;
+	JdbcTemplate jdbcTemplate;
+	JdbcTemplate jdbcTemplateTest;
 
 	@BeforeAll
 	public static void setUp() {
@@ -43,17 +42,17 @@ public class TestCompanyDAO {
 	public void init() throws IOException, DAOException {
 		this.companyDao = context.getBean(CompanyDao.class);
 		this.computerDao = context.getBean(ComputerDao.class);
-		dataSourceTest = (DataSource) context.getBean("dataSourceTest");
-		dataSource = this.companyDao.dataSource;
-		this.companyDao.setDataSource(dataSourceTest);
-		this.computerDao.setDataSource(dataSourceTest);
-		RunSQLScript.run(dataSourceTest);
+		jdbcTemplateTest = (JdbcTemplate) context.getBean("jdbcTemplateTest");
+		jdbcTemplate = this.companyDao.jdbcTemplate;
+		this.companyDao.setJdbcTemplate(jdbcTemplateTest);
+		this.computerDao.setJdbcTemplate(jdbcTemplateTest);
+		RunSQLScript.run(jdbcTemplateTest);
 	}
 
 	@AfterEach
 	public void stop() {
-		this.companyDao.setDataSource(dataSource);
-		this.computerDao.setDataSource(dataSource);
+		this.companyDao.setJdbcTemplate(jdbcTemplate);
+		this.computerDao.setJdbcTemplate(jdbcTemplate);
 	}
 
 	@AfterAll

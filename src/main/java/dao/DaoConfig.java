@@ -13,6 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 @Configuration
@@ -29,7 +30,7 @@ public class DaoConfig {
 	@Autowired
 	Environment env;
 
-	@Bean
+	@Bean(destroyMethod = "close")
 	public DataSource dataSource() {
 		return DataSourceBuilder.create().url(env.getProperty(JDBC_URL_PROPERTY))
 				.username(env.getProperty(USERNAME_PROPERTY)).password(env.getProperty(PASSWORD_PROPERTY))
@@ -48,6 +49,16 @@ public class DaoConfig {
 		dataSource.setPassword(properties.getProperty(PASSWORD_PROPERTY));
 		dataSource.setDriverClassName(properties.getProperty(DRIVER_CLASS_PROPERTY));
 		return dataSource;
+	}
+
+	@Bean
+	public JdbcTemplate jdbcTemplate() {
+		return new JdbcTemplate(dataSource());
+	}
+
+	@Bean
+	public JdbcTemplate jdbcTemplateTest() throws IOException {
+		return new JdbcTemplate(dataSourceTest());
 	}
 
 }

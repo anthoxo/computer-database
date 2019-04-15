@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +16,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import dao.CompanyDao;
 import dto.ComputerDTO;
 import exception.DAOException;
 import main.MainConfig;
@@ -28,16 +29,24 @@ public class TestComputerMapper {
 	@Mock
 	ResultSet rs;
 
-	@Mock
-	CompanyDao companyDAO;
+	static AnnotationConfigApplicationContext context;
 
 	ComputerMapper computerMapper;
 
+	@BeforeAll
+	public static void setUp() {
+		context = new AnnotationConfigApplicationContext(MainConfig.class);
+	}
+
+	@AfterAll
+	public static void shutDown() {
+		context.close();
+	}
+
+
 	@BeforeEach
 	public void init() {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MainConfig.class);
 		computerMapper = context.getBean(ComputerMapper.class);
-		context.close();
 	}
 
 	public void initMap() throws SQLException {
@@ -47,11 +56,11 @@ public class TestComputerMapper {
 	}
 
 	@Test
-	public void testMap() throws SQLException {
+	public void testMap() throws SQLException, DAOException {
 		initMap();
 		Mockito.doReturn(new Timestamp(0)).when(rs).getTimestamp("introduced");
 		Mockito.doReturn(new Timestamp(1000)).when(rs).getTimestamp("discontinued");
-		Computer computer = computerMapper.map(rs);
+		Computer computer = computerMapper.mapRow(rs, 0);
 		assertEquals(computer.getId(), 1);
 		assertEquals(computer.getName(), "Macbook Air");
 		assertEquals(computer.getCompanyId(), 1);
@@ -62,7 +71,7 @@ public class TestComputerMapper {
 		initMap();
 		Mockito.doReturn(null).when(rs).getTimestamp("introduced");
 		Mockito.doReturn(null).when(rs).getTimestamp("discontinued");
-		Computer computer = computerMapper.map(rs);
+		Computer computer = computerMapper.mapRow(rs, 0);
 		assertEquals(computer.getId(), 1);
 		assertEquals(computer.getName(), "Macbook Air");
 		assertEquals(computer.getCompanyId(), 1);

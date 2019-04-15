@@ -5,8 +5,10 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Optional;
 
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
+import dao.CompanyDao;
 import dto.ComputerDTO;
 import exception.DAOException;
 import model.Company;
@@ -14,22 +16,25 @@ import model.Computer;
 import utils.Utils;
 
 @Component
-public class ComputerMapper {
+public class ComputerMapper implements RowMapper<Computer> {
 
-	private ComputerMapper() {
+	CompanyDao companyDao;
+
+	private ComputerMapper(CompanyDao companyDao) {
+		this.companyDao = companyDao;
 	}
 
-	/**
-	 * Map the ResultSet rs into Computer object.
-	 *
-	 * @param rs The ResultSet
-	 * @return New Computer object.
-	 * @throws SQLException if there is a problem with SQL connection.
-	 */
-	public Computer map(ResultSet rs) throws SQLException {
+	@Override
+	public Computer mapRow(ResultSet rs, int rowNum) throws SQLException {
+		Optional<Company> companyOpt;
+		try {
+			companyOpt = companyDao.get(rs.getInt("company_id"));
+		} catch (DAOException e) {
+			companyOpt = Optional.empty();
+		}
 		return (new Computer.Builder()).withId(rs.getInt("id")).withName(rs.getString("name"))
 				.withIntroducedDate(rs.getTimestamp("introduced")).withDiscontinuedDate(rs.getTimestamp("discontinued"))
-				.withCompanyId(rs.getInt("company_id")).build();
+				.withCompanyId(rs.getInt("company_id")).withCompany(companyOpt.isPresent() ? companyOpt.get() : null).build();
 	}
 
 	/**
@@ -76,5 +81,4 @@ public class ComputerMapper {
 		return computerBuilder.withId(cDTO.getId()).withName(cDTO.getName()).withCompanyId(cDTO.getCompanyId())
 				.withCompany(company).build();
 	}
-
 }

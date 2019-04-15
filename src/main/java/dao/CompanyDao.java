@@ -1,15 +1,13 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.sql.DataSource;
-
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import exception.DAOException;
 import mapper.CompanyMapper;
@@ -25,99 +23,65 @@ public class CompanyDao {
 	static final String REQUEST_DELETE_COMPUTER_BY_COMPANY_ID = "DELETE FROM computer WHERE company_id = ?";
 	static final String REQUEST_DELETE_COMPANY_BY_ID = "DELETE FROM company WHERE id = ?";
 
-	DataSource dataSource;
+	JdbcTemplate jdbcTemplate;
 	CompanyMapper companyMapper;
 
-	private CompanyDao(DataSource dataSource, CompanyMapper companyMapper) {
-		this.dataSource = dataSource;
+	private CompanyDao(JdbcTemplate jdbcTemplate, CompanyMapper companyMapper) {
+		this.jdbcTemplate = jdbcTemplate;
 		this.companyMapper = companyMapper;
-
 	}
 
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
+	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
 	}
 
+	@Transactional(readOnly = true)
 	public Optional<Company> get(int id) throws DAOException {
-		Optional<Company> company = Optional.empty();
-		return TransactionHandler.create((Connection conn, Optional<Company> companyArg) -> {
-			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_ID);
-			stmt.setInt(1, id);
-			ResultSet rs = stmt.executeQuery();
-			if (rs.next()) {
-				companyArg = Optional.ofNullable(companyMapper.map(rs));
-			}
-			return companyArg;
-		}).withDataSource(dataSource).run(company).getResult();
-	}
-
-	/**
-	 * Retrieve all companies.
-	 *
-	 * @return The list of all companies.
-	 * @throws DAOException
-	 */
-	public List<Company> getAll() throws DAOException {
-		List<Company> listCompanies = new ArrayList<Company>();
-		return TransactionHandler.create((Connection conn, List<Company> l) -> {
-			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_ALL);
-			ResultSet rs = stmt.executeQuery();
-			while (rs.next()) {
-				Company company = companyMapper.map(rs);
-				l.add(company);
-			}
-			return l;
-		}).withDataSource(dataSource).run(listCompanies).getResult();
-	}
-
-	public List<Company> getAllOrderByName(boolean isDesc) throws DAOException {
-		TransactionHandler<String, List<Company>> transactionHandler = TransactionHandler
-				.create((Connection conn, String request) -> {
-					List<Company> listCompanies = new ArrayList<Company>();
-					PreparedStatement stmt = conn.prepareStatement(request);
-					ResultSet rs = stmt.executeQuery();
-					while (rs.next()) {
-						Company company = companyMapper.map(rs);
-						listCompanies.add(company);
-					}
-					return listCompanies;
-				}).withDataSource(dataSource);
-		if (isDesc) {
-			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY_NAME + " DESC").getResult();
-		} else {
-			return transactionHandler.run(REQUEST_GET_ALL_ORDER_BY_NAME).getResult();
+		try {
+			return Optional.of(jdbcTemplate.queryForObject(REQUEST_GET_BY_ID, companyMapper, id));
+		} catch (EmptyResultDataAccessException e) {
+			return Optional.empty();
+		} catch (DataAccessException e) {
+			throw new DAOException(e);
 		}
 	}
 
-	/**
-	 * Retrieve a company by giving its name.
-	 *
-	 * @param name The name (in String) of the company.
-	 * @return The company object.
-	 * @throws DAOException
-	 */
-	public Optional<Company> get(String name) throws DAOException {
-		Optional<Company> company = Optional.empty();
-		return TransactionHandler.create((Connection conn, Optional<Company> companyOpt) -> {
-			PreparedStatement stmt = conn.prepareStatement(REQUEST_GET_BY_NAME);
-			stmt.setString(1, name);
-			ResultSet rs = stmt.executeQuery();
-			if (rs.next()) {
-				companyOpt = Optional.ofNullable(companyMapper.map(rs));
-			}
-			return companyOpt;
-		}).withDataSource(dataSource).run(company).getResult();
+	@Transactional(readOnly = true)
+	public List<Company> getAll() throws DAOException {
+		try {
+			return jdbcTemplate.query(REQUEST_GET_ALL, companyMapper);
+		} catch (DataAccessException e) {
+			throw new DAOException(e);
+		}
 	}
 
-	public void delete(Company obj) throws DAOException {
-		TransactionHandler.create((Connection conn, Company company) -> {
-			PreparedStatement stmt = conn.prepareStatement(REQUEST_DELETE_COMPUTER_BY_COMPANY_ID);
-			stmt.setInt(1, company.getId());
-			stmt.executeUpdate();
-			stmt = conn.prepareStatement(REQUEST_DELETE_COMPANY_BY_ID);
-			stmt.setInt(1, company.getId());
-			stmt.executeUpdate();
+	@Transactional(readOnly = true)
+	public List<Company> getAllOrderByName(boolean isDesc) throws DAOException {
+		try {
+			return jdbcTemplate.query(REQUEST_GET_ALL_ORDER_BY_NAME + (isDesc ? " DESC" : ""), companyMapper);
+		} catch (DataAccessException e) {
+			throw new DAOException(e);
+		}
+	}
+
+	@Transactional(readOnly = true)
+	public Optional<Company> get(String name) throws DAOException {
+		try {
+			return Optional.of(jdbcTemplate.queryForObject(REQUEST_GET_BY_NAME, companyMapper, name));
+		} catch (EmptyResultDataAccessException e) {
 			return Optional.empty();
-		}).withDataSource(dataSource).run(obj);
+		} catch (DataAccessException e) {
+			throw new DAOException(e);
+		}
+	}
+
+	@Transactional
+	public void delete(Company obj) throws DAOException {
+		try {
+			jdbcTemplate.update(REQUEST_DELETE_COMPUTER_BY_COMPANY_ID, obj.getId());
+			jdbcTemplate.update(REQUEST_DELETE_COMPANY_BY_ID, obj.getId());
+		} catch (DataAccessException e) {
+			throw new DAOException(e);
+		}
 	}
 }

@@ -9,8 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import javax.sql.DataSource;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import exception.DAOException;
 import exception.ItemNotFoundException;
@@ -34,8 +33,8 @@ public class TestComputerDAO {
 
 	ComputerDao computerDao;
 
-	DataSource dataSourceTest;
-	DataSource dataSource;
+	JdbcTemplate jdbcTemplate;
+	JdbcTemplate jdbcTemplateTest;
 
 	@BeforeAll
 	public static void setUp() throws IOException, DAOException {
@@ -50,15 +49,15 @@ public class TestComputerDAO {
 	@BeforeEach
 	public void init() throws IOException, DAOException {
 		this.computerDao = context.getBean(ComputerDao.class);
-		dataSourceTest = (DataSource) context.getBean("dataSourceTest");
-		dataSource = this.computerDao.dataSource;
-		this.computerDao.setDataSource(dataSourceTest);
-		RunSQLScript.run(dataSourceTest);
+		jdbcTemplateTest = (JdbcTemplate)context.getBean("jdbcTemplateTest");
+		jdbcTemplate = this.computerDao.jdbcTemplate;
+		this.computerDao.setJdbcTemplate(jdbcTemplateTest);
+		RunSQLScript.run(jdbcTemplateTest);
 	}
 
 	@AfterEach
 	public void stop() {
-		this.computerDao.setDataSource(dataSource);
+		this.computerDao.setJdbcTemplate(jdbcTemplate);
 	}
 
 	@Test

@@ -3,27 +3,23 @@ package mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import dto.CompanyDTO;
 import model.Company;
 
 @Component
-public class CompanyMapper {
+public class CompanyMapper implements RowMapper<Company> {
 
 	private CompanyMapper() {
 	}
 
-	/**
-	 * Map the ResultSet rs into Company object.
-	 *
-	 * @param rs The ResultSet
-	 * @return New Company object.
-	 * @throws SQLException if there is a problem with SQL connection.
-	 */
-	public Company map(ResultSet rs) throws SQLException {
+	@Override
+	public Company mapRow(ResultSet rs, int rowNum) throws SQLException {
 		return (new Company.Builder()).withId(rs.getInt("id")).withName(rs.getString("name")).build();
 	}
+
 
 	/**
 	 * Convert a model to its DTO representation.
