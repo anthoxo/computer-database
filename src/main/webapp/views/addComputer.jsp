@@ -1,21 +1,24 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Add computer</title>
 <c:set var="context" value="${pageContext.request.contextPath}" />
-<link href="${context}/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="${context}/css/font-awesome.css" rel="stylesheet" media="screen">
+<link href="${context}/css/bootstrap.min.css" rel="stylesheet"
+	media="screen">
+<link href="${context}/css/font-awesome.css" rel="stylesheet"
+	media="screen">
 <link href="${context}/css/main.css" rel="stylesheet" media="screen">
 </head>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="${context}/index"> Application - Computer
-				Database </a>
+			<a class="navbar-brand" href="${context}/index"> Application -
+				Computer Database </a>
 		</div>
 	</header>
 
@@ -36,41 +39,53 @@
 
 	<div class="container">
 		<h1>Add computer</h1>
-		<form action="${context}/computer/add" method="POST">
+		<form:form action="${context}/computer/add" method="POST"
+			modelAttribute="computerDTO">
 			<fieldset>
 				<div class="form-group">
-					<label for="computerName">Computer name</label> <input type="text"
-						class="form-control" id="computerName" name="computerName"
-						placeholder="Computer name">
+					<form:label path="companyId">Computer name</form:label>
+					<form:input name="name" id="name" class="form-control" path="name"
+						value="${computerDTO.name}" placeholder="Computer name" />
 				</div>
 				<div class="form-group">
-					<label for="introduced">Introduced date (yyyy/mm/dd)</label> <input
-						type="text" class="form-control" name="introduced" id="introduced"
-						placeholder="Introduced date">
+					<form:label path="introducedDate">Introduced date (yyyy/mm/dd)</form:label>
+					<form:input name="introducedDate" id="introducedDate"
+						class="form-control" path="introducedDate"
+						value="${computerDTO.introducedDate}"
+						placeholder="Introduced date" />
 				</div>
 				<div class="form-group">
-					<label for="discontinued">Discontinued date (yyyy/mm/dd)</label> <input
-						type="text" class="form-control" id="discontinued"
-						name="discontinued" placeholder="Discontinued date">
+					<form:label path="discontinuedDate">Discontinued date (yyyy/mm/dd)</form:label>
+					<form:input name="discontinuedDate" id="discontinuedDate"
+						class="form-control" path="discontinuedDate"
+						value="${computerDTO.discontinuedDate}"
+						placeholder="Discontinued date" />
 				</div>
 				<div class="form-group">
-					<label for="companyId">Company</label> <select class="form-control"
-						id="companyId" name="companyId">
-						<option value="0">--</option>
+					<form:label path="companyId">Company</form:label>
+					<form:select name="companyId" id="companyId" class="form-control"
+						path="companyId">
+						<form:option value="0" label="--" />
 						<c:forEach var="c" items="${companyList}">
-							<option value="${c.id}"
-								<c:if test="${c.name == computer.companyName}">selected</c:if>>${c.name}</option>
+							<c:choose>
+								<c:when test="${c.name == computerDTO.companyName}">
+									<form:option value="${c.id}" label="${c.name}" selected="true" />
+								</c:when>
+								<c:otherwise>
+									<form:option value="${c.id}" label="${c.name}" />
+								</c:otherwise>
+							</c:choose>
+
 						</c:forEach>
-					</select>
+					</form:select>
 				</div>
 			</fieldset>
 			<div class="actions pull-right">
-				<input type="submit" value="Add" class="btn btn-primary"
-					id="btnEditOrAddComputer" /> <a href="${context}/computer"
+				<input type="submit" value="Edit" class="btn btn-primary"
+					id="btnEditOrAddComputer" /> <a href="/computer"
 					class="btn btn-default">Cancel</a>
 			</div>
-		</form>
-
+		</form:form>
 	</div>
 	<script src="${context}/js/jquery.min.js"></script>
 	<script src="${context}/js/bootstrap.min.js"></script>

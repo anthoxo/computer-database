@@ -13,7 +13,7 @@ public class MainController {
 	/**
 	 * Default constructor.
 	 */
-	public MainController() {
+	private MainController() {
 		this.isLeaving = false;
 	}
 

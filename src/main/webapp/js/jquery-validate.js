@@ -3,9 +3,9 @@ $(document).ready(function() {
 	$("#errIntroduced").hide(); // Initially hiding the error spans
 	$("#errDiscontinued").hide();
 	$("#btnEditOrAddComputer").click(function() {
-		var name = $("#computerName").val();
-		var introduced = $("#introduced").val();
-		var discontinued = $("#discontinued").val();
+		var name = $("#name").val();
+		var introduced = $("#introducedDate").val();
+		var discontinued = $("#discontinuedDate").val();
 
 		var dateFormat = /(^$|[0-9]{4}[/][0-9]{2}[/][0-9]{2}$)/;
 
@@ -27,17 +27,17 @@ $(document).ready(function() {
 		return true;
 	});
 
-	$("#computerName").change(function() {
+	$("#name").change(function() {
 		$("#errComputerName").hide();
 		return true;
 	});
 
-	$("#introduced").change(function() {
+	$("#introducedDate").change(function() {
 		$("#errIntroduced").hide();
 		return true;
 	});
 
-	$("#discontinued").change(function() {
+	$("#discontinuedDate").change(function() {
 		$("#errDiscontinued").hide();
 		return true;
 	});

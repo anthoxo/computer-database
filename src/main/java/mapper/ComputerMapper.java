@@ -34,7 +34,7 @@ public class ComputerMapper implements RowMapper<Computer> {
 		}
 		return (new Computer.Builder()).withId(rs.getInt("id")).withName(rs.getString("name"))
 				.withIntroducedDate(rs.getTimestamp("introduced")).withDiscontinuedDate(rs.getTimestamp("discontinued"))
-				.withCompanyId(rs.getInt("company_id")).withCompany(companyOpt.isPresent() ? companyOpt.get() : null).build();
+				.withCompanyId(rs.getInt("company_id")).withCompany(companyOpt.orElse(null)).build();
 	}
 
 	/**
@@ -71,12 +71,9 @@ public class ComputerMapper implements RowMapper<Computer> {
 
 		Optional<Timestamp> intro = Utils.stringToTimestamp(cDTO.getIntroducedDate());
 		Optional<Timestamp> discontinued = Utils.stringToTimestamp(cDTO.getDiscontinuedDate());
-		if (intro.isPresent()) {
-			computerBuilder = computerBuilder.withIntroducedDate(intro.get());
-		}
-		if (discontinued.isPresent()) {
-			computerBuilder = computerBuilder.withDiscontinuedDate(discontinued.get());
-		}
+
+		computerBuilder = computerBuilder.withIntroducedDate(intro.orElse(null))
+				.withDiscontinuedDate(discontinued.orElse(null));
 
 		return computerBuilder.withId(cDTO.getId()).withName(cDTO.getName()).withCompanyId(cDTO.getCompanyId())
 				.withCompany(company).build();

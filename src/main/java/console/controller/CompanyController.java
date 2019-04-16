@@ -20,7 +20,7 @@ public class CompanyController {
 	Page<CompanyDTO> companyPage;
 	boolean isGoingBack;
 
-	CompanyController(CompanyService companyService) {
+	private CompanyController(CompanyService companyService) {
 		this.companyService = companyService;
 		this.isGoingBack = false;
 	}

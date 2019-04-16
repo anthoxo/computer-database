@@ -8,8 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import console.controller.MainController;
+import console.MainConfig;
 
 @ExtendWith(MockitoExtension.class)
 public class TestMainController {
@@ -19,9 +20,9 @@ public class TestMainController {
 	@BeforeEach
 	public void init()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-
-		mainController = new MainController();
-
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MainConfig.class);
+		mainController = context.getBean(MainController.class);
+		context.close();
 	}
 
 	@Test

@@ -22,7 +22,7 @@ public class MainView {
 	 * Default constructor.
 	 */
 	public MainView(AnnotationConfigApplicationContext context) {
-		this.mainController = new MainController();
+		this.mainController = context.getBean(MainController.class);
 		this.sc = new Scanner(System.in);
 		this.context = context;
 	}
