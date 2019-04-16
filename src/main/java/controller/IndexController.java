@@ -4,11 +4,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import utils.Variable;
+
 @Controller
 public class IndexController {
 
-	@GetMapping({"/", "/index"})
+	@GetMapping({Variable.URL_ROOT, Variable.URL_INDEX})
 	public String getIndex(Model model) {
-		return "index";
+		return Variable.VIEW_INDEX;
 	}
 }

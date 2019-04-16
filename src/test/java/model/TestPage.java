@@ -21,57 +21,57 @@ public class TestPage {
 			this.list.add(i);
 		}
 		this.page = new Page<Integer>(list);
-		this.page.setIndex(50);
+		this.page.setIndexItem(50);
 	}
 
 	@Test
 	public void testParam() {
-		assertEquals(page.getIndex(), 50);
+		assertEquals(page.getIndexItem(), 50);
 		assertEquals(page.getData(), this.list);
 		assertEquals(page.getLength(), this.list.size());
 	}
 
 	@Test
 	public void testNext() {
-		int previousIndex = this.page.index;
+		int previousIndex = this.page.indexItem;
 		this.page.next();
-		int nextIndex = this.page.index;
+		int nextIndex = this.page.indexItem;
 		assertTrue((previousIndex == this.page.length - 1) || (previousIndex < nextIndex));
 	}
 
 	@Test
 	public void testPrevious() {
-		int previousIndex = this.page.index;
+		int previousIndex = this.page.indexItem;
 		this.page.previous();
-		int nextIndex = this.page.index;
+		int nextIndex = this.page.indexItem;
 		assertTrue((previousIndex == 0) || (nextIndex < previousIndex));
 	}
 
 	@Test
 	public void testNextAtSide() {
-		this.page.index = this.page.length - 1;
-		int previousIndex = this.page.index;
+		this.page.indexItem = this.page.length - 1;
+		int previousIndex = this.page.indexItem;
 		this.page.next();
-		int nextIndex = this.page.index;
+		int nextIndex = this.page.indexItem;
 		assertTrue((previousIndex == this.page.length - 1) || (previousIndex < nextIndex));
 	}
 
 	@Test
 	public void testPreviousAtSide() {
-		this.page.index = 0;
-		int previousIndex = this.page.index;
+		this.page.indexItem = 0;
+		int previousIndex = this.page.indexItem;
 		this.page.previous();
-		int nextIndex = this.page.index;
+		int nextIndex = this.page.indexItem;
 		assertTrue((previousIndex == 0) || (nextIndex < previousIndex));
 	}
 
 	@Test
 	public void testNextWithZeroElement() {
 		this.page = new Page<Integer>();
-		int previousIndex = this.page.index;
+		int previousIndex = this.page.indexItem;
 		int length = this.page.length;
 		this.page.next();
-		int nextIndex = this.page.index;
+		int nextIndex = this.page.indexItem;
 		assertEquals(previousIndex, 0);
 		assertEquals(length, 0);
 		assertEquals(nextIndex, 0);
@@ -80,10 +80,10 @@ public class TestPage {
 	@Test
 	public void testPreviousWithZeroElement() {
 		this.page = new Page<Integer>();
-		int previousIndex = this.page.index;
+		int previousIndex = this.page.indexItem;
 		int length = this.page.length;
 		this.page.previous();
-		int nextIndex = this.page.index;
+		int nextIndex = this.page.indexItem;
 		assertEquals(previousIndex, 0);
 		assertEquals(length, 0);
 		assertEquals(nextIndex, 0);
@@ -117,12 +117,12 @@ public class TestPage {
 	@Test
 	public void testGoTo() {
 		this.page.goTo(0);
-		assertEquals(this.page.getIndex(), 0);
+		assertEquals(this.page.getIndexItem(), 0);
 		this.page.goTo(71);
-		assertEquals(this.page.getIndex(), 71);
+		assertEquals(this.page.getIndexItem(), 71);
 		this.page.goTo(-10);
-		assertEquals(this.page.getIndex(), 0);
+		assertEquals(this.page.getIndexItem(), 0);
 		this.page.goTo(list.size() + 100);
-		assertEquals(this.page.getIndex(), list.size() - 1);
+		assertEquals(this.page.getIndexItem(), list.size() - 1);
 	}
 }

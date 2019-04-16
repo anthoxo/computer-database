@@ -23,9 +23,9 @@ public class CompanyController {
 		this.companyService = companyService;
 	}
 
-	@GetMapping("/company")
-	public String getCompanyList(Model model, @RequestParam(name = "id", required = false, defaultValue = "") String id,
-			@RequestParam(name = "orderBy", required = false, defaultValue = "") String orderBy) {
+	@GetMapping(Variable.URL_COMPANY)
+	public String getCompanyList(Model model, @RequestParam(name = Variable.GET_PARAMETER_ID, required = false, defaultValue = "") String id,
+			@RequestParam(name = Variable.GET_PARAMETER_ORDER_BY, required = false, defaultValue = "") String orderBy) {
 		int index = 0;
 		if ("".equals(id)) {
 			if ("name".equals(orderBy)) {
@@ -48,8 +48,8 @@ public class CompanyController {
 		companyPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
 
 		model.addAttribute(Variable.COMPANY_LIST, companyPage.getEntitiesPage());
-		model.addAttribute(Variable.NB_PAGES, companyPage.getNbPages());
-		model.addAttribute(Variable.ID_PAGE, index + 1);
-		return "listCompanies";
+		model.addAttribute(Variable.PAGE, companyPage);
+
+		return Variable.VIEW_COMPANY;
 	}
 }

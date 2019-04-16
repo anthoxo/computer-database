@@ -31,7 +31,7 @@
 		</div>
 	</header>
 	<div class="container">
-		<h1 id="homeTitle">${computerNumber} computer<c:if test="${computerNumber > 1}">s</c:if> found
+		<h1 id="homeTitle">${page.length} computer<c:if test="${page.length > 1}">s</c:if> found
 		</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
@@ -135,32 +135,32 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				<c:if test="${idPage > 1}">
-					<li><a href="${urlPath}?id=${idPage-1}" aria-label="Previous">
+				<c:if test="${page.indexPage > 0}">
+					<li><a href="${urlPath}?id=${page.indexPage}" aria-label="Previous">
 							<span aria-hidden="true">&laquo;</span>
 					</a></li>
 				</c:if>
 				<c:choose>
-					<c:when test="${nbPages <= 13}">
-						<c:forEach var="i" begin="1" end="${nbPages}">
+					<c:when test="${page.nbPages <= 13}">
+						<c:forEach var="i" begin="1" end="${page.nbPages}">
 							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
 						</c:forEach>
 					</c:when>
-					<c:when test="${idPage < 7}">
+					<c:when test="${page.indexPage < 6}">
 						<c:forEach var="i" begin="1" end="8">
 							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
 						</c:forEach>
 						<li><a href="#">...</a></li>
-						<c:forEach var="i" begin="${nbPages - 3}" end="${nbPages}">
+						<c:forEach var="i" begin="${page.nbPages - 3}" end="${page.nbPages}">
 							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
 						</c:forEach>
 					</c:when>
-					<c:when test="${idPage > nbPages - 6}">
+					<c:when test="${page.indexPage > page.nbPages - 7}">
 						<c:forEach var="i" begin="1" end="3">
 							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
 						</c:forEach>
 						<li><a href="#">...</a></li>
-						<c:forEach var="i" begin="${nbPages - 8}" end="${nbPages}">
+						<c:forEach var="i" begin="${page.nbPages - 8}" end="${page.nbPages}">
 							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
 						</c:forEach>
 					</c:when>
@@ -169,17 +169,17 @@
 							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
 						</c:forEach>
 						<li><a href="#">...</a></li>
-						<c:forEach var="i" begin="${idPage - 2}" end="${idPage + 2}">
+						<c:forEach var="i" begin="${page.indexPage - 1}" end="${page.indexPage + 3}">
 							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
 						</c:forEach>
 						<li><a href="#">...</a></li>
-						<c:forEach var="i" begin="${nbPages - 2}" end="${nbPages}">
+						<c:forEach var="i" begin="${page.nbPages - 2}" end="${page.nbPages}">
 							<li><a href="${urlPath}?id=${i}"> <c:out value="${i}" /></a></li>
 						</c:forEach>
 					</c:otherwise>
 				</c:choose>
-				<c:if test="${idPage < nbPages}">
-					<li><a href="${urlPath}?id=${idPage+1}" aria-label="Next">
+				<c:if test="${page.indexPage < page.nbPages - 1}">
+					<li><a href="${urlPath}?id=${page.indexPage + 2}" aria-label="Next">
 							<span aria-hidden="true">&raquo;</span>
 					</a></li>
 				</c:if>

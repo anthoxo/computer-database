@@ -22,7 +22,7 @@ public class DeleteComputerController {
 		this.notificationService = notificationService;
 	}
 
-	@PostMapping("/computer/delete")
+	@PostMapping(Variable.URL_COMPUTER_DELETE)
 	public String deleteComputer(
 			@RequestParam(name = Variable.GET_PARAMETER_ID_DELETE, required = false, defaultValue = "") String id) {
 		ComputerDTO computerDTO = new ComputerDTO();
@@ -38,7 +38,7 @@ public class DeleteComputerController {
 			this.notificationService.generateNotification("danger", this, 0,
 					"This object hasn't been deleted.");
 		}
-		return "redirect:/computer";
+		return "redirect:" + Variable.URL_COMPUTER;
 	}
 
 }

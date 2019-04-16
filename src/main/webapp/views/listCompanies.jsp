@@ -42,17 +42,17 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				<c:if test="${idPage > 1}">
-					<li><a href="${context}/company?id=${idPage-1}"
+				<c:if test="${page.indexPage > 0}">
+					<li><a href="${context}/company?id=${page.indexPage}"
 						aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 					</a></li>
 				</c:if>
-				<c:forEach var="i" begin="1" end="${nbPages}">
+				<c:forEach var="i" begin="1" end="${page.nbPages}">
 					<li><a href="${context}/company?id=${i}"> <c:out
 								value="${i}" /></a></li>
 				</c:forEach>
-				<c:if test="${idPage < nbPages}">
-					<li><a href="${context}/company?id=${idPage+1}"
+				<c:if test="${page.indexPage < page.nbPages - 1}">
+					<li><a href="${context}/company?id=${page.indexPage + 2}"
 						aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 					</a></li>
 				</c:if>

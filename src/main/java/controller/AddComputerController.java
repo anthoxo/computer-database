@@ -30,7 +30,7 @@ public class AddComputerController {
 		this.notificationService = notificationService;
 	}
 
-	@PostMapping("/computer/add")
+	@PostMapping(Variable.URL_COMPUTER_ADD)
 	public String postAddComputer(@ModelAttribute("computerDTO") ComputerDTO computerDTO) {
 		try {
 			this.computerService.createComputer(computerDTO);
@@ -45,15 +45,15 @@ public class AddComputerController {
 						"This object hasn't been created.");
 			}
 		}
-		return "redirect:/computer";
+		return "redirect:" + Variable.URL_COMPUTER;
 	}
 
-	@GetMapping("/computer/add")
+	@GetMapping(Variable.URL_COMPUTER_ADD)
 	public String getAddComputer(Model model) {
 		List<CompanyDTO> companyList = this.companyService.getAllCompanies();
 		model.addAttribute(Variable.COMPANY_LIST, companyList);
 		model.addAttribute("computerDTO", new ComputerDTO());
-		return "addComputer";
+		return Variable.VIEW_COMPUTER_ADD;
 	}
 
 }

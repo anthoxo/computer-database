@@ -29,10 +29,10 @@ public class ComputerController {
 		this.notificationService = notificationService;
 	}
 
-	@GetMapping("/computer")
+	@GetMapping(Variable.URL_COMPUTER)
 	public String getComputerList(Model model,
-			@RequestParam(name = "id", required = false, defaultValue = "") String id,
-			@RequestParam(name = "orderBy", required = false, defaultValue = "") String orderBy) {
+			@RequestParam(name = Variable.GET_PARAMETER_ID, required = false, defaultValue = "") String id,
+			@RequestParam(name = Variable.GET_PARAMETER_ORDER_BY, required = false, defaultValue = "") String orderBy) {
 		this.pattern = "";
 		int index = 0;
 		if ("".equals(id)) {
@@ -62,11 +62,9 @@ public class ComputerController {
 		computerPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
 
 		model.addAttribute(Variable.COMPUTER_LIST, computerPage.getEntitiesPage());
-		model.addAttribute(Variable.NB_PAGES, computerPage.getNbPages());
-		model.addAttribute(Variable.ID_PAGE, index + 1);
+		model.addAttribute(Variable.PAGE, computerPage);
 		model.addAttribute(Variable.URL_PATH, Variable.URL_COMPUTER);
 		model.addAttribute(Variable.IS_SEARCHING, "false");
-		model.addAttribute(Variable.COMPUTER_NUMBER, computerPage.getLength());
 
 		if (this.notificationService.isNotifying()) {
 			model.addAttribute(Variable.NOTIFICATION, true);
@@ -76,20 +74,20 @@ public class ComputerController {
 		} else {
 			model.addAttribute(Variable.NOTIFICATION, false);
 		}
-		return "listComputers";
+		return Variable.VIEW_COMPUTER;
 	}
 
-	@PostMapping("/computer/search")
+	@PostMapping(Variable.URL_COMPUTER_SEARCH)
 	public String postSearchComputers(
-			@RequestParam(name = "search", required = false, defaultValue = "") String pattern) {
+			@RequestParam(name = Variable.GET_PARAMETER_SEARCH, required = false, defaultValue = "") String pattern) {
 		this.pattern = pattern;
-		return "redirect:/computer/search";
+		return "redirect:" + Variable.URL_COMPUTER_SEARCH;
 	}
 
-	@GetMapping("/computer/search")
+	@GetMapping(Variable.URL_COMPUTER_SEARCH)
 	public String getSearchComputers(Model model,
-			@RequestParam(name = "id", required = false, defaultValue = "") String id,
-			@RequestParam(name = "orderBy", required = false, defaultValue = "") String orderBy) {
+			@RequestParam(name = Variable.GET_PARAMETER_ID, required = false, defaultValue = "") String id,
+			@RequestParam(name = Variable.GET_PARAMETER_ORDER_BY, required = false, defaultValue = "") String orderBy) {
 		int index = 0;
 		if ("".equals(id)) {
 			if (!orderBy.equals("")) {
@@ -118,11 +116,9 @@ public class ComputerController {
 		computerPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
 
 		model.addAttribute(Variable.COMPUTER_LIST, computerPage.getEntitiesPage());
-		model.addAttribute(Variable.NB_PAGES, computerPage.getNbPages());
-		model.addAttribute(Variable.ID_PAGE, index + 1);
+		model.addAttribute(Variable.PAGE, computerPage);
 		model.addAttribute(Variable.URL_PATH, Variable.URL_COMPUTER);
-		model.addAttribute(Variable.IS_SEARCHING, "false");
-		model.addAttribute(Variable.COMPUTER_NUMBER, computerPage.getLength());
+		model.addAttribute(Variable.IS_SEARCHING, "true");
 
 		if (this.notificationService.isNotifying()) {
 			model.addAttribute(Variable.NOTIFICATION, true);
@@ -132,8 +128,7 @@ public class ComputerController {
 		} else {
 			model.addAttribute(Variable.NOTIFICATION, false);
 		}
-		System.out.println(pattern);
-		return "listComputers";
+		return Variable.VIEW_COMPUTER;
 	}
 
 }

@@ -5,7 +5,8 @@ import java.util.List;
 public class Page<T> {
 
 	List<T> data;
-	int index;
+	int indexItem;
+	int indexPage;
 	int nbPages;
 	int length;
 
@@ -15,7 +16,8 @@ public class Page<T> {
 	 * Default constructor.
 	 */
 	public Page() {
-		this.index = 0;
+		this.indexItem = 0;
+		this.indexPage = 0;
 		this.length = 0;
 	}
 
@@ -26,7 +28,8 @@ public class Page<T> {
 	 */
 	public Page(List<T> list) {
 		this.setData(list);
-		this.index = 0;
+		this.indexItem = 0;
+		this.indexPage = 0;
 		this.nbPages = this.length / NB_ITEMS_PER_PAGE + (this.length % NB_ITEMS_PER_PAGE == 0 ? 0 : 1);
 	}
 
@@ -34,8 +37,12 @@ public class Page<T> {
 		return this.data;
 	}
 
-	public int getIndex() {
-		return this.index;
+	public int getIndexItem() {
+		return this.indexItem;
+	}
+
+	public int getIndexPage() {
+		return this.indexPage;
 	}
 
 	public int getNbPages() {
@@ -54,8 +61,12 @@ public class Page<T> {
 		this.setLength(data.size());
 	}
 
-	public void setIndex(int index) {
-		this.index = index;
+	public void setIndexItem(int index) {
+		this.indexItem = index;
+	}
+
+	public void setIndexPage(int index) {
+		this.indexPage = index;
 	}
 
 	public void setLength(int length) {
@@ -69,7 +80,7 @@ public class Page<T> {
 		if (this.length == 0) {
 			return data;
 		} else {
-			return data.subList(index, Math.min(index + NB_ITEMS_PER_PAGE, length));
+			return data.subList(indexItem, Math.min(indexItem + NB_ITEMS_PER_PAGE, length));
 		}
 	}
 
@@ -79,9 +90,11 @@ public class Page<T> {
 	 */
 	public void next() {
 		if (this.length == 0) {
-			this.index = 0;
+			this.indexItem = 0;
+			this.indexPage = 0;
 		} else {
-			this.index = Math.min(this.index + NB_ITEMS_PER_PAGE, this.length - 1);
+			this.indexItem = Math.min(this.indexItem + NB_ITEMS_PER_PAGE, this.length - 1);
+			this.indexPage = this.indexItem / NB_ITEMS_PER_PAGE;
 		}
 	}
 
@@ -91,9 +104,11 @@ public class Page<T> {
 	 */
 	public void previous() {
 		if (this.length == 0) {
-			this.index = 0;
+			this.indexItem = 0;
+			this.indexPage = 0;
 		} else {
-			this.index = Math.max(this.index - NB_ITEMS_PER_PAGE, 0);
+			this.indexItem = Math.max(this.indexItem - NB_ITEMS_PER_PAGE, 0);
+			this.indexPage = this.indexItem / NB_ITEMS_PER_PAGE;
 		}
 	}
 
@@ -104,7 +119,8 @@ public class Page<T> {
 	 */
 	public void goTo(int itemIndex) {
 		int n = Math.min(Math.max(0, itemIndex), this.length - 1);
-		this.index = n;
+		this.indexItem = n;
+		this.indexPage = this.indexItem / NB_ITEMS_PER_PAGE;
 	}
 
 }

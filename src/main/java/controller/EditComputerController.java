@@ -32,7 +32,7 @@ public class EditComputerController {
 		this.notificationService = notificationService;
 	}
 
-	@PostMapping("/computer/edit")
+	@PostMapping(Variable.URL_COMPUTER_EDIT)
 	public String postEditComputer(@ModelAttribute("computerDTO") ComputerDTO computerDTO) {
 		try {
 			this.computerService.updateComputer(computerDTO);
@@ -47,12 +47,12 @@ public class EditComputerController {
 		} catch (ItemNotFoundException e) {
 			this.notificationService.generateNotification("danger", this, 0, "This object isn't in database.");
 		}
-		return "redirect:/computer";
+		return "redirect:" + Variable.URL_COMPUTER;
 	}
 
-	@GetMapping("/computer/edit")
+	@GetMapping(Variable.URL_COMPUTER_EDIT)
 	public String getEditComputer(Model model,
-			@RequestParam(name = "id", required = false, defaultValue = "") String id) {
+			@RequestParam(name = Variable.GET_PARAMETER_ID, required = false, defaultValue = "") String id) {
 		int idComputer = 0;
 		if (!"".equals(id)) {
 			idComputer = Integer.valueOf(id);
@@ -64,11 +64,10 @@ public class EditComputerController {
 			model.addAttribute("computerDTO", cDTO);
 			model.addAttribute(Variable.COMPANY_LIST, listCompanies);
 
-			return "editComputer";
+			return Variable.VIEW_COMPUTER_EDIT;
 		} catch (ItemNotFoundException e) {
 			this.notificationService.generateNotification("danger", this, 0, "This object isn't in database.");
 			return "redirect:" + Variable.URL_COMPUTER;
 		}
 	}
-
 }
