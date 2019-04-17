@@ -6,6 +6,8 @@ import java.util.Locale;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import dto.CompanyDTO;
 import dto.ComputerDTO;
+import exception.ComputerException;
 import exception.ItemNotFoundException;
 import exception.ItemNotUpdatedException;
 import service.CompanyService;
@@ -37,23 +40,24 @@ public class EditComputerController {
 	}
 
 	@PostMapping(Variable.URL_COMPUTER_EDIT)
-	public String postEditComputer(@ModelAttribute("computerDTO") ComputerDTO computerDTO, Locale locale) {
+	public String postEditComputer(@Validated @ModelAttribute("computerDTO") ComputerDTO computerDTO,
+			BindingResult result, Locale locale) {
+		String levelNotification = "success";
+		String messageNotification = "computer.edit.notification.good";
 		try {
-			this.computerService.updateComputer(computerDTO);
-			this.notificationService.generateNotification("success", this, 0,
-					this.messageSource.getMessage("computer.edit.notification.good", null, locale));
+			this.computerService.updateComputer(computerDTO, result);
 		} catch (ItemNotUpdatedException e) {
-			if (e.getMessage().equals("not-valid")) {
-				this.notificationService.generateNotification("danger", this, 0,
-						this.messageSource.getMessage("computer.edit.notification.not_valid", null, locale));
-			} else {
-				this.notificationService.generateNotification("danger", this, 0,
-						this.messageSource.getMessage("computer.edit.notification.not_updated", null, locale));
-			}
+			levelNotification = "danger";
+			messageNotification = "computer.edit.notification.not_updated";
 		} catch (ItemNotFoundException e) {
-			this.notificationService.generateNotification("danger", this, 0,
-					this.messageSource.getMessage("computer.edit.notification.not_found", null, locale));
+			levelNotification = "danger";
+			messageNotification = "computer.edit.notification.not_found";
+		} catch (ComputerException e) {
+			levelNotification = "danger";
+			messageNotification = "computer.edit.notification.not_valid";
 		}
+		this.notificationService.generateNotification(levelNotification, this, 0,
+				this.messageSource.getMessage(messageNotification, null, locale));
 		return "redirect:" + Variable.URL_COMPUTER;
 	}
 

@@ -1,13 +1,13 @@
 package validator;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.validation.BeanPropertyBindingResult;
 
-import exception.ComputerException;
-import model.Computer;
-import utils.Utils;
+import dto.ComputerDTO;
 
 public class TestComputerValidator {
 	static ComputerValidator computerValidator;
@@ -19,76 +19,69 @@ public class TestComputerValidator {
 
 	@Test
 	public void testGoodComputer1() {
-		Computer computer = new Computer.Builder().withId(1).withName("Ordi").build();
-		try {
-			computerValidator.validate(computer);
-			assertTrue(true);
-		} catch (ComputerException e) {
-			assertTrue(false);
-		}
+		ComputerDTO computerDTO = new ComputerDTO();
+		computerDTO.setId(1);
+		computerDTO.setName("Ordi");
+		BeanPropertyBindingResult result = new BeanPropertyBindingResult(computerDTO, "computerDTO");
+		computerValidator.validate(computerDTO, result);
+		assertFalse(result.hasErrors());
 	}
 
 	@Test
 	public void testGoodComputer2() {
-		Computer computer = new Computer.Builder().withId(1).withName("Ordi")
-				.withIntroducedDate(Utils.stringToTimestamp("2020/01/01").get()).build();
-		try {
-			computerValidator.validate(computer);
-			assertTrue(true);
-		} catch (ComputerException e) {
-			assertTrue(false);
-		}
+		ComputerDTO computerDTO = new ComputerDTO();
+		computerDTO.setId(1);
+		computerDTO.setName("Ordi");
+		computerDTO.setIntroducedDate("2020/01/01");
+		BeanPropertyBindingResult result = new BeanPropertyBindingResult(computerDTO, "computerDTO");
+		computerValidator.validate(computerDTO, result);
+		assertFalse(result.hasErrors());
 	}
 
 	@Test
 	public void testGoodComputer3() {
-		Computer computer = new Computer.Builder().withId(1).withName("Ordi")
-				.withIntroducedDate(Utils.stringToTimestamp("2020/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("2030/01/01").get()).build();
-		try {
-			computerValidator.validate(computer);
-			assertTrue(true);
-		} catch (ComputerException e) {
-			assertTrue(false);
-		}
+		ComputerDTO computerDTO = new ComputerDTO();
+		computerDTO.setId(1);
+		computerDTO.setName("Ordi");
+		computerDTO.setIntroducedDate("2020/01/01");
+		computerDTO.setDiscontinuedDate("2030/01/01");
+		BeanPropertyBindingResult result = new BeanPropertyBindingResult(computerDTO, "computerDTO");
+		computerValidator.validate(computerDTO, result);
+		assertFalse(result.hasErrors());
 	}
 
 	@Test
 	public void testBadComputer1() {
-		Computer computer = new Computer.Builder().withId(1)
-				.withIntroducedDate(Utils.stringToTimestamp("2020/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("2030/01/01").get()).build();
-		try {
-			computerValidator.validate(computer);
-			assertTrue(false);
-		} catch (ComputerException e) {
-			assertTrue(true);
-		}
+		ComputerDTO computerDTO = new ComputerDTO();
+		computerDTO.setId(1);
+		computerDTO.setIntroducedDate("2020/01/01");
+		computerDTO.setDiscontinuedDate("2030/01/01");
+		BeanPropertyBindingResult result = new BeanPropertyBindingResult(computerDTO, "computerDTO");
+		computerValidator.validate(computerDTO, result);
+		assertTrue(result.hasErrors());
 	}
 
 	@Test
 	public void testBadComputer2() {
-		Computer computer = new Computer.Builder().withId(1).withName("")
-				.withIntroducedDate(Utils.stringToTimestamp("2020/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("2030/01/01").get()).build();
-		try {
-			computerValidator.validate(computer);
-			assertTrue(false);
-		} catch (ComputerException e) {
-			assertTrue(true);
-		}
+		ComputerDTO computerDTO = new ComputerDTO();
+		computerDTO.setId(1);
+		computerDTO.setName("");
+		computerDTO.setIntroducedDate("2020/01/01");
+		computerDTO.setDiscontinuedDate("2030/01/01");
+		BeanPropertyBindingResult result = new BeanPropertyBindingResult(computerDTO, "computerDTO");
+		computerValidator.validate(computerDTO, result);
+		assertTrue(result.hasErrors());
 	}
 
 	@Test
 	public void testBadComputer3() {
-		Computer computer = new Computer.Builder().withId(1).withName("Ordi")
-				.withIntroducedDate(Utils.stringToTimestamp("2035/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("2030/01/01").get()).build();
-		try {
-			computerValidator.validate(computer);
-			assertTrue(false);
-		} catch (ComputerException e) {
-			assertTrue(true);
-		}
+		ComputerDTO computerDTO = new ComputerDTO();
+		computerDTO.setId(1);
+		computerDTO.setName("Ordi");
+		computerDTO.setIntroducedDate("2035/01/01");
+		computerDTO.setDiscontinuedDate("2030/01/01");
+		BeanPropertyBindingResult result = new BeanPropertyBindingResult(computerDTO, "computerDTO");
+		computerValidator.validate(computerDTO, result);
+		assertTrue(result.hasErrors());
 	}
 }

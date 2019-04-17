@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.validation.BeanPropertyBindingResult;
 
 import dao.ComputerDao;
 import dto.ComputerDTO;
@@ -94,15 +95,17 @@ public class TestComputerService {
 	public void testCreate() throws DAOException, ItemBadCreatedException, ComputerException {
 		ComputerDTO computerDTO = new ComputerDTO();
 		computerDTO.setName("oui");
-		this.computerService.createComputer(computerDTO);
+		BeanPropertyBindingResult result = new BeanPropertyBindingResult(computerDTO, "computerDTO");
+		this.computerService.createComputer(computerDTO, result);
 		Mockito.verify(computerDao).create(Mockito.any());
 	}
 
 	@Test
-	public void testUpdate() throws DAOException, ItemNotUpdatedException, ItemNotFoundException {
+	public void testUpdate() throws DAOException, ItemNotUpdatedException, ItemNotFoundException, ComputerException {
 		ComputerDTO computerDTO = new ComputerDTO();
 		computerDTO.setName("oui");
-		this.computerService.updateComputer(computerDTO);
+		BeanPropertyBindingResult result = new BeanPropertyBindingResult(computerDTO, "computerDTO");
+		this.computerService.updateComputer(computerDTO, result);
 		Mockito.verify(computerDao).update(Mockito.any());
 	}
 

@@ -1,21 +1,51 @@
 package validator;
 
-import exception.ComputerException;
-import model.Computer;
+import java.sql.Timestamp;
 
-public class ComputerValidator {
-	public void validate(Computer computer) throws ComputerException {
-		StringBuilder strBuilder = new StringBuilder();
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
-		strBuilder.append(ValidatorUtil.notNullString.and(ValidatorUtil.notEmptyString).test(computer.getName())
-				.getFieldNameIfInvalid(" Computer name is not valid ").orElse(""));
-		strBuilder.append(ValidatorUtil.validDateComputer.test(computer)
-				.getFieldNameIfInvalid(" Computer dates are not valid ").orElse(""));
+import dto.ComputerDTO;
+import utils.Utils;
 
-		String errors = strBuilder.toString();
+public class ComputerValidator implements Validator {
 
-		if (!errors.isEmpty()) {
-			throw new ComputerException(errors);
+	@Override
+	public boolean supports(Class<?> clazz) {
+		return ComputerDTO.class.equals(clazz);
+	}
+
+	@Override
+	public void validate(Object target, Errors errors) {
+		ComputerDTO computerDTO = (ComputerDTO)target;
+		if (computerDTO.getName() == null || computerDTO.getName().isEmpty()) {
+			errors.rejectValue("name", "is null or empty");
+		}
+		boolean goodRegexIntroducedDate = true;
+		boolean goodRegexDiscontinuedDate = true;
+		if (computerDTO.getIntroducedDate() != null) {
+			goodRegexIntroducedDate = computerDTO.getIntroducedDate().matches("(^$|[1-9][0-9]{3}[/][0-9]{2}[/][0-9]{2}$)");
+		}
+		if (computerDTO.getDiscontinuedDate() != null) {
+			goodRegexDiscontinuedDate = computerDTO.getIntroducedDate().matches("(^$|[1-9][0-9]{3}[/][0-9]{2}[/][0-9]{2}$)");
+		}
+
+		if (!goodRegexIntroducedDate) {
+			errors.rejectValue("introducedDate", "not in right form");
+		}
+		if (!goodRegexDiscontinuedDate) {
+			errors.rejectValue("discontinuedDate", "not in right form");
+		}
+
+		if (goodRegexIntroducedDate && goodRegexDiscontinuedDate) {
+			Timestamp introduced = Utils.stringToTimestamp(computerDTO.getIntroducedDate()).orElse(null);
+			Timestamp discontinued = Utils.stringToTimestamp(computerDTO.getDiscontinuedDate()).orElse(null);
+			if (introduced != null && discontinued != null) {
+				if (discontinued.getTime() - introduced.getTime() < 0) {
+					errors.rejectValue("introducedDate", "after discontinued");
+					errors.rejectValue("discontinuedDate", "before introduced");
+				}
+			}
 		}
 	}
 }

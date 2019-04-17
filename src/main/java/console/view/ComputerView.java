@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import console.controller.ComputerController;
 import dto.ComputerDTO;
+import exception.ComputerException;
 import exception.ItemBadCreatedException;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
@@ -159,6 +160,8 @@ public class ComputerView {
 			logger.info("Done !");
 		} catch (ItemBadCreatedException e) {
 			logger.warn("Object not created");
+		} catch (ComputerException e) {
+			logger.warn("Object not created");
 		}
 	}
 
@@ -197,6 +200,8 @@ public class ComputerView {
 				logger.info("Done !");
 			} catch (ItemNotUpdatedException e) {
 				logger.warn("Object not updated !");
+			} catch (ComputerException e) {
+				logger.warn("Object not updated.");
 			}
 		} catch (ItemNotFoundException e) {
 			logger.info("Computer introuvable...");

@@ -3,8 +3,10 @@ package console.controller;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
+import org.springframework.validation.BeanPropertyBindingResult;
 
 import dto.ComputerDTO;
+import exception.ComputerException;
 import exception.ItemBadCreatedException;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
@@ -101,26 +103,29 @@ public class ComputerController {
 	 * @param companyName  Name of the company.
 	 * @return true if computer has been created else false.
 	 * @throws ItemBadCreatedException
+	 * @throws ComputerException
 	 */
 	public void createComputer(String name, String introduced, String discontinued, int companyId)
-			throws ItemBadCreatedException {
+			throws ItemBadCreatedException, ComputerException {
 		ComputerDTO computerDTO = new ComputerDTO();
 		computerDTO.setName(name);
 		computerDTO.setIntroducedDate(introduced);
 		computerDTO.setDiscontinuedDate(discontinued);
 		computerDTO.setCompanyId(companyId);
-		computerService.createComputer(computerDTO);
+		BeanPropertyBindingResult result = new BeanPropertyBindingResult(computerDTO, "computerDTO");
+		computerService.createComputer(computerDTO, result);
 	}
 
 	public void updateComputer(int id, String name, String introduced, String discontinued, int companyId)
-			throws ItemNotUpdatedException, ItemNotFoundException {
+			throws ItemNotUpdatedException, ItemNotFoundException, ComputerException {
 		ComputerDTO computerDTO = new ComputerDTO();
 		computerDTO.setId(id);
 		computerDTO.setName(name);
 		computerDTO.setIntroducedDate(introduced);
 		computerDTO.setDiscontinuedDate(discontinued);
 		computerDTO.setCompanyId(companyId);
-		computerService.updateComputer(computerDTO);
+		BeanPropertyBindingResult result = new BeanPropertyBindingResult(computerDTO, "computerDTO");
+		computerService.updateComputer(computerDTO, result);
 	}
 
 	/**

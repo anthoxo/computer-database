@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import dao.ComputerDao;
 import dto.ComputerDTO;
@@ -44,17 +45,24 @@ public class ComputerService {
 	 * @param computerDTO Computer DTO.
 	 * @return true if this object has been created, else false.
 	 * @throws ItemBadCreatedException
+	 * @throws ComputerException
 	 */
-	public void createComputer(ComputerDTO computerDTO) throws ItemBadCreatedException {
+	public void createComputer(ComputerDTO computerDTO, BindingResult result) throws ItemBadCreatedException, ComputerException {
+
+		ComputerValidator computerValidator = new ComputerValidator();
+		computerValidator.validate(computerDTO, result);
+
+		if (result.hasErrors()) {
+			logger.error("This object is not valid.");
+			throw new ComputerException("");
+		}
+
 		try {
 			Computer computer = computerMapper.createBean(computerDTO);
-			computerValidator.validate(computer);
 			computerDao.create(computer);
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 			throw new ItemBadCreatedException("dao");
-		} catch (ComputerException e) {
-			throw new ItemBadCreatedException("not-valid");
 		}
 	}
 
@@ -151,16 +159,22 @@ public class ComputerService {
 		return result;
 	}
 
-	public void updateComputer(ComputerDTO cDTO) throws ItemNotUpdatedException, ItemNotFoundException {
+	public void updateComputer(ComputerDTO cDTO, BindingResult result) throws ItemNotUpdatedException, ItemNotFoundException, ComputerException {
+
+		ComputerValidator computerValidator = new ComputerValidator();
+		computerValidator.validate(cDTO, result);
+
+		if (result.hasErrors()) {
+			logger.error("This object is not valid.");
+			throw new ComputerException("");
+		}
+
 		try {
 			Computer computer = computerMapper.createBean(cDTO);
-			computerValidator.validate(computer);
 			computerDao.update(computer);
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotUpdatedException("dao");
-		} catch (ComputerException e) {
-			throw new ItemNotUpdatedException("not-valid");
 		}
 	}
 

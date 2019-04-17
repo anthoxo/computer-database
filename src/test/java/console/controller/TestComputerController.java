@@ -18,6 +18,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import console.MainConfig;
 import dto.ComputerDTO;
+import exception.ComputerException;
 import exception.DAOException;
 import exception.ItemBadCreatedException;
 import exception.ItemNotDeletedException;
@@ -99,22 +100,22 @@ public class TestComputerController {
 	}
 
 	@Test
-	public void testCreateComputer() throws DAOException, ItemBadCreatedException {
-		Mockito.doNothing().when(computerService).createComputer(Mockito.any(ComputerDTO.class));
+	public void testCreateComputer() throws DAOException, ItemBadCreatedException, ComputerException {
+		Mockito.doNothing().when(computerService).createComputer(Mockito.any(ComputerDTO.class), Mockito.any());
 
 		this.computerController.createComputer("Computer_1", "", "", 1);
 
-		Mockito.verify(computerService).createComputer(Mockito.any(ComputerDTO.class));
+		Mockito.verify(computerService).createComputer(Mockito.any(ComputerDTO.class), Mockito.any());
 	}
 
 	@Test
-	public void testUpdateComputer() throws DAOException, ItemNotUpdatedException, ItemNotFoundException {
+	public void testUpdateComputer() throws DAOException, ItemNotUpdatedException, ItemNotFoundException, ComputerException {
 
-		Mockito.doNothing().when(computerService).updateComputer(Mockito.any(ComputerDTO.class));
+		Mockito.doNothing().when(computerService).updateComputer(Mockito.any(ComputerDTO.class), Mockito.any());
 
 		this.computerController.updateComputer(1, "Computer_1", "", "", 1);
 
-		Mockito.verify(computerService).updateComputer(Mockito.any(ComputerDTO.class));
+		Mockito.verify(computerService).updateComputer(Mockito.any(ComputerDTO.class), Mockito.any());
 	}
 
 	@Test

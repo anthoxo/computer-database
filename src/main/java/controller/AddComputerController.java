@@ -6,12 +6,15 @@ import java.util.Locale;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import dto.CompanyDTO;
 import dto.ComputerDTO;
+import exception.ComputerException;
 import exception.ItemBadCreatedException;
 import service.CompanyService;
 import service.ComputerService;
@@ -35,20 +38,21 @@ public class AddComputerController {
 	}
 
 	@PostMapping(Variable.URL_COMPUTER_ADD)
-	public String postAddComputer(@ModelAttribute("computerDTO") ComputerDTO computerDTO, Locale locale) {
+	public String postAddComputer(@Validated @ModelAttribute("computerDTO") ComputerDTO computerDTO,
+			BindingResult result, Locale locale) {
+		String levelNotification = "success";
+		String messageNotification = "computer.add.notification.good";
 		try {
-			this.computerService.createComputer(computerDTO);
-			this.notificationService.generateNotification("success", this, 0,
-					this.messageSource.getMessage("computer.add.notification.good", null, locale));
+			this.computerService.createComputer(computerDTO, result);
 		} catch (ItemBadCreatedException e) {
-			if (e.getMessage().equals("not-valid")) {
-				this.notificationService.generateNotification("danger", this, 0,
-						this.messageSource.getMessage("computer.add.notification.not_valid", null, locale));
-			} else {
-				this.notificationService.generateNotification("danger", this, 0,
-						this.messageSource.getMessage("computer.add.notification.not_created", null, locale));
-			}
+			levelNotification = "danger";
+			messageNotification = "computer.add.notification.not_created";
+		} catch (ComputerException e) {
+			levelNotification = "danger";
+			messageNotification = "computer.add.notification.not_valid";
 		}
+		this.notificationService.generateNotification(levelNotification, this, 0,
+				this.messageSource.getMessage(messageNotification, null, locale));
 		return "redirect:" + Variable.URL_COMPUTER;
 	}
 

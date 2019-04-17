@@ -8,8 +8,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import validator.ValidatorUtil;
-
 public class Utils {
 
 	private static Logger logger = LoggerFactory.getLogger(Utils.class);
@@ -41,7 +39,8 @@ public class Utils {
 	 * @return The Timestamp object of the desired date.
 	 */
 	public static Optional<Timestamp> stringToTimestamp(String date) {
-		boolean isValid = ValidatorUtil.validDateString.test(date).isValid();
+		date = date == null ? "" : date;
+		boolean isValid = date.matches("(^$|[1-9][0-9]{3}[/][0-9]{2}[/][0-9]{2}$)");
 		if (isValid) {
 			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 			Optional<Timestamp> ts;
