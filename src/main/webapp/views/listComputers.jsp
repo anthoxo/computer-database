@@ -1,11 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>List of computers</title>
+<title><spring:message code="computer.title" /></title>
 <c:set var="context" value="${pageContext.request.contextPath}" />
 <link href="${context}/css/bootstrap.min.css" rel="stylesheet"
 	media="screen">
@@ -26,32 +27,44 @@
 	</c:if>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="${context}/index"> Application -
-				Computer Database </a>
+			<a class="navbar-brand" href="${context}/index"> <spring:message code="title" /> </a>
 		</div>
 	</header>
 	<div class="container">
-		<h1 id="homeTitle">${page.length} computer<c:if test="${page.length > 1}">s</c:if> found
+		<h1 id="homeTitle">
+			<c:choose>
+				<c:when test="${page.length > 1}">
+					<spring:message code="computer.numberComputers" arguments="${page.length}" />
+				</c:when>
+				<c:otherwise>
+					<spring:message code="computer.numberComputer" arguments="${page.length}" />
+				</c:otherwise>
+			</c:choose>
 		</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
 				<form id="searchForm" action="${context}/computer/search"
 					method="POST" class="form-inline">
 					<input type="search" id="searchbox" name="search"
-						class="form-control" placeholder="Search name" /> <input
-						type="submit" id="searchSubmitBtn" value="Filter by name"
+						class="form-control" 
+						placeholder="<spring:message code="computer.search_name" />" />
+					<input
+						type="submit" id="searchSubmitBtn"
+						value="<spring:message code="computer.filter_name" />"
 						class="btn btn-primary" />
 				</form>
 			</div>
 			<div class="pull-right">
 				<c:choose>
 					<c:when test="${isSearching == false}">
-						<a class="btn btn-success" id="addComputerBtn"
-							href="${context}/computer/add">Add Computer</a>
+						<a class="btn btn-success" id="addComputerBtn" href="${context}/computer/add">
+							<spring:message code="computer.add" />
+						</a>
 					</c:when>
 					<c:otherwise>
-						<a class="btn btn-success" id="goBack" href="${context}/computer">Go
-							Back</a>
+						<a class="btn btn-success" id="goBack" href="${context}/computer">
+							<spring:message code="go_back" />
+						</a>
 					</c:otherwise>
 				</c:choose>
 			</div>
@@ -62,14 +75,29 @@
 		<table class="table table-striped table-bordered">
 			<thead>
 				<tr>
-					<th><a href="${urlPath}?orderBy=name"><span
-							class="glyphicon glyphicon-sort"></span></a>&nbsp;Computer name</th>
-					<th><a href="${urlPath}?orderBy=introduced"><span
-							class="glyphicon glyphicon-sort"></span></a>&nbsp;Introduced date</th>
-					<th><a href="${urlPath}?orderBy=discontinued"><span
-							class="glyphicon glyphicon-sort"></span></a>&nbsp;Discontinued date</th>
-					<th><a href="${urlPath}?orderBy=companyName"><span
-							class="glyphicon glyphicon-sort"></span></a>&nbsp;Company name</th>
+					<th>
+						<a href="${urlPath}?orderBy=name">
+							<span class="glyphicon glyphicon-sort"></span>
+						</a>
+						&nbsp;<spring:message code="computer.table.name" />
+					</th>
+					<th>
+						<a href="${urlPath}?orderBy=introduced">
+							<span class="glyphicon glyphicon-sort"></span>
+						</a>
+						&nbsp;<spring:message code="computer.table.introduced" />
+					</th>
+					<th>
+						<a href="${urlPath}?orderBy=discontinued">
+							<span class="glyphicon glyphicon-sort"></span>
+						</a>
+						&nbsp;<spring:message code="computer.table.discontinued" />
+					</th>
+					<th>
+						<a href="${urlPath}?orderBy=companyName">
+							<span class="glyphicon glyphicon-sort"></span>
+						</a>&nbsp;<spring:message code="computer.table.company_name" />
+					</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -94,7 +122,7 @@
 							<div class="modal-content">
 								<div class="modal-header">
 									<h5 class="modal-title">
-										Do you really want to delete this computer ?
+										<spring:message code="computer.delete.main_message" />
 										<button type="button" class="close" data-dismiss="modal"
 											aria-label="Close">
 											<span aria-hidden="true">&times;</span>
@@ -104,22 +132,26 @@
 								<div class="modal-body">
 									<c:out value="${c.name}" />
 									<c:if test="${c.introducedDate != ''}">
-										<br>Introduced in <c:out value="${c.introducedDate}" />
+										<br>
+										<spring:message code="computer.delete.message.introduced" arguments="${c.introducedDate}"/>
 									</c:if>
 									<c:if test="${c.discontinuedDate != ''}">
-										<br>Discontinued in <c:out value="${c.discontinuedDate}" />
+										<br>
+										<spring:message code="computer.delete.message.discontinued" arguments="${c.discontinuedDate}"/>
 									</c:if>
 									<c:if test="${c.companyName != null && c.companyName != ''}">
-										<br>Company : <c:out value="${c.companyName}" />
+										<br>
+										<spring:message code="computer.delete.message.company_name" arguments="${c.companyName}"/>
 									</c:if>
 								</div>
 								<div class="modal-footer form-inline">
 									<form action="${context}/computer/delete" method="POST">
 										<input type="hidden" value="${c.id}" id="id_delete"
 											name="id_delete" /> <input type="submit"
-											class="btn btn-danger" value="Delete" />
-										<button type="button" class="btn btn-default"
-											data-dismiss="modal">Close</button>
+											class="btn btn-danger" value="<spring:message code="delete" />" />
+										<button type="button" class="btn btn-default"data-dismiss="modal">
+											<spring:message code="close" />
+										</button>
 									</form>
 								</div>
 							</div>

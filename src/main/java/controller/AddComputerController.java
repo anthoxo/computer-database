@@ -1,7 +1,9 @@
 package controller;
 
 import java.util.List;
+import java.util.Locale;
 
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,27 +24,29 @@ public class AddComputerController {
 	CompanyService companyService;
 	ComputerService computerService;
 	NotificationService notificationService;
+	MessageSource messageSource;
 
 	public AddComputerController(CompanyService companyService, ComputerService computerService,
-			NotificationService notificationService) {
+			NotificationService notificationService, MessageSource messageSource) {
 		this.companyService = companyService;
 		this.computerService = computerService;
 		this.notificationService = notificationService;
+		this.messageSource = messageSource;
 	}
 
 	@PostMapping(Variable.URL_COMPUTER_ADD)
-	public String postAddComputer(@ModelAttribute("computerDTO") ComputerDTO computerDTO) {
+	public String postAddComputer(@ModelAttribute("computerDTO") ComputerDTO computerDTO, Locale locale) {
 		try {
 			this.computerService.createComputer(computerDTO);
 			this.notificationService.generateNotification("success", this, 0,
-					"This object has been correctly created !");
+					this.messageSource.getMessage("computer.add.notification.good", null, locale));
 		} catch (ItemBadCreatedException e) {
 			if (e.getMessage().equals("not-valid")) {
 				this.notificationService.generateNotification("danger", this, 0,
-						"This object isn't valid.");
+						this.messageSource.getMessage("computer.add.notification.not_valid", null, locale));
 			} else {
 				this.notificationService.generateNotification("danger", this, 0,
-						"This object hasn't been created.");
+						this.messageSource.getMessage("computer.add.notification.not_created", null, locale));
 			}
 		}
 		return "redirect:" + Variable.URL_COMPUTER;

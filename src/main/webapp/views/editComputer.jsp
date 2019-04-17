@@ -2,11 +2,13 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Edit computer</title>
+<title><spring:message code="computer.edit" /></title>
 <c:set var="context" value="${pageContext.request.contextPath}" />
 <link href="${context}/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="${context}/css/font-awesome.css" rel="stylesheet" media="screen">
@@ -15,8 +17,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="${context}/index"> Application - Computer
-				Database </a>
+			<a class="navbar-brand" href="${context}/index"><spring:message code="title" /></a>
 		</div>
 	</header>
 
@@ -32,42 +33,44 @@
 	<!-- Error alert (front validator) -->
 	<div class="container">
 		<div id="errComputerName" class="alert alert-danger" role="alert">
-			<strong>Should add computer name</strong>
+			<strong><spring:message code="computer.form.error.name" /></strong>
 		</div>
 		<div id="errIntroduced" class="alert alert-danger" role="alert">
-			<strong>Introduced date should be in this form : yyyy/mm/dd</strong>
+			<strong><spring:message code="computer.form.error.introduced" /></strong>
 		</div>
 		<div id="errDiscontinued" class="alert alert-danger" role="alert">
-			<strong>Discontinued date should be in this form :
-				yyyy/mm/dd</strong>
+			<strong><spring:message code="computer.form.error.discontinued" /></strong>
 		</div>
 	</div>
 	<!-- End error alert (front validator) -->
 
 	<div class="container">
-		<h1>Edit computer</h1>
-		<label for="computerName">Computer name</label> <br>
+		<h1><spring:message code="computer.edit" /></h1>
+		<label for="computerName"><spring:message code="computer.table.name" /></label> <br>
 		<form:form action="${context}/computer/edit" method="POST"
 			modelAttribute="computerDTO">
 			<form:hidden path="id" value="${computerDTO.id}" />
 			<fieldset>
 				<div class="form-group">
+					<spring:message code="computer.table.name" var="computer_table_name" />
 					<form:input name="name" id="name" class="form-control" path="name"
-						value="${computerDTO.name}" placeholder="Computer name" />
+						value="${computerDTO.name}" placeholder="${computer_table_name}" />
 				</div>
 				<div class="form-group">
-					<form:label path="introducedDate">Introduced date (yyyy/mm/dd)</form:label>
+					<spring:message code="computer.table.introduced" var="computer_table_introduced" />
+					<form:label path="introducedDate"><spring:message code="computer.table.introduced" /> (yyyy/mm/dd)</form:label>
 					<form:input name="introducedDate" id="introducedDate" class="form-control" path="introducedDate"
-						value="${computerDTO.introducedDate}" placeholder="Introduced date" />
+						value="${computerDTO.introducedDate}" placeholder="${computer_table_introduced}" />
 				</div>
 				<div class="form-group">
-					<form:label path="discontinuedDate">Discontinued date (yyyy/mm/dd)</form:label>
+					<spring:message code="computer.table.discontinued" var="computer_table_discontinued" />
+					<form:label path="discontinuedDate"><spring:message code="computer.table.discontinued" /> (yyyy/mm/dd)</form:label>
 					<form:input name="discontinuedDate" id="discontinuedDate" class="form-control" path="discontinuedDate"
 						value="${computerDTO.discontinuedDate}"
-						placeholder="Discontinued date" />
+						placeholder="${computer_table_discontinued}" />
 				</div>
 				<div class="form-group">
-					<form:label path="companyId">Company</form:label>
+					<form:label path="companyId"><spring:message code="company" /></form:label>
 					<form:select name="companyId" id="companyId" class="form-control" path="companyId">
 						<form:option value="0" label="--" />
 						<c:forEach var="c" items="${companyList}">
@@ -85,9 +88,9 @@
 				</div>
 			</fieldset>
 			<div class="actions pull-right">
-				<input type="submit" value="Edit" class="btn btn-primary"
+				<input type="submit" value="<spring:message code="edit" />" class="btn btn-primary"
 					id="btnEditOrAddComputer" /> <a href="${context}/computer"
-					class="btn btn-default">Cancel</a>
+					class="btn btn-default"><spring:message code="cancel" /></a>
 			</div>
 		</form:form>
 	</div>

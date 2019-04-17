@@ -1,11 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>List of companies</title>
+<title><spring:message code="company.title" /></title>
 <c:set var="context" value="${pageContext.request.contextPath}" />
 <link href="${context}/css/bootstrap.min.css" rel="stylesheet"
 	media="screen">
@@ -16,8 +17,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="${context}/index"> Application -
-				Computer Database </a>
+			<a class="navbar-brand" href="${context}/index"><spring:message code="title" /></a>
 		</div>
 	</header>
 
@@ -26,7 +26,7 @@
 			<thead>
 				<tr>
 					<th><a href="${context}/company?orderBy=name"><span
-							class="glyphicon glyphicon-sort"></span></a>&nbsp;Company name</th>
+							class="glyphicon glyphicon-sort"></span></a>&nbsp;<spring:message code="company.table.name" /></th>
 				</tr>
 			</thead>
 			<tbody>
