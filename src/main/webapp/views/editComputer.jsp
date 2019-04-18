@@ -13,13 +13,11 @@
 <link href="${context}/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="${context}/css/font-awesome.css" rel="stylesheet" media="screen">
 <link href="${context}/css/main.css" rel="stylesheet" media="screen">
+<link href="${context}/css/flags.min.css" rel="stylesheet" media="screen">
 </head>
 <body>
-	<header class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container">
-			<a class="navbar-brand" href="${context}/index"><spring:message code="title" /></a>
-		</div>
-	</header>
+
+	<%@include file="navbar.jsp" %>
 
 	<div class="container">
 		<div id="id" class="form-horizontal">

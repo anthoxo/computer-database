@@ -13,6 +13,7 @@
 <link href="${context}/css/font-awesome.css" rel="stylesheet"
 	media="screen">
 <link href="${context}/css/main.css" rel="stylesheet" media="screen">
+<link href="${context}/css/flags.min.css" rel="stylesheet" media="screen">
 </head>
 <body>
 	<c:if test="${notification == true}">
@@ -25,11 +26,9 @@
 			</button>
 		</div>
 	</c:if>
-	<header class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container">
-			<a class="navbar-brand" href="${context}/index"> <spring:message code="title" /> </a>
-		</div>
-	</header>
+	
+	<%@include file="navbar.jsp" %>
+	
 	<div class="container">
 		<h1 id="homeTitle">
 			<c:choose>

@@ -13,14 +13,13 @@
 <link href="${context}/css/font-awesome.css" rel="stylesheet"
 	media="screen">
 <link href="${context}/css/main.css" rel="stylesheet" media="screen">
+<link href="${context}/css/flags.min.css" rel="stylesheet" media="screen">
+
 </head>
 <body>
-	<header class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container">
-			<a class="navbar-brand" href="${context}/index"><spring:message code="title" /></a>
-		</div>
-	</header>
 
+	<%@include file="navbar.jsp" %>
+	
 	<div class="container">
 		<a class="btn btn-primary" href="${context}/company">
 			<spring:message code="index.company_list" />
@@ -28,8 +27,6 @@
 		<a class="btn btn-primary" href="${context}/computer">
 			<spring:message code="index.computer_list" />
 		</a> 
-		<a class="btn btn-primary" href="/fr">FRANCAIS</a> <a
-			class="btn btn-primary" href="/en">ENGLISH</a>
 	</div>
 </body>
 </html>
