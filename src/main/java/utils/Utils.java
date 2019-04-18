@@ -40,7 +40,7 @@ public class Utils {
 	 */
 	public static Optional<Timestamp> stringToTimestamp(String date) {
 		date = date == null ? "" : date;
-		boolean isValid = date.matches("(^$|[1-9][0-9]{3}[/][0-9]{2}[/][0-9]{2}$)");
+		boolean isValid = date.matches(Variable.REGEX_DATE);
 		if (isValid) {
 			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 			Optional<Timestamp> ts;

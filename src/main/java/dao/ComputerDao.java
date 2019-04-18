@@ -118,9 +118,9 @@ public class ComputerDao {
 		try {
 			String desc = isDesc ? " DESC" : "";
 			if (Arrays.asList(COMPUTER_COLUMN).contains(order)) {
-				StringBuilder req = new StringBuilder().append(REQUEST_GET_ALL_ORDER_BY).append(order)
-						.append(" IS NULL ASC, ").append(order).append(desc);
-				return jdbcTemplate.query(req.toString(), computerMapper);
+				String req = new StringBuilder().append(REQUEST_GET_ALL_ORDER_BY).append(order)
+						.append(" IS NULL ASC, ").append(order).append(desc).toString();
+				return jdbcTemplate.query(req, computerMapper);
 			} else if (order.equals("companyName")) {
 				return jdbcTemplate.query(REQUEST_GET_ALL_ORDER_BY_COMPANY_NAME + desc, computerMapper);
 			} else {

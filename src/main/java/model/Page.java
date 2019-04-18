@@ -30,7 +30,7 @@ public class Page<T> {
 		this.setData(list);
 		this.indexItem = 0;
 		this.indexPage = 0;
-		this.nbPages = this.length / NB_ITEMS_PER_PAGE + (this.length % NB_ITEMS_PER_PAGE == 0 ? 0 : 1);
+		this.nbPages = (int)Math.ceil((double)this.length / NB_ITEMS_PER_PAGE);
 	}
 
 	public List<T> getData() {

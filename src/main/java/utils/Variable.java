@@ -6,19 +6,25 @@ public class Variable {
 	public static final String GET_PARAMETER_ORDER_BY = "orderBy";
 	public static final String GET_PARAMETER_SEARCH = "search";
 
-
 	public static final String COMPANY_LIST = "companyList";
 	public static final String COMPUTER_LIST = "computerList";
 	public static final String PAGE = "page";
 	public static final String IS_SEARCHING = "isSearching";
 
+	public static final String SUCCESS = "success";
+	public static final String DANGER = "danger";
+
 	public static final String NOTIFICATION = "notification";
 	public static final String MSG_NOTIFICATION = "msgNotification";
 	public static final String LVL_NOTIFICATION = "lvlNotification";
 
+	public static final String REGEX_DATE = "(^$|[1-9][0-9]{3}[/][0-9]{2}[/][0-9]{2}$)";
+
 	public static final String URL_PATH = "urlPath";
 
 	public static final String URL_ROOT = "/";
+	public static final String URL_FRENCH = "/fr";
+	public static final String URL_ENGLISH = "/en";
 	public static final String URL_INDEX = "/index";
 	public static final String URL_COMPANY = "/company";
 	public static final String URL_COMPUTER = "/computer";

@@ -40,7 +40,7 @@ public class MainConfig implements WebMvcConfigurer {
 	public CookieLocaleResolver localeResolver() {
 		CookieLocaleResolver locale = new CookieLocaleResolver();
 		locale.setDefaultLocale(Locale.ENGLISH);
-		locale.setCookieName("");
+		locale.setCookieName("myAppCookie");
 		locale.setCookieMaxAge(3600);
 		return locale;
 	}

@@ -52,28 +52,28 @@ public class EditComputerController {
 	public String postEditComputer(@Validated @ModelAttribute("computerDTO") ComputerDTO computerDTO,
 			BindingResult result, Locale locale) {
 
-		String levelNotification = "success";
+		String levelNotification = Variable.SUCCESS;
 		String messageNotification = "computer.edit.notification.good";
 
 		ComputerValidator computerValidator = new ComputerValidator();
 		computerValidator.validate(computerDTO, result);
 
 		if (result.hasErrors()) {
-			levelNotification = "danger";
+			levelNotification = Variable.DANGER;
 			messageNotification = "computer.edit.notification.not_valid";
 		} else {
 			try {
 				Computer computer = this.computerMapper.createBean(computerDTO);
 				this.computerService.updateComputer(computer);
 			} catch (ItemNotUpdatedException e) {
-				levelNotification = "danger";
+				levelNotification = Variable.DANGER;
 				messageNotification = "computer.edit.notification.not_updated";
 			} catch (ItemNotFoundException e) {
-				levelNotification = "danger";
+				levelNotification = Variable.DANGER;
 				messageNotification = "computer.edit.notification.not_found";
 			}
 		}
-		this.notificationService.generateNotification(levelNotification, this, 0,
+		this.notificationService.generateNotification(levelNotification, this,
 				this.messageSource.getMessage(messageNotification, null, locale));
 		return "redirect:" + Variable.URL_COMPUTER;
 	}
@@ -97,7 +97,8 @@ public class EditComputerController {
 
 			return Variable.VIEW_COMPUTER_EDIT;
 		} catch (ItemNotFoundException e) {
-			this.notificationService.generateNotification("danger", this, 0, "This object isn't in database.");
+			this.notificationService.generateNotification(Variable.DANGER, this,
+					this.messageSource.getMessage("computer.edit.notification.not_found", null, locale));
 			return "redirect:" + Variable.URL_COMPUTER;
 		}
 	}

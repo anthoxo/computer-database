@@ -32,19 +32,23 @@ public class DeleteComputerController {
 	public String deleteComputer(
 			@RequestParam(name = Variable.GET_PARAMETER_ID_DELETE, required = false, defaultValue = "") String id,
 			Locale locale) {
+
+		String levelNotification = Variable.SUCCESS;
+		String messageNotification = "computer.delete.notification.good";
+
 		Computer computer = new Computer.Builder().withId(Integer.valueOf(id)).build();
+
 		try {
 			this.computerService.deleteComputer(computer);
-			this.notificationService.generateNotification("success", this, 0,
-					this.messageSource.getMessage("computer.delete.notification.good", null, locale));
 		} catch (ItemNotFoundException e) {
-			this.notificationService.generateNotification("danger", this, 0,
-					this.messageSource.getMessage("computer.delete.notification.not_found", null, locale));
+			levelNotification = Variable.DANGER;
+			messageNotification = "computer.delete.notification.not_found";
 		} catch (ItemNotDeletedException e) {
-			this.notificationService.generateNotification("danger", this, 0,
-					this.messageSource.getMessage("computer.delete.notification.not_deleted", null, locale));
+			levelNotification = Variable.DANGER;
+			messageNotification = "computer.delete.notification.not_deleted";
 		}
+		this.notificationService.generateNotification(levelNotification, this,
+				this.messageSource.getMessage(messageNotification, null, locale));
 		return "redirect:" + Variable.URL_COMPUTER;
 	}
-
 }

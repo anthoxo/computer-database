@@ -7,6 +7,7 @@ import org.springframework.validation.Validator;
 
 import dto.ComputerDTO;
 import utils.Utils;
+import utils.Variable;
 
 public class ComputerValidator implements Validator {
 
@@ -24,10 +25,10 @@ public class ComputerValidator implements Validator {
 		boolean goodRegexIntroducedDate = true;
 		boolean goodRegexDiscontinuedDate = true;
 		if (computerDTO.getIntroducedDate() != null) {
-			goodRegexIntroducedDate = computerDTO.getIntroducedDate().matches("(^$|[1-9][0-9]{3}[/][0-9]{2}[/][0-9]{2}$)");
+			goodRegexIntroducedDate = computerDTO.getIntroducedDate().matches(Variable.REGEX_DATE);
 		}
 		if (computerDTO.getDiscontinuedDate() != null) {
-			goodRegexDiscontinuedDate = computerDTO.getIntroducedDate().matches("(^$|[1-9][0-9]{3}[/][0-9]{2}[/][0-9]{2}$)");
+			goodRegexDiscontinuedDate = computerDTO.getIntroducedDate().matches(Variable.REGEX_DATE);
 		}
 
 		if (!goodRegexIntroducedDate) {

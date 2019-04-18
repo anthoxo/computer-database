@@ -42,8 +42,13 @@ public class ComputerController {
 			@RequestParam(name = Variable.GET_PARAMETER_ID, required = false, defaultValue = "") String id,
 			@RequestParam(name = Variable.GET_PARAMETER_ORDER_BY, required = false, defaultValue = "") String orderBy) {
 		this.pattern = "";
-		int index = 0;
-		if ("".equals(id)) {
+		int index = -1;
+		try {
+			index = Math.max(Integer.valueOf(id) - 1, 0);
+		} catch (NumberFormatException e) {
+			index = -1;
+		}
+		if (index == -1) {
 			List<Computer> listComputers;
 			if (!orderBy.equals("")) {
 				switch (this.orderByOption) {
@@ -65,8 +70,6 @@ public class ComputerController {
 			}
 			this.computerPage = new Page<ComputerDTO>(listComputers.stream()
 					.map(computer -> this.computerMapper.createDTO(computer)).collect(Collectors.toList()));
-		} else {
-			index = Integer.valueOf(id) - 1;
 		}
 
 		computerPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
@@ -74,7 +77,7 @@ public class ComputerController {
 		model.addAttribute(Variable.COMPUTER_LIST, computerPage.getEntitiesPage());
 		model.addAttribute(Variable.PAGE, computerPage);
 		model.addAttribute(Variable.URL_PATH, Variable.URL_COMPUTER);
-		model.addAttribute(Variable.IS_SEARCHING, "false");
+		model.addAttribute(Variable.IS_SEARCHING, false);
 
 		if (this.notificationService.isNotifying()) {
 			model.addAttribute(Variable.NOTIFICATION, true);
@@ -98,8 +101,13 @@ public class ComputerController {
 	public String getSearchComputers(Model model,
 			@RequestParam(name = Variable.GET_PARAMETER_ID, required = false, defaultValue = "") String id,
 			@RequestParam(name = Variable.GET_PARAMETER_ORDER_BY, required = false, defaultValue = "") String orderBy) {
-		int index = 0;
-		if ("".equals(id)) {
+		int index = -1;
+		try {
+			index = Math.max(Integer.valueOf(id) - 1, 0);
+		} catch (NumberFormatException e) {
+			index = -1;
+		}
+		if (index == -1) {
 			List<Computer> listComputers;
 			if (!orderBy.equals("")) {
 				switch (this.orderByOption) {
@@ -121,8 +129,6 @@ public class ComputerController {
 			}
 			this.computerPage = new Page<ComputerDTO>(listComputers.stream()
 					.map(computer -> this.computerMapper.createDTO(computer)).collect(Collectors.toList()));
-		} else {
-			index = Integer.valueOf(id) - 1;
 		}
 
 		computerPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
@@ -130,7 +136,7 @@ public class ComputerController {
 		model.addAttribute(Variable.COMPUTER_LIST, computerPage.getEntitiesPage());
 		model.addAttribute(Variable.PAGE, computerPage);
 		model.addAttribute(Variable.URL_PATH, Variable.URL_COMPUTER_SEARCH);
-		model.addAttribute(Variable.IS_SEARCHING, "true");
+		model.addAttribute(Variable.IS_SEARCHING, true);
 
 		if (this.notificationService.isNotifying()) {
 			model.addAttribute(Variable.NOTIFICATION, true);

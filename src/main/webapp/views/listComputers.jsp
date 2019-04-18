@@ -66,6 +66,9 @@
 						</a>
 					</c:otherwise>
 				</c:choose>
+				<a class="btn btn-warning" id="addComputerBtn" href="#" onclick="$.fn.toggleEditMode();">
+					<spring:message code="edit" />
+				</a>
 			</div>
 		</div>
 	</div>
@@ -108,12 +111,14 @@
 						<td><c:out value="${c.introducedDate}" /></td>
 						<td><c:out value="${c.discontinuedDate}" /></td>
 						<td><c:out value="${c.companyName}" /></td>
-						<td><a type="button" class="btn btn-danger btn-sm"
+						<td align="center"><a type="button" class="btn btn-danger btn-sm"
 							data-toggle="modal" data-target="#modalDelete_${c.id}"> <i
 								class="fa fa-trash-o fa-lg"></i>
-						</a></td>
+						</a>
+						</td>
 					</tr>
-					<!--  Modal -->
+					
+					<!--  Modal delete -->
 					<div class="modal fade" id="modalDelete_${c.id}" tabindex="-1"
 						role="dialog" aria-labelledby="exampleModalCenterTitle"
 						aria-hidden="true">
@@ -156,7 +161,7 @@
 							</div>
 						</div>
 					</div>
-					<!--  Fin modal -->
+					<!--  Fin modal delete -->
 				</c:forEach>
 			</tbody>
 		</table>

@@ -34,8 +34,13 @@ public class CompanyController {
 	public String getCompanyList(Model model,
 			@RequestParam(name = Variable.GET_PARAMETER_ID, required = false, defaultValue = "") String id,
 			@RequestParam(name = Variable.GET_PARAMETER_ORDER_BY, required = false, defaultValue = "") String orderBy) {
-		int index = 0;
-		if ("".equals(id)) {
+		int index = -1;
+		try {
+			index = Math.max(Integer.valueOf(id) - 1, 0);
+		} catch (NumberFormatException e) {
+			index = -1;
+		}
+		if (index == -1) {
 			List<Company> listCompanies;
 			if ("name".equals(orderBy)) {
 				switch (this.orderByOption) {
@@ -52,8 +57,6 @@ public class CompanyController {
 			}
 			this.companyPage = new Page<CompanyDTO>(listCompanies.stream()
 					.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList()));
-		} else {
-			index = Integer.valueOf(id) - 1;
 		}
 
 		companyPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
