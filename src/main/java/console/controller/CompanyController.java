@@ -1,12 +1,15 @@
 package console.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
 import dto.CompanyDTO;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
+import mapper.CompanyMapper;
+import model.Company;
 import model.Page;
 import service.CompanyService;
 import utils.Utils;
@@ -15,13 +18,15 @@ import utils.Utils.ChoiceActionPage;
 @Component
 public class CompanyController {
 
-	public CompanyService companyService;
+	CompanyService companyService;
+	CompanyMapper companyMapper;
 
 	Page<CompanyDTO> companyPage;
 	boolean isGoingBack;
 
-	private CompanyController(CompanyService companyService) {
+	private CompanyController(CompanyService companyService, CompanyMapper companyMapper) {
 		this.companyService = companyService;
+		this.companyMapper = companyMapper;
 		this.isGoingBack = false;
 	}
 
@@ -29,7 +34,8 @@ public class CompanyController {
 	 * Fetch company list and fill controller field.
 	 */
 	public void refreshCompanyPage() {
-		List<CompanyDTO> listCompanies = companyService.getAllCompanies();
+		List<CompanyDTO> listCompanies = companyService.getAllCompanies().stream()
+				.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList());
 		this.companyPage = new Page<CompanyDTO>(listCompanies);
 	}
 
@@ -38,19 +44,19 @@ public class CompanyController {
 	}
 
 	public List<CompanyDTO> getAllCompanies() {
-		return this.companyService.getAllCompanies();
+		return this.companyService.getAllCompanies().stream()
+				.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList());
 	}
 
 	public CompanyDTO getCompanyById(int id) throws ItemNotFoundException {
-		return this.companyService.getCompanyById(id);
+		Company company = this.companyService.getCompanyById(id);
+		return this.companyMapper.createDTO(company);
 	}
 
-	public void deleteCompany(int id) throws ItemNotFoundException, ItemNotDeletedException  {
-		CompanyDTO companyDTO = new CompanyDTO();
-		companyDTO.setId(id);
-		this.companyService.deleteCompany(companyDTO);
+	public void deleteCompany(int id) throws ItemNotFoundException, ItemNotDeletedException {
+		Company company = new Company.Builder().withId(id).build();
+		this.companyService.deleteCompany(company);
 	}
-
 
 	/**
 	 * Choose if we select the next or previous page.

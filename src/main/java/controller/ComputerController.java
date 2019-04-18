@@ -1,5 +1,8 @@
 package controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import dto.ComputerDTO;
+import mapper.ComputerMapper;
+import model.Computer;
 import model.Page;
 import service.ComputerService;
 import service.NotificationService;
@@ -18,15 +23,18 @@ public class ComputerController {
 
 	ComputerService computerService;
 	NotificationService notificationService;
+	ComputerMapper computerMapper;
 
 	Page<ComputerDTO> computerPage;
 	OrderByOption orderByOption;
 	String orderColumn;
 	String pattern = "";
 
-	public ComputerController(ComputerService computerService, NotificationService notificationService) {
+	public ComputerController(ComputerService computerService, NotificationService notificationService,
+			ComputerMapper computerMapper) {
 		this.computerService = computerService;
 		this.notificationService = notificationService;
+		this.computerMapper = computerMapper;
 	}
 
 	@GetMapping(Variable.URL_COMPUTER)
@@ -36,6 +44,7 @@ public class ComputerController {
 		this.pattern = "";
 		int index = 0;
 		if ("".equals(id)) {
+			List<Computer> listComputers;
 			if (!orderBy.equals("")) {
 				switch (this.orderByOption) {
 				case ASC:
@@ -49,12 +58,13 @@ public class ComputerController {
 					this.orderByOption = OrderByOption.ASC;
 				}
 				this.orderColumn = orderBy;
-				this.computerPage = new Page<ComputerDTO>(
-						computerService.getAllComputersOrderBy(orderColumn, orderByOption));
+				listComputers = this.computerService.getAllComputersOrderBy(orderColumn, orderByOption);
 			} else {
+				listComputers = computerService.getAllComputers();
 				orderByOption = OrderByOption.NULL;
-				this.computerPage = new Page<ComputerDTO>(computerService.getAllComputers());
 			}
+			this.computerPage = new Page<ComputerDTO>(listComputers.stream()
+					.map(computer -> this.computerMapper.createDTO(computer)).collect(Collectors.toList()));
 		} else {
 			index = Integer.valueOf(id) - 1;
 		}
@@ -90,6 +100,7 @@ public class ComputerController {
 			@RequestParam(name = Variable.GET_PARAMETER_ORDER_BY, required = false, defaultValue = "") String orderBy) {
 		int index = 0;
 		if ("".equals(id)) {
+			List<Computer> listComputers;
 			if (!orderBy.equals("")) {
 				switch (this.orderByOption) {
 				case ASC:
@@ -103,12 +114,13 @@ public class ComputerController {
 					this.orderByOption = OrderByOption.ASC;
 				}
 				this.orderColumn = orderBy;
-				this.computerPage = new Page<ComputerDTO>(
-						this.computerService.getComputersByPatternOrderBy(pattern, orderBy, this.orderByOption));
+				listComputers = this.computerService.getComputersByPatternOrderBy(pattern, orderBy, this.orderByOption);
 			} else {
+				listComputers = this.computerService.getComputersByPattern(pattern);
 				orderByOption = OrderByOption.NULL;
-				this.computerPage = new Page<ComputerDTO>(this.computerService.getComputersByPattern(pattern));
 			}
+			this.computerPage = new Page<ComputerDTO>(listComputers.stream()
+					.map(computer -> this.computerMapper.createDTO(computer)).collect(Collectors.toList()));
 		} else {
 			index = Integer.valueOf(id) - 1;
 		}
@@ -117,7 +129,7 @@ public class ComputerController {
 
 		model.addAttribute(Variable.COMPUTER_LIST, computerPage.getEntitiesPage());
 		model.addAttribute(Variable.PAGE, computerPage);
-		model.addAttribute(Variable.URL_PATH, Variable.URL_COMPUTER);
+		model.addAttribute(Variable.URL_PATH, Variable.URL_COMPUTER_SEARCH);
 		model.addAttribute(Variable.IS_SEARCHING, "true");
 
 		if (this.notificationService.isNotifying()) {

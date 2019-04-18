@@ -7,9 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import dto.ComputerDTO;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
+import model.Computer;
 import service.ComputerService;
 import service.NotificationService;
 import utils.Variable;
@@ -32,10 +32,9 @@ public class DeleteComputerController {
 	public String deleteComputer(
 			@RequestParam(name = Variable.GET_PARAMETER_ID_DELETE, required = false, defaultValue = "") String id,
 			Locale locale) {
-		ComputerDTO computerDTO = new ComputerDTO();
-		computerDTO.setId(Integer.valueOf(id));
+		Computer computer = new Computer.Builder().withId(Integer.valueOf(id)).build();
 		try {
-			this.computerService.deleteComputer(computerDTO);
+			this.computerService.deleteComputer(computer);
 			this.notificationService.generateNotification("success", this, 0,
 					this.messageSource.getMessage("computer.delete.notification.good", null, locale));
 		} catch (ItemNotFoundException e) {

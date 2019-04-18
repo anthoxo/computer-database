@@ -17,7 +17,6 @@ import dao.CompanyDao;
 import exception.DAOException;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
-import mapper.CompanyMapper;
 import model.Company;
 import utils.Utils.OrderByOption;
 
@@ -27,8 +26,6 @@ public class TestCompanyService {
 	@Mock
 	CompanyDao companyDao;
 
-	CompanyMapper companyMapper;
-
 	@InjectMocks
 	CompanyService companyService;
 
@@ -37,7 +34,6 @@ public class TestCompanyService {
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MainConfig.class);
 		companyService = context.getBean(CompanyService.class);
-		companyMapper = context.getBean(CompanyMapper.class);
 		Field field = CompanyService.class.getDeclaredField("companyDao");
 		field.setAccessible(true);
 		field.set(companyService, companyDao);
@@ -70,7 +66,7 @@ public class TestCompanyService {
 		Optional<Company> companyOpt = Optional.of(company);
 		Mockito.when(companyDao.get(Mockito.anyInt())).thenReturn(companyOpt);
 
-		this.companyService.deleteCompany(companyMapper.createDTO(company));
+		this.companyService.deleteCompany(company);
 		Mockito.verify(companyDao).delete(company);
 	}
 }

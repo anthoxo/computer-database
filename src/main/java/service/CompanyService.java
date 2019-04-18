@@ -3,18 +3,15 @@ package service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import dao.CompanyDao;
-import dto.CompanyDTO;
 import exception.DAOException;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
-import mapper.CompanyMapper;
 import model.Company;
 import utils.Utils.OrderByOption;
 
@@ -22,48 +19,44 @@ import utils.Utils.OrderByOption;
 public class CompanyService {
 
 	CompanyDao companyDao;
-	CompanyMapper companyMapper;
 
 	private Logger logger = LoggerFactory.getLogger(CompanyService.class);
 
-	private CompanyService(CompanyDao companyDao, CompanyMapper companyMapper) {
+	private CompanyService(CompanyDao companyDao) {
 		this.companyDao = companyDao;
-		this.companyMapper = companyMapper;
 	}
 
 	/**
-	 * Retrieve all companies and return a list of company dto.
+	 * Retrieve all companies and return a list of company.
 	 *
-	 * @return List of companies DTO.
+	 * @return List of companies.
 	 */
-	public List<CompanyDTO> getAllCompanies() {
-		List<CompanyDTO> result = new ArrayList<CompanyDTO>();
+	public List<Company> getAllCompanies() {
+		List<Company> result = new ArrayList<Company>();
 		try {
-			result = companyDao.getAll().stream().map((Company c) -> companyMapper.createDTO(c))
-					.collect(Collectors.toList());
+			result = companyDao.getAll();
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 		}
 		return result;
 	}
 
-	public List<CompanyDTO> getAllCompaniesOrderByName(OrderByOption option) {
-		List<CompanyDTO> result = new ArrayList<CompanyDTO>();
+	public List<Company> getAllCompaniesOrderByName(OrderByOption option) {
+		List<Company> result = new ArrayList<Company>();
 		boolean isDesc = option == OrderByOption.DESC ? true : false;
 		try {
-			result = companyDao.getAllOrderByName(isDesc).stream().map((Company c) -> companyMapper.createDTO(c))
-					.collect(Collectors.toList());
+			result = companyDao.getAllOrderByName(isDesc);
 		} catch (DAOException e) {
 			logger.error(e.getMessage());
 		}
 		return result;
 	}
 
-	public CompanyDTO getCompanyById(int id) throws ItemNotFoundException {
+	public Company getCompanyById(int id) throws ItemNotFoundException {
 		try {
 			Optional<Company> companyOpt = this.companyDao.get(id);
 			if (companyOpt.isPresent()) {
-				return companyMapper.createDTO(companyOpt.get());
+				return companyOpt.get();
 			} else {
 				throw new ItemNotFoundException("getComputerById");
 			}
@@ -73,11 +66,10 @@ public class CompanyService {
 		}
 	}
 
-	public void deleteCompany(CompanyDTO companyDTO) throws ItemNotFoundException, ItemNotDeletedException {
+	public void deleteCompany(Company company) throws ItemNotFoundException, ItemNotDeletedException {
 		try {
-			Optional<Company> companyOpt = companyDao.get(companyDTO.getId());
+			Optional<Company> companyOpt = companyDao.get(company.getId());
 			if (companyOpt.isPresent()) {
-				Company company = companyMapper.createBean(companyDTO);
 				companyDao.delete(company);
 			} else {
 				throw new ItemNotFoundException("deleteComputer");

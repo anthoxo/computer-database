@@ -10,10 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.validation.BeanPropertyBindingResult;
 
 import dao.ComputerDao;
-import dto.ComputerDTO;
 import exception.ComputerException;
 import exception.DAOException;
 import exception.ItemBadCreatedException;
@@ -93,19 +91,15 @@ public class TestComputerService {
 
 	@Test
 	public void testCreate() throws DAOException, ItemBadCreatedException, ComputerException {
-		ComputerDTO computerDTO = new ComputerDTO();
-		computerDTO.setName("oui");
-		BeanPropertyBindingResult result = new BeanPropertyBindingResult(computerDTO, "computerDTO");
-		this.computerService.createComputer(computerDTO, result);
+		Computer computer = new Computer.Builder().withName("oui").build();
+		this.computerService.createComputer(computer);
 		Mockito.verify(computerDao).create(Mockito.any());
 	}
 
 	@Test
 	public void testUpdate() throws DAOException, ItemNotUpdatedException, ItemNotFoundException, ComputerException {
-		ComputerDTO computerDTO = new ComputerDTO();
-		computerDTO.setName("oui");
-		BeanPropertyBindingResult result = new BeanPropertyBindingResult(computerDTO, "computerDTO");
-		this.computerService.updateComputer(computerDTO, result);
+		Computer computer = new Computer.Builder().withName("oui").build();
+		this.computerService.updateComputer(computer);
 		Mockito.verify(computerDao).update(Mockito.any());
 	}
 
@@ -113,14 +107,14 @@ public class TestComputerService {
 	public void testDelete() throws DAOException, ItemNotFoundException, ItemNotDeletedException {
 		Optional<Computer> computerOpt = Optional.of(new Computer.Builder().build());
 		Mockito.when(computerDao.get(Mockito.anyInt())).thenReturn(computerOpt);
-		this.computerService.deleteComputer(new ComputerDTO());
+		this.computerService.deleteComputer(computerOpt.get());
 		Mockito.verify(computerDao).delete(Mockito.any());
 	}
 
 	@Test
 	public void testDeleteThrow() throws DAOException, ItemNotDeletedException {
 		try {
-			this.computerService.deleteComputer(new ComputerDTO());
+			this.computerService.deleteComputer(new Computer.Builder().build());
 		} catch (ItemNotFoundException e) {
 			Mockito.verify(computerDao).get(Mockito.anyInt());
 		}

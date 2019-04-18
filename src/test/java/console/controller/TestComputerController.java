@@ -101,21 +101,21 @@ public class TestComputerController {
 
 	@Test
 	public void testCreateComputer() throws DAOException, ItemBadCreatedException, ComputerException {
-		Mockito.doNothing().when(computerService).createComputer(Mockito.any(ComputerDTO.class), Mockito.any());
+		Mockito.doNothing().when(computerService).createComputer(Mockito.any(Computer.class));
 
 		this.computerController.createComputer("Computer_1", "", "", 1);
 
-		Mockito.verify(computerService).createComputer(Mockito.any(ComputerDTO.class), Mockito.any());
+		Mockito.verify(computerService).createComputer(Mockito.any(Computer.class));
 	}
 
 	@Test
 	public void testUpdateComputer() throws DAOException, ItemNotUpdatedException, ItemNotFoundException, ComputerException {
 
-		Mockito.doNothing().when(computerService).updateComputer(Mockito.any(ComputerDTO.class), Mockito.any());
+		Mockito.doNothing().when(computerService).updateComputer(Mockito.any(Computer.class));
 
 		this.computerController.updateComputer(1, "Computer_1", "", "", 1);
 
-		Mockito.verify(computerService).updateComputer(Mockito.any(ComputerDTO.class), Mockito.any());
+		Mockito.verify(computerService).updateComputer(Mockito.any(Computer.class));
 	}
 
 	@Test
