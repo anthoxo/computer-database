@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,17 +12,24 @@
 <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="/css/font-awesome.css" rel="stylesheet" media="screen">
 <link href="/css/main.css" rel="stylesheet" media="screen">
+<link href="${context}/css/flags.min.css" rel="stylesheet" media="screen">
 </head>
 <body>
 
-	<%@include file="navbar.jsp" %>
+	<%@include file="../navbar.jsp"%>
 
 	<section id="main">
 		<div class="container">
 			<div class="alert alert-danger">
-				Error 404: Page not found. <br />
-				<!-- stacktrace -->
+				<spring:message code="error.message" /><br />
 			</div>
+			<div class="alert alert-warning">
+			<c:forEach items="${exception.stackTrace}" var="ste">
+			    <c:out value="${ste}" />
+    		</c:forEach>
+				<br />
+			</div>
+
 		</div>
 	</section>
 
