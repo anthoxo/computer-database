@@ -74,18 +74,16 @@ public class ComputerController {
 
 		computerPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
 
-		model.addAttribute(Variable.COMPUTER_LIST, computerPage.getEntitiesPage());
 		model.addAttribute(Variable.PAGE, computerPage);
 		model.addAttribute(Variable.URL_PATH, Variable.URL_COMPUTER);
 		model.addAttribute(Variable.IS_SEARCHING, false);
 
 		if (this.notificationService.isNotifying()) {
-			model.addAttribute(Variable.NOTIFICATION, true);
-			model.addAttribute(Variable.MSG_NOTIFICATION, this.notificationService.getMessage());
-			model.addAttribute(Variable.LVL_NOTIFICATION, this.notificationService.getLevel());
+			model.addAttribute(Variable.IS_NOTIFYING, true);
+			model.addAttribute(Variable.NOTIFICATION, this.notificationService.getNotification());
 			this.notificationService.clean();
 		} else {
-			model.addAttribute(Variable.NOTIFICATION, false);
+			model.addAttribute(Variable.IS_NOTIFYING, false);
 		}
 		return Variable.VIEW_COMPUTER;
 	}
@@ -133,18 +131,16 @@ public class ComputerController {
 
 		computerPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
 
-		model.addAttribute(Variable.COMPUTER_LIST, computerPage.getEntitiesPage());
 		model.addAttribute(Variable.PAGE, computerPage);
 		model.addAttribute(Variable.URL_PATH, Variable.URL_COMPUTER_SEARCH);
 		model.addAttribute(Variable.IS_SEARCHING, true);
 
 		if (this.notificationService.isNotifying()) {
-			model.addAttribute(Variable.NOTIFICATION, true);
-			model.addAttribute(Variable.MSG_NOTIFICATION, this.notificationService.getMessage());
-			model.addAttribute(Variable.LVL_NOTIFICATION, this.notificationService.getLevel());
+			model.addAttribute(Variable.IS_NOTIFYING, true);
+			model.addAttribute(Variable.NOTIFICATION, this.notificationService.getNotification());
 			this.notificationService.clean();
 		} else {
-			model.addAttribute(Variable.NOTIFICATION, false);
+			model.addAttribute(Variable.IS_NOTIFYING, false);
 		}
 		return Variable.VIEW_COMPUTER;
 	}

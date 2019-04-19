@@ -61,7 +61,6 @@ public class CompanyController {
 
 		companyPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
 
-		model.addAttribute(Variable.COMPANY_LIST, companyPage.getEntitiesPage());
 		model.addAttribute(Variable.PAGE, companyPage);
 
 		return Variable.VIEW_COMPANY;

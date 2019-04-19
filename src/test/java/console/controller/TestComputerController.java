@@ -18,7 +18,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import console.MainConfig;
 import dto.ComputerDTO;
-import exception.ComputerException;
 import exception.DAOException;
 import exception.ItemBadCreatedException;
 import exception.ItemNotDeletedException;
@@ -100,7 +99,7 @@ public class TestComputerController {
 	}
 
 	@Test
-	public void testCreateComputer() throws DAOException, ItemBadCreatedException, ComputerException {
+	public void testCreateComputer() throws DAOException, ItemBadCreatedException {
 		Mockito.doNothing().when(computerService).createComputer(Mockito.any(Computer.class));
 
 		this.computerController.createComputer("Computer_1", "", "", 1);
@@ -109,7 +108,7 @@ public class TestComputerController {
 	}
 
 	@Test
-	public void testUpdateComputer() throws DAOException, ItemNotUpdatedException, ItemNotFoundException, ComputerException {
+	public void testUpdateComputer() throws DAOException, ItemNotUpdatedException, ItemNotFoundException {
 
 		Mockito.doNothing().when(computerService).updateComputer(Mockito.any(Computer.class));
 

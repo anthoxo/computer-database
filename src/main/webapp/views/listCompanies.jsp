@@ -28,7 +28,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach var="c" items="${companyList}">
+				<c:forEach var="c" items="${page.entitiesPage}">
 					<tr>
 						<td><c:out value="${c.name}" /></td>
 					</tr>

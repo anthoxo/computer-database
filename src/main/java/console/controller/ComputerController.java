@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import dto.ComputerDTO;
-import exception.ComputerException;
 import exception.ItemBadCreatedException;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
@@ -113,7 +112,7 @@ public class ComputerController {
 	 * @throws ComputerException
 	 */
 	public void createComputer(String name, String introduced, String discontinued, int companyId)
-			throws ItemBadCreatedException, ComputerException {
+			throws ItemBadCreatedException {
 		ComputerDTO computerDTO = new ComputerDTO();
 		computerDTO.setName(name);
 		computerDTO.setIntroducedDate(introduced);
@@ -124,7 +123,7 @@ public class ComputerController {
 	}
 
 	public void updateComputer(int id, String name, String introduced, String discontinued, int companyId)
-			throws ItemNotUpdatedException, ItemNotFoundException, ComputerException {
+			throws ItemNotUpdatedException, ItemNotFoundException {
 		ComputerDTO computerDTO = new ComputerDTO();
 		computerDTO.setId(id);
 		computerDTO.setName(name);

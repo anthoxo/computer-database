@@ -10,11 +10,11 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import dto.ComputerDTO;
 
 public class TestComputerValidator {
-	static ComputerValidator computerValidator;
+	static ComputerDTOValidator computerValidator;
 
 	@BeforeAll
 	public static void setUp() {
-		computerValidator = new ComputerValidator();
+		computerValidator = new ComputerDTOValidator();
 	}
 
 	@Test

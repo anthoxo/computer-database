@@ -9,7 +9,7 @@ import dto.ComputerDTO;
 import utils.Utils;
 import utils.Variable;
 
-public class ComputerValidator implements Validator {
+public class ComputerDTOValidator implements Validator {
 
 	@Override
 	public boolean supports(Class<?> clazz) {

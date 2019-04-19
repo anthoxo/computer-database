@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import dao.ComputerDao;
-import exception.ComputerException;
 import exception.DAOException;
 import exception.ItemBadCreatedException;
 import exception.ItemNotDeletedException;
@@ -17,20 +16,20 @@ import exception.ItemNotFoundException;
 import exception.ItemNotUpdatedException;
 import model.Computer;
 import utils.Utils.OrderByOption;
-import validator.ComputerValidator;
+import validator.ComputerDTOValidator;
 
 @Service
 public class ComputerService {
 
 	ComputerDao computerDao;
 
-	ComputerValidator computerValidator;
+	ComputerDTOValidator computerValidator;
 
 	private Logger logger = LoggerFactory.getLogger(ComputerService.class);
 
 	private ComputerService(ComputerDao computerDao) {
 		this.computerDao = computerDao;
-		computerValidator = new ComputerValidator();
+		computerValidator = new ComputerDTOValidator();
 	}
 
 	/**

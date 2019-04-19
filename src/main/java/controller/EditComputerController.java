@@ -25,7 +25,7 @@ import service.CompanyService;
 import service.ComputerService;
 import service.NotificationService;
 import utils.Variable;
-import validator.ComputerValidator;
+import validator.ComputerDTOValidator;
 
 @Controller
 public class EditComputerController {
@@ -55,7 +55,7 @@ public class EditComputerController {
 		String levelNotification = Variable.SUCCESS;
 		String messageNotification = "computer.edit.notification.good";
 
-		ComputerValidator computerValidator = new ComputerValidator();
+		ComputerDTOValidator computerValidator = new ComputerDTOValidator();
 		computerValidator.validate(computerDTO, result);
 
 		if (result.hasErrors()) {

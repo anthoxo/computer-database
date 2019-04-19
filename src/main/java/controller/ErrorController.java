@@ -6,21 +6,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import utils.Variable;
+
 @Controller
 public class ErrorController {
 
-	@GetMapping("/error")
+	@GetMapping(Variable.URL_ERROR)
 	public String handleError(HttpServletRequest req, Model model, Exception exception) {
-		return "error/error";
+		return Variable.VIEW_ERROR;
 	}
 
-	@GetMapping("/404")
+	@GetMapping(Variable.URL_ERROR_404)
 	public String handleError404(HttpServletRequest req, Model model, Exception exception) {
-		return "error/404";
+		return Variable.VIEW_ERROR_404;
 	}
 
-	@GetMapping("/500")
+	@GetMapping(Variable.URL_ERROR_500)
 	public String handleError500(HttpServletRequest req, Model model, Exception exception) {
-		return "error/500";
+		return Variable.VIEW_ERROR_500;
 	}
 }

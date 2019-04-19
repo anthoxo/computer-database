@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class NotificationService {
 
-	Notification notification;
-	boolean isNotifying;
+	private Notification notification;
+	private boolean isNotifying;
 
 	private NotificationService() {
 		this.isNotifying = false;
@@ -33,5 +33,9 @@ public class NotificationService {
 
 	public String getLevel() {
 		return this.notification.getType();
+	}
+
+	public Notification getNotification() {
+		return this.notification;
 	}
 }

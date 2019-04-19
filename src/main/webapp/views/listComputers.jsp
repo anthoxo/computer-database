@@ -16,10 +16,10 @@
 <link href="${context}/css/flags.min.css" rel="stylesheet" media="screen">
 </head>
 <body>
-	<c:if test="${notification == true}">
-		<div class="alert alert-${lvlNotification} alert-dismissible show"
+	<c:if test="${isNotifying == true}">
+		<div class="alert alert-${notification.type} alert-dismissible show"
 			role="alert">
-			<strong><c:out value="${msgNotification}"></c:out></strong>
+			<strong><c:out value="${notification.message}"></c:out></strong>
 			<button type="button" class="close" data-dismiss="alert"
 				aria-label="Close">
 				<span aria-hidden="true">&times;</span>
@@ -104,7 +104,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach var="c" items="${computerList}">
+				<c:forEach var="c" items="${page.entitiesPage}">
 					<tr id="Computer_${c.id}">
 						<td><a href="${context}/computer/edit?id=${c.id}"><c:out
 									value="${c.name}" /></a></td>

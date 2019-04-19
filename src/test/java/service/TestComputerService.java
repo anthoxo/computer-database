@@ -12,7 +12,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import dao.ComputerDao;
-import exception.ComputerException;
 import exception.DAOException;
 import exception.ItemBadCreatedException;
 import exception.ItemNotDeletedException;
@@ -21,7 +20,7 @@ import exception.ItemNotUpdatedException;
 import mapper.ComputerMapper;
 import model.Computer;
 import utils.Utils.OrderByOption;
-import validator.ComputerValidator;
+import validator.ComputerDTOValidator;
 
 @ExtendWith(MockitoExtension.class)
 public class TestComputerService {
@@ -40,7 +39,7 @@ public class TestComputerService {
 		Field field = ComputerService.class.getDeclaredField("computerDao");
 		field.setAccessible(true);
 		field.set(computerService, computerDao);
-		computerService.computerValidator = new ComputerValidator();
+		computerService.computerValidator = new ComputerDTOValidator();
 	}
 
 	@Test
@@ -90,14 +89,14 @@ public class TestComputerService {
 	}
 
 	@Test
-	public void testCreate() throws DAOException, ItemBadCreatedException, ComputerException {
+	public void testCreate() throws DAOException, ItemBadCreatedException {
 		Computer computer = new Computer.Builder().withName("oui").build();
 		this.computerService.createComputer(computer);
 		Mockito.verify(computerDao).create(Mockito.any());
 	}
 
 	@Test
-	public void testUpdate() throws DAOException, ItemNotUpdatedException, ItemNotFoundException, ComputerException {
+	public void testUpdate() throws DAOException, ItemNotUpdatedException, ItemNotFoundException {
 		Computer computer = new Computer.Builder().withName("oui").build();
 		this.computerService.updateComputer(computer);
 		Mockito.verify(computerDao).update(Mockito.any());
