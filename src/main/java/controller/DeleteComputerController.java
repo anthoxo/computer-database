@@ -5,6 +5,7 @@ import java.util.Locale;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import exception.ItemNotDeletedException;
@@ -15,6 +16,7 @@ import service.NotificationService;
 import utils.Variable;
 
 @Controller
+@RequestMapping(Variable.URL_COMPUTER + Variable.URL_DELETE)
 public class DeleteComputerController {
 
 	ComputerService computerService;
@@ -28,7 +30,7 @@ public class DeleteComputerController {
 		this.messageSource = messageSource;
 	}
 
-	@PostMapping(Variable.URL_COMPUTER_DELETE)
+	@PostMapping
 	public String deleteComputer(
 			@RequestParam(name = Variable.GET_PARAMETER_ID_DELETE, required = false, defaultValue = "") String id,
 			Locale locale) {

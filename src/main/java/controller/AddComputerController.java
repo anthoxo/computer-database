@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import dto.CompanyDTO;
 import dto.ComputerDTO;
@@ -26,6 +27,7 @@ import utils.Variable;
 import validator.ComputerDTOValidator;
 
 @Controller
+@RequestMapping(Variable.URL_COMPUTER + Variable.URL_ADD)
 public class AddComputerController {
 
 	CompanyService companyService;
@@ -46,7 +48,7 @@ public class AddComputerController {
 		this.messageSource = messageSource;
 	}
 
-	@PostMapping(Variable.URL_COMPUTER_ADD)
+	@PostMapping
 	public String postAddComputer(@Validated @ModelAttribute("computerDTO") ComputerDTO computerDTO,
 			BindingResult result, Locale locale) {
 
@@ -73,7 +75,7 @@ public class AddComputerController {
 		return "redirect:" + Variable.URL_COMPUTER;
 	}
 
-	@GetMapping(Variable.URL_COMPUTER_ADD)
+	@GetMapping
 	public String getAddComputer(Model model) {
 		List<CompanyDTO> companyList = this.companyService.getAllCompanies().stream()
 				.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList());

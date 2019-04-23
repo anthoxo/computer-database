@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import dto.CompanyDTO;
@@ -17,6 +18,7 @@ import utils.Utils.OrderByOption;
 import utils.Variable;
 
 @Controller
+@RequestMapping(Variable.URL_COMPANY)
 public class CompanyController {
 
 	CompanyService companyService;
@@ -30,7 +32,7 @@ public class CompanyController {
 		this.companyMapper = companyMapper;
 	}
 
-	@GetMapping(Variable.URL_COMPANY)
+	@GetMapping
 	public String getCompanyList(Model model,
 			@RequestParam(name = Variable.GET_PARAMETER_ID, required = false, defaultValue = "") String id,
 			@RequestParam(name = Variable.GET_PARAMETER_ORDER_BY, required = false, defaultValue = "") String orderBy) {

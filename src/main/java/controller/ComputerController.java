@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import dto.ComputerDTO;
@@ -19,6 +20,7 @@ import utils.Utils.OrderByOption;
 import utils.Variable;
 
 @Controller
+@RequestMapping(Variable.URL_COMPUTER)
 public class ComputerController {
 
 	ComputerService computerService;
@@ -37,7 +39,7 @@ public class ComputerController {
 		this.computerMapper = computerMapper;
 	}
 
-	@GetMapping(Variable.URL_COMPUTER)
+	@GetMapping
 	public String getComputerList(Model model,
 			@RequestParam(name = Variable.GET_PARAMETER_ID, required = false, defaultValue = "") String id,
 			@RequestParam(name = Variable.GET_PARAMETER_ORDER_BY, required = false, defaultValue = "") String orderBy) {
@@ -88,14 +90,14 @@ public class ComputerController {
 		return Variable.VIEW_COMPUTER;
 	}
 
-	@PostMapping(Variable.URL_COMPUTER_SEARCH)
+	@PostMapping(Variable.URL_SEARCH)
 	public String postSearchComputers(
 			@RequestParam(name = Variable.GET_PARAMETER_SEARCH, required = false, defaultValue = "") String pattern) {
 		this.pattern = pattern;
-		return "redirect:" + Variable.URL_COMPUTER_SEARCH;
+		return "redirect:" + Variable.URL_COMPUTER + Variable.URL_SEARCH;
 	}
 
-	@GetMapping(Variable.URL_COMPUTER_SEARCH)
+	@GetMapping(Variable.URL_SEARCH)
 	public String getSearchComputers(Model model,
 			@RequestParam(name = Variable.GET_PARAMETER_ID, required = false, defaultValue = "") String id,
 			@RequestParam(name = Variable.GET_PARAMETER_ORDER_BY, required = false, defaultValue = "") String orderBy) {
@@ -132,7 +134,7 @@ public class ComputerController {
 		computerPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
 
 		model.addAttribute(Variable.PAGE, computerPage);
-		model.addAttribute(Variable.URL_PATH, Variable.URL_COMPUTER_SEARCH);
+		model.addAttribute(Variable.URL_PATH, Variable.URL_COMPUTER + Variable.URL_SEARCH);
 		model.addAttribute(Variable.IS_SEARCHING, true);
 
 		if (this.notificationService.isNotifying()) {

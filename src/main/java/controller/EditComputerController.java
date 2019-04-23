@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import dto.CompanyDTO;
@@ -28,6 +29,7 @@ import utils.Variable;
 import validator.ComputerDTOValidator;
 
 @Controller
+@RequestMapping(Variable.URL_COMPUTER + Variable.URL_EDIT)
 public class EditComputerController {
 
 	CompanyService companyService;
@@ -48,7 +50,7 @@ public class EditComputerController {
 		this.messageSource = messageSource;
 	}
 
-	@PostMapping(Variable.URL_COMPUTER_EDIT)
+	@PostMapping
 	public String postEditComputer(@Validated @ModelAttribute("computerDTO") ComputerDTO computerDTO,
 			BindingResult result, Locale locale) {
 
@@ -78,7 +80,7 @@ public class EditComputerController {
 		return "redirect:" + Variable.URL_COMPUTER;
 	}
 
-	@GetMapping(Variable.URL_COMPUTER_EDIT)
+	@GetMapping
 	public String getEditComputer(Model model,
 			@RequestParam(name = Variable.GET_PARAMETER_ID, required = false, defaultValue = "") String id,
 			Locale locale) {

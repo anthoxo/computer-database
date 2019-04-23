@@ -24,12 +24,15 @@ public class Variable {
 	public static final String URL_FRENCH = "/fr";
 	public static final String URL_ENGLISH = "/en";
 	public static final String URL_INDEX = "/index";
+
 	public static final String URL_COMPANY = "/company";
 	public static final String URL_COMPUTER = "/computer";
-	public static final String URL_COMPUTER_SEARCH = "/computer/search";
-	public static final String URL_COMPUTER_ADD = "/computer/add";
-	public static final String URL_COMPUTER_EDIT = "/computer/edit";
-	public static final String URL_COMPUTER_DELETE = "/computer/delete";
+
+	public static final String URL_ADD = "/add";
+	public static final String URL_SEARCH = "/search";
+	public static final String URL_EDIT = "/edit";
+	public static final String URL_DELETE = "/delete";
+
 	public static final String URL_ERROR = "/error";
 	public static final String URL_ERROR_404 = "/404";
 	public static final String URL_ERROR_500 = "/500";
