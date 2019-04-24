@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import dto.CompanyDTO;
+import exception.ItemNotFoundException;
 import mapper.CompanyMapper;
 import model.Company;
 import model.Page;
@@ -44,18 +46,22 @@ public class CompanyController {
 		}
 		if (index == -1) {
 			List<Company> listCompanies;
-			if ("name".equals(orderBy)) {
-				switch (this.orderByOption) {
-				case ASC:
-					this.orderByOption = OrderByOption.DESC;
-					break;
-				default:
-					this.orderByOption = OrderByOption.ASC;
-					break;
+			try {
+				if ("name".equals(orderBy)) {
+					switch (this.orderByOption) {
+					case ASC:
+						this.orderByOption = OrderByOption.DESC;
+						break;
+					default:
+						this.orderByOption = OrderByOption.ASC;
+						break;
+					}
+					listCompanies = this.companyService.getAllCompaniesOrderByName(orderByOption);
+				} else {
+					listCompanies = this.companyService.getAllCompanies();
 				}
-				listCompanies = this.companyService.getAllCompaniesOrderByName(orderByOption);
-			} else {
-				listCompanies = this.companyService.getAllCompanies();
+			} catch (ItemNotFoundException e) {
+				listCompanies = new ArrayList<Company>();
 			}
 			this.companyPage = new Page<CompanyDTO>(listCompanies.stream()
 					.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList()));

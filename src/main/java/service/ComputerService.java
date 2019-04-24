@@ -1,15 +1,17 @@
 package service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import dao.ComputerDao;
-import exception.DAOException;
+import dao.ComputerRepository;
 import exception.ItemBadCreatedException;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
@@ -21,14 +23,14 @@ import validator.ComputerDTOValidator;
 @Service
 public class ComputerService {
 
-	ComputerDao computerDao;
+	ComputerRepository computerRepository;
 
 	ComputerDTOValidator computerValidator;
 
 	private Logger logger = LoggerFactory.getLogger(ComputerService.class);
 
-	private ComputerService(ComputerDao computerDao) {
-		this.computerDao = computerDao;
+	private ComputerService(ComputerRepository computerRepository) {
+		this.computerRepository = computerRepository;
 		computerValidator = new ComputerDTOValidator();
 	}
 
@@ -42,10 +44,10 @@ public class ComputerService {
 	 */
 	public void createComputer(Computer computer) throws ItemBadCreatedException {
 		try {
-			computerDao.create(computer);
-		} catch (DAOException e) {
+			this.computerRepository.save(computer);
+		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemBadCreatedException("dao");
+			throw new ItemBadCreatedException("computerRepository");
 		}
 	}
 
@@ -58,15 +60,15 @@ public class ComputerService {
 	 */
 	public Computer getComputerByName(String name) throws ItemNotFoundException {
 		try {
-			Optional<Computer> computerOpt = computerDao.get(name);
-			if (computerOpt.isPresent()) {
-				return computerOpt.get();
+			List<Computer> listComputers = this.computerRepository.findByName(name);
+			if (listComputers.size() > 0) {
+				return listComputers.get(0);
 			} else {
 				throw new ItemNotFoundException("getComputerByName");
 			}
-		} catch (DAOException e) {
+		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("dao");
+			throw new ItemNotFoundException("computerRepository");
 		}
 	}
 
@@ -79,13 +81,13 @@ public class ComputerService {
 	 */
 	public Computer getComputerById(int id) throws ItemNotFoundException {
 		try {
-			Optional<Computer> computerOpt = computerDao.get(id);
+			Optional<Computer> computerOpt = this.computerRepository.findById(id);
 			if (computerOpt.isPresent()) {
 				return computerOpt.get();
 			} else {
 				throw new ItemNotFoundException("getComputerById");
 			}
-		} catch (DAOException e) {
+		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotFoundException("dao");
 		}
@@ -95,53 +97,86 @@ public class ComputerService {
 	 * Retrieve all computers and return a list of computers.
 	 *
 	 * @return List of computers.
+	 * @throws ItemNotFoundException
 	 */
-	public List<Computer> getAllComputers() {
-		List<Computer> result = new ArrayList<Computer>();
+	public List<Computer> getAllComputers() throws ItemNotFoundException {
 		try {
-			result = computerDao.getAll();
-		} catch (DAOException e) {
+			List<Computer> result = new ArrayList<Computer>();
+			result = this.computerRepository.findAll();
+			return result;
+		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
+			throw new ItemNotFoundException("computerService");
 		}
-		return result;
 	}
 
-	public List<Computer> getAllComputersOrderBy(String order, OrderByOption option) {
-		List<Computer> result = new ArrayList<Computer>();
-		boolean isDesc = option == OrderByOption.DESC ? true : false;
+	public List<Computer> getAllComputersOrderBy(String order, OrderByOption option) throws ItemNotFoundException {
 		try {
-			result = computerDao.getAllOrderBy(order, isDesc);
-		} catch (DAOException e) {
+			List<Computer> result = new ArrayList<Computer>();
+			boolean isDesc = option == OrderByOption.DESC ? true : false;
+			List<String> orders = Arrays.asList("name", "introduced", "discontinued", "company");
+			if (orders.contains(order)) {
+				if (order.equals("company")) {
+					result = this.computerRepository.findAll(
+							Sort.by(new Sort.Order(isDesc ? Sort.Direction.DESC : Sort.Direction.ASC, "company.name")
+									.nullsLast()));
+				} else {
+					result = this.computerRepository.findAll(Sort
+							.by(new Sort.Order(isDesc ? Sort.Direction.DESC : Sort.Direction.ASC, order).nullsLast()));
+				}
+			} else {
+				result = this.getAllComputers();
+			}
+			return result;
+		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
+			throw new ItemNotFoundException("computerService");
 		}
-		return result;
 	}
 
-	public List<Computer> getComputersByPattern(String pattern) {
-		List<Computer> result = new ArrayList<Computer>();
+	public List<Computer> getComputersByPattern(String pattern) throws ItemNotFoundException {
 		try {
-			result = computerDao.getPattern(pattern);
-		} catch (DAOException e) {
+			List<Computer> result = new ArrayList<Computer>();
+			result = this.computerRepository.findByNameContaining(pattern);
+			return result;
+		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
+			throw new ItemNotFoundException("computerService");
 		}
-		return result;
 	}
 
-	public List<Computer> getComputersByPatternOrderBy(String pattern, String order, OrderByOption option) {
-		boolean isDesc = option == OrderByOption.DESC ? true : false;
-		List<Computer> result = new ArrayList<Computer>();
+	public List<Computer> getComputersByPatternOrderBy(String pattern, String order, OrderByOption option) throws ItemNotFoundException {
 		try {
-			result = computerDao.getPatternOrderBy(pattern, order, isDesc);
-		} catch (DAOException e) {
+			boolean isDesc = option == OrderByOption.DESC ? true : false;
+			List<Computer> result = new ArrayList<Computer>();
+			List<String> orders = Arrays.asList("name", "introduced", "discontinued", "company");
+			if (orders.contains(order)) {
+				if ("company".equals(order)) {
+					result = this.computerRepository.findByNameContaining(pattern,
+							Sort.by(new Sort.Order(isDesc ? Sort.Direction.DESC : Sort.Direction.ASC, "company.name").nullsLast()));
+				} else {
+					result = this.computerRepository.findByNameContaining(pattern,
+							Sort.by(new Sort.Order(isDesc ? Sort.Direction.DESC : Sort.Direction.ASC, order).nullsLast()));
+				}
+			} else {
+				result = this.getComputersByPattern(pattern);
+			}
+			return result;
+		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
+			throw new ItemNotFoundException("computerService");
 		}
-		return result;
 	}
 
 	public void updateComputer(Computer computer) throws ItemNotUpdatedException, ItemNotFoundException {
 		try {
-			computerDao.update(computer);
-		} catch (DAOException e) {
+			Optional<Computer> computerOpt = this.computerRepository.findById(computer.getId());
+			if (computerOpt.isPresent()) {
+				this.computerRepository.save(computer);
+			} else {
+				throw new ItemNotUpdatedException("dao");
+			}
+		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotUpdatedException("dao");
 		}
@@ -149,13 +184,13 @@ public class ComputerService {
 
 	public void deleteComputer(Computer computer) throws ItemNotFoundException, ItemNotDeletedException {
 		try {
-			Optional<Computer> computerOpt = computerDao.get(computer.getId());
+			Optional<Computer> computerOpt = this.computerRepository.findById(computer.getId());
 			if (computerOpt.isPresent()) {
-				computerDao.delete(computer);
+				this.computerRepository.delete(computer);
 			} else {
 				throw new ItemNotFoundException("deleteComputer");
 			}
-		} catch (DAOException e) {
+		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotDeletedException("dao");
 		}

@@ -1,13 +1,33 @@
 package model;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+@Entity
+@Table(name = "company")
 public class Company {
-	int id;
-	String name;
 
-	private Company() {
+	@Id
+	@Column(name = "id")
+	private int id;
+
+	@Column(name = "name")
+	private String name;
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "company", cascade = CascadeType.REMOVE)
+	public Set<Computer> computers;
+
+	public Company() {
 	}
 
 	public int getId() {

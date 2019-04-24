@@ -1,5 +1,6 @@
 package console.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,8 +35,13 @@ public class CompanyController {
 	 * Fetch company list and fill controller field.
 	 */
 	public void refreshCompanyPage() {
-		List<CompanyDTO> listCompanies = companyService.getAllCompanies().stream()
-				.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList());
+		List<CompanyDTO> listCompanies;
+		try {
+			listCompanies = companyService.getAllCompanies().stream()
+					.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList());
+		} catch (ItemNotFoundException e) {
+			listCompanies = new ArrayList<CompanyDTO>();
+		}
 		this.companyPage = new Page<CompanyDTO>(listCompanies);
 	}
 
@@ -44,8 +50,12 @@ public class CompanyController {
 	}
 
 	public List<CompanyDTO> getAllCompanies() {
-		return this.companyService.getAllCompanies().stream()
-				.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList());
+		try {
+			return this.companyService.getAllCompanies().stream()
+					.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList());
+		} catch (ItemNotFoundException e) {
+			return new ArrayList<CompanyDTO>();
+		}
 	}
 
 	public CompanyDTO getCompanyById(int id) throws ItemNotFoundException {

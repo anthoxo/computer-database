@@ -1,14 +1,11 @@
 package mapper;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Optional;
 
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import dao.CompanyDao;
+import dao.CompanyRepository;
 import dto.ComputerDTO;
 import exception.DAOException;
 import model.Company;
@@ -16,25 +13,12 @@ import model.Computer;
 import utils.Utils;
 
 @Component
-public class ComputerMapper implements RowMapper<Computer> {
+public class ComputerMapper {
 
-	CompanyDao companyDao;
+	CompanyRepository companyRepository;
 
-	private ComputerMapper(CompanyDao companyDao) {
-		this.companyDao = companyDao;
-	}
-
-	@Override
-	public Computer mapRow(ResultSet rs, int rowNum) throws SQLException {
-		Optional<Company> companyOpt;
-		try {
-			companyOpt = companyDao.get(rs.getInt("company_id"));
-		} catch (DAOException e) {
-			companyOpt = Optional.empty();
-		}
-		return (new Computer.Builder()).withId(rs.getInt("id")).withName(rs.getString("name"))
-				.withIntroducedDate(rs.getTimestamp("introduced")).withDiscontinuedDate(rs.getTimestamp("discontinued"))
-				.withCompanyId(rs.getInt("company_id")).withCompany(companyOpt.orElse(null)).build();
+	private ComputerMapper(CompanyRepository companyRepository) {
+		this.companyRepository = companyRepository;
 	}
 
 	/**
@@ -50,11 +34,10 @@ public class ComputerMapper implements RowMapper<Computer> {
 		computerDTO.setName(computer.getName());
 		computerDTO.setIntroducedDate(Utils.timestampToString(computer.getIntroduced()));
 		computerDTO.setDiscontinuedDate(Utils.timestampToString(computer.getDiscontinued()));
-		computerDTO.setCompanyId(computer.getCompanyId());
 		if (computer.getCompany() != null) {
+			computerDTO.setCompanyId(computer.getId());
 			computerDTO.setCompanyName(computer.getCompany().getName());
 		}
-
 		return computerDTO;
 	}
 
@@ -66,16 +49,16 @@ public class ComputerMapper implements RowMapper<Computer> {
 	 * @throws DAOException
 	 */
 	public Computer createBean(ComputerDTO cDTO) {
-		Company company = (new Company.Builder()).withId(cDTO.getCompanyId()).withName(cDTO.getCompanyName()).build();
 		Computer.Builder computerBuilder = new Computer.Builder();
 
 		Optional<Timestamp> intro = Utils.stringToTimestamp(cDTO.getIntroducedDate());
 		Optional<Timestamp> discontinued = Utils.stringToTimestamp(cDTO.getDiscontinuedDate());
 
+		Optional<Company> companyOpt = this.companyRepository.findById(cDTO.getCompanyId());
+
 		computerBuilder = computerBuilder.withIntroducedDate(intro.orElse(null))
 				.withDiscontinuedDate(discontinued.orElse(null));
 
-		return computerBuilder.withId(cDTO.getId()).withName(cDTO.getName()).withCompanyId(cDTO.getCompanyId())
-				.withCompany(company).build();
+		return computerBuilder.withId(cDTO.getId()).withName(cDTO.getName()).withCompany(companyOpt.orElse(null)).build();
 	}
 }

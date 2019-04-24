@@ -96,7 +96,7 @@
 						&nbsp;<spring:message code="computer.table.discontinued" />
 					</th>
 					<th>
-						<a href="${urlPath}?orderBy=companyName">
+						<a href="${urlPath}?orderBy=company">
 							<span class="glyphicon glyphicon-sort"></span>
 						</a>&nbsp;<spring:message code="computer.table.company_name" />
 					</th>

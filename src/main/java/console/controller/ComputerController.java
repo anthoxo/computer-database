@@ -1,5 +1,6 @@
 package console.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,8 +40,13 @@ public class ComputerController {
 	 * Fetch computer list and fill controller field.
 	 */
 	public void refreshComputerPage() {
-		List<ComputerDTO> computerList = computerService.getAllComputers().stream()
-				.map(computer -> this.computerMapper.createDTO(computer)).collect(Collectors.toList());
+		List<ComputerDTO> computerList;
+		try {
+			computerList = computerService.getAllComputers().stream()
+					.map(computer -> this.computerMapper.createDTO(computer)).collect(Collectors.toList());
+		} catch (ItemNotFoundException e) {
+			computerList = new ArrayList<ComputerDTO>();
+		}
 		this.computerPage = new Page<ComputerDTO>(computerList);
 	}
 
@@ -111,13 +117,18 @@ public class ComputerController {
 	 * @throws ItemBadCreatedException
 	 * @throws ComputerException
 	 */
-	public void createComputer(String name, String introduced, String discontinued, int companyId)
+	public void createComputer(String name, String introduced, String discontinued, String companyId)
 			throws ItemBadCreatedException {
 		ComputerDTO computerDTO = new ComputerDTO();
 		computerDTO.setName(name);
 		computerDTO.setIntroducedDate(introduced);
 		computerDTO.setDiscontinuedDate(discontinued);
-		computerDTO.setCompanyId(companyId);
+
+		try {
+			int companyIndex = Integer.valueOf(companyId);
+			computerDTO.setCompanyId(companyIndex);
+		} catch (NumberFormatException e) {}
+
 		Computer computer = this.computerMapper.createBean(computerDTO);
 		computerService.createComputer(computer);
 	}

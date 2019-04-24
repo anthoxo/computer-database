@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import dto.CompanyDTO;
 import dto.ComputerDTO;
 import exception.ItemBadCreatedException;
+import exception.ItemNotFoundException;
 import mapper.CompanyMapper;
 import mapper.ComputerMapper;
 import model.Computer;
@@ -76,12 +77,19 @@ public class AddComputerController {
 	}
 
 	@GetMapping
-	public String getAddComputer(Model model) {
-		List<CompanyDTO> companyList = this.companyService.getAllCompanies().stream()
-				.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList());
-		model.addAttribute(Variable.COMPANY_LIST, companyList);
-		model.addAttribute("computerDTO", new ComputerDTO());
-		return Variable.VIEW_COMPUTER_ADD;
+	public String getAddComputer(Model model, Locale locale) {
+		List<CompanyDTO> companyList;
+		try {
+			companyList = this.companyService.getAllCompanies().stream()
+					.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList());
+			model.addAttribute(Variable.COMPANY_LIST, companyList);
+			model.addAttribute("computerDTO", new ComputerDTO());
+			return Variable.VIEW_COMPUTER_ADD;
+		} catch (ItemNotFoundException e) {
+			this.notificationService.generateNotification(Variable.DANGER, this,
+					this.messageSource.getMessage("computer.getCompanies.error", null, locale));
+			return "redirect:" + Variable.URL_COMPUTER;
+		}
 	}
 
 }

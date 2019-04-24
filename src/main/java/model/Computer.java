@@ -2,15 +2,39 @@ package model;
 
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+@Entity
+@Table(name = "computer")
 public class Computer {
+
+	@Id
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	int id;
+
+	@Column(name = "name")
 	String name;
+
+	@Column(name = "introduced")
 	Timestamp introduced;
+
+	@Column(name = "discontinued")
 	Timestamp discontinued;
-	int companyId;
+
+	@ManyToOne(fetch = FetchType.EAGER, optional = true, targetEntity = Company.class)
+	@JoinColumn(name = "company_id", referencedColumnName = "id")
 	Company company;
 
 	private Computer() {
@@ -30,10 +54,6 @@ public class Computer {
 
 	public Timestamp getDiscontinued() {
 		return this.discontinued;
-	}
-
-	public int getCompanyId() {
-		return this.companyId;
 	}
 
 	public Company getCompany() {
@@ -56,10 +76,6 @@ public class Computer {
 		this.discontinued = discontinued;
 	}
 
-	public void setCompanyId(int companyId) {
-		this.companyId = companyId;
-	}
-
 	public void setCompany(Company company) {
 		this.company = company;
 	}
@@ -71,7 +87,6 @@ public class Computer {
 		ts.append("name", name);
 		ts.append("introduced", introduced);
 		ts.append("discontinued", discontinued);
-		ts.append("company_id", companyId);
 		if (this.getCompany() != null) {
 			ts.append("company", company.toString());
 		}
@@ -86,16 +101,42 @@ public class Computer {
 			return false;
 		} else {
 			Computer computer = (Computer) obj;
-			return this.id == computer.id && this.companyId == computer.companyId && this.name.equals(computer.name)
-					&& this.introduced.equals(computer.introduced) && this.discontinued.equals(computer.discontinued)
-					&& this.company.equals(computer.company);
+			boolean result = this.id == computer.id && this.name.equals(computer.name);
+			if (this.getIntroduced() == null) {
+				result = result & computer.getIntroduced() == null;
+			} else {
+				result = result & this.introduced.equals(computer.introduced);
+			}
+			if (this.getDiscontinued() == null) {
+				result = result & computer.getDiscontinued() == null;
+			} else {
+				result = result & this.discontinued.equals(computer.discontinued);
+			}
+			if (this.getCompany() == null) {
+				result = result & computer.getCompany() == null;
+			} else {
+				result = result & this.company.equals(computer.company);
+			}
+			return result;
 		}
 	}
 
 	@Override
 	public int hashCode() {
-		return this.getId() + this.getName().hashCode() + this.getIntroduced().hashCode()
-				+ this.getDiscontinued().hashCode() + this.getCompanyId() + this.getCompany().hashCode();
+		int hash = this.getId();
+		if (this.getName() != null) {
+			hash += this.getName().hashCode();
+		}
+		if (this.getIntroduced() != null) {
+			hash += this.getIntroduced().hashCode();
+		}
+		if (this.getDiscontinued() != null) {
+			hash += this.getDiscontinued().hashCode();
+		}
+		if (this.getCompany() != null) {
+			hash += this.getCompany().hashCode();
+		}
+		return hash;
 	}
 
 	public static class Builder {
@@ -103,7 +144,6 @@ public class Computer {
 		private String name;
 		private Timestamp introduced;
 		private Timestamp discontinued;
-		private int companyId;
 		private Company company;
 
 		public Builder() {
@@ -129,11 +169,6 @@ public class Computer {
 			return this;
 		}
 
-		public Builder withCompanyId(int companyId) {
-			this.companyId = companyId;
-			return this;
-		}
-
 		public Builder withCompany(Company company) {
 			this.company = company;
 			return this;
@@ -145,7 +180,6 @@ public class Computer {
 			computer.setName(this.name);
 			computer.setIntroduced(this.introduced);
 			computer.setDiscontinued(this.discontinued);
-			computer.setCompanyId(this.companyId);
 			computer.setCompany(this.company);
 			return computer;
 		}

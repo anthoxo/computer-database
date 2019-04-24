@@ -155,7 +155,7 @@ public class ComputerView {
 		companyId = sc.nextLine();
 
 		try {
-			this.computerController.createComputer(name, introduced, discontinued, Integer.valueOf(companyId));
+			this.computerController.createComputer(name, introduced, discontinued, companyId);
 			logger.info("Done !");
 		} catch (ItemBadCreatedException e) {
 			logger.warn("Object not created");

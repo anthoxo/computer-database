@@ -6,10 +6,10 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import dao.CompanyDao;
-import exception.DAOException;
+import dao.CompanyRepository;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
 import model.Company;
@@ -18,65 +18,73 @@ import utils.Utils.OrderByOption;
 @Service
 public class CompanyService {
 
-	CompanyDao companyDao;
+	CompanyRepository companyRepository;
 
 	private Logger logger = LoggerFactory.getLogger(CompanyService.class);
 
-	private CompanyService(CompanyDao companyDao) {
-		this.companyDao = companyDao;
+	private CompanyService(CompanyRepository companyRepository) {
+		this.companyRepository = companyRepository;
 	}
 
 	/**
 	 * Retrieve all companies and return a list of company.
 	 *
 	 * @return List of companies.
+	 * @throws ItemNotFoundException
 	 */
-	public List<Company> getAllCompanies() {
-		List<Company> result = new ArrayList<Company>();
+	public List<Company> getAllCompanies() throws ItemNotFoundException {
 		try {
-			result = companyDao.getAll();
-		} catch (DAOException e) {
+			List<Company> result = new ArrayList<Company>();
+			result = companyRepository.findAll();
+			return result;
+		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
+			throw new ItemNotFoundException("companyService");
 		}
-		return result;
 	}
 
-	public List<Company> getAllCompaniesOrderByName(OrderByOption option) {
-		List<Company> result = new ArrayList<Company>();
-		boolean isDesc = option == OrderByOption.DESC ? true : false;
+	public List<Company> getAllCompaniesOrderByName(OrderByOption option) throws ItemNotFoundException {
 		try {
-			result = companyDao.getAllOrderByName(isDesc);
-		} catch (DAOException e) {
+			List<Company> result = new ArrayList<Company>();
+			boolean isDesc = option == OrderByOption.DESC ? true : false;
+			if (isDesc) {
+				result = companyRepository.findAllByOrderByNameDesc();
+			} else {
+				result = companyRepository.findAllByOrderByNameAsc();
+			}
+			return result;
+		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
+			throw new ItemNotFoundException("companyService");
 		}
-		return result;
 	}
 
 	public Company getCompanyById(int id) throws ItemNotFoundException {
 		try {
-			Optional<Company> companyOpt = this.companyDao.get(id);
+			Optional<Company> companyOpt = companyRepository.findById(id);
 			if (companyOpt.isPresent()) {
 				return companyOpt.get();
 			} else {
 				throw new ItemNotFoundException("getComputerById");
 			}
-		} catch (DAOException e) {
+		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("dao");
+			throw new ItemNotFoundException("companyService");
 		}
 	}
 
 	public void deleteCompany(Company company) throws ItemNotFoundException, ItemNotDeletedException {
 		try {
-			Optional<Company> companyOpt = companyDao.get(company.getId());
+			Optional<Company> companyOpt = companyRepository.findById(company.getId());
 			if (companyOpt.isPresent()) {
-				companyDao.delete(company);
+				this.companyRepository.delete(companyOpt.get());
 			} else {
 				throw new ItemNotFoundException("deleteComputer");
 			}
-		} catch (DAOException e) {
+		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotDeletedException("dao");
+			throw new ItemNotDeletedException("companyService");
+
 		}
 	}
 

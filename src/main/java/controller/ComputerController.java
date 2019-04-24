@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import dto.ComputerDTO;
+import exception.ItemNotFoundException;
 import mapper.ComputerMapper;
 import model.Computer;
 import model.Page;
@@ -52,23 +54,28 @@ public class ComputerController {
 		}
 		if (index == -1) {
 			List<Computer> listComputers;
-			if (!orderBy.equals("")) {
-				switch (this.orderByOption) {
-				case ASC:
-					this.orderByOption = OrderByOption.DESC;
-					break;
-				default:
-					this.orderByOption = OrderByOption.ASC;
-					break;
+			try {
+				if (!orderBy.equals("")) {
+					switch (this.orderByOption) {
+					case ASC:
+						this.orderByOption = OrderByOption.DESC;
+						break;
+					default:
+						this.orderByOption = OrderByOption.ASC;
+						break;
+					}
+					if (!orderBy.equals(orderColumn)) {
+						this.orderByOption = OrderByOption.ASC;
+					}
+					this.orderColumn = orderBy;
+					listComputers = this.computerService.getAllComputersOrderBy(orderColumn, orderByOption);
+				} else {
+					listComputers = computerService.getAllComputers();
+					orderByOption = OrderByOption.NULL;
 				}
-				if (!orderBy.equals(orderColumn)) {
-					this.orderByOption = OrderByOption.ASC;
-				}
-				this.orderColumn = orderBy;
-				listComputers = this.computerService.getAllComputersOrderBy(orderColumn, orderByOption);
-			} else {
-				listComputers = computerService.getAllComputers();
-				orderByOption = OrderByOption.NULL;
+
+			} catch (ItemNotFoundException e) {
+				listComputers = new ArrayList<Computer>();
 			}
 			this.computerPage = new Page<ComputerDTO>(listComputers.stream()
 					.map(computer -> this.computerMapper.createDTO(computer)).collect(Collectors.toList()));
@@ -109,23 +116,27 @@ public class ComputerController {
 		}
 		if (index == -1) {
 			List<Computer> listComputers;
-			if (!orderBy.equals("")) {
-				switch (this.orderByOption) {
-				case ASC:
-					this.orderByOption = OrderByOption.DESC;
-					break;
-				default:
-					this.orderByOption = OrderByOption.ASC;
-					break;
+			try {
+				if (!orderBy.equals("")) {
+					switch (this.orderByOption) {
+					case ASC:
+						this.orderByOption = OrderByOption.DESC;
+						break;
+					default:
+						this.orderByOption = OrderByOption.ASC;
+						break;
+					}
+					if (!orderBy.equals(orderColumn)) {
+						this.orderByOption = OrderByOption.ASC;
+					}
+					this.orderColumn = orderBy;
+					listComputers = this.computerService.getComputersByPatternOrderBy(pattern, orderBy, this.orderByOption);
+				} else {
+					listComputers = this.computerService.getComputersByPattern(pattern);
+					orderByOption = OrderByOption.NULL;
 				}
-				if (!orderBy.equals(orderColumn)) {
-					this.orderByOption = OrderByOption.ASC;
-				}
-				this.orderColumn = orderBy;
-				listComputers = this.computerService.getComputersByPatternOrderBy(pattern, orderBy, this.orderByOption);
-			} else {
-				listComputers = this.computerService.getComputersByPattern(pattern);
-				orderByOption = OrderByOption.NULL;
+			} catch (ItemNotFoundException e) {
+				listComputers = new ArrayList<Computer>();
 			}
 			this.computerPage = new Page<ComputerDTO>(listComputers.stream()
 					.map(computer -> this.computerMapper.createDTO(computer)).collect(Collectors.toList()));
