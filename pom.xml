@@ -31,6 +31,7 @@
 		<spring.boot.version>2.1.4.RELEASE</spring.boot.version>
 		<spring.data.jpa.version>2.1.6.RELEASE</spring.data.jpa.version>
 		<hibernate.version>5.4.2.Final</hibernate.version>
+		<h2.version>1.4.199</h2.version>
 	</properties>
 
 	<dependencies>
@@ -121,6 +122,19 @@
 			<version>${spring.boot.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<version>${spring.boot.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
 		<dependency>
 			<groupId>com.zaxxer</groupId>
@@ -132,6 +146,13 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>${hibernate.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+			<version>${h2.version}</version>
 		</dependency>
 	</dependencies>
 

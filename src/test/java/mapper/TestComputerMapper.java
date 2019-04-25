@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -56,33 +55,11 @@ public class TestComputerMapper {
 	}
 
 	@Test
-	public void testMap() throws SQLException, DAOException {
-		initMap();
-		Mockito.doReturn(new Timestamp(0)).when(rs).getTimestamp("introduced");
-		Mockito.doReturn(new Timestamp(1000)).when(rs).getTimestamp("discontinued");
-		Computer computer = computerMapper.mapRow(rs, 0);
-		assertEquals(computer.getId(), 1);
-		assertEquals(computer.getName(), "Macbook Air");
-		assertEquals(computer.getCompanyId(), 1);
-	}
-
-	@Test
-	public void testMapWithNullDate() throws SQLException {
-		initMap();
-		Mockito.doReturn(null).when(rs).getTimestamp("introduced");
-		Mockito.doReturn(null).when(rs).getTimestamp("discontinued");
-		Computer computer = computerMapper.mapRow(rs, 0);
-		assertEquals(computer.getId(), 1);
-		assertEquals(computer.getName(), "Macbook Air");
-		assertEquals(computer.getCompanyId(), 1);
-	}
-
-	@Test
 	public void testCreateDTO() {
 		Company company = (new Company.Builder()).withName("Apple Inc.").build();
 		Computer computer = (new Computer.Builder()).withId(1).withName("Macbook Air")
 				.withIntroducedDate(Utils.stringToTimestamp("2000/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("2020/01/01").get()).withCompanyId(1).withCompany(company)
+				.withDiscontinuedDate(Utils.stringToTimestamp("2020/01/01").get()).withCompany(company)
 				.build();
 		ComputerDTO computerDTO = computerMapper.createDTO(computer);
 		assertEquals(computer.getId(), computerDTO.getId());

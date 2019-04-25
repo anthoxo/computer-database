@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import console.MainConfig;
-import dao.CompanyDao;
+import dao.CompanyRepository;
 import exception.DAOException;
 import exception.ItemNotDeletedException;
 import exception.ItemNotFoundException;
@@ -24,7 +24,7 @@ import utils.Utils.OrderByOption;
 public class TestCompanyService {
 
 	@Mock
-	CompanyDao companyDao;
+	CompanyRepository companyRepository;
 
 	@InjectMocks
 	CompanyService companyService;
@@ -34,39 +34,39 @@ public class TestCompanyService {
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(MainConfig.class);
 		companyService = context.getBean(CompanyService.class);
-		Field field = CompanyService.class.getDeclaredField("companyDao");
+		Field field = CompanyService.class.getDeclaredField("companyRepository");
 		field.setAccessible(true);
-		field.set(companyService, companyDao);
+		field.set(companyService, companyRepository);
 		context.close();
 	}
 
 	@Test
-	public void testGetAll() throws DAOException {
+	public void testGetAll() throws ItemNotFoundException {
 		this.companyService.getAllCompanies();
-		Mockito.verify(companyDao).getAll();
+		Mockito.verify(companyRepository).findAll();
 	}
 
 	@Test
-	public void testGetAllCompaniesOrderByName() throws DAOException {
+	public void testGetAllCompaniesOrderByName() throws DAOException, ItemNotFoundException {
 		this.companyService.getAllCompaniesOrderByName(OrderByOption.ASC);
-		Mockito.verify(companyDao).getAllOrderByName(false);
+		Mockito.verify(companyRepository).findAllByOrderByNameAsc();
 	}
 
 	@Test
 	public void testGetCompanyById() throws DAOException, ItemNotFoundException {
 		Optional<Company> companyOpt = Optional.of(new Company.Builder().build());
-		Mockito.when(companyDao.get(Mockito.anyInt())).thenReturn(companyOpt);
+		Mockito.when(companyRepository.findById(Mockito.anyInt())).thenReturn(companyOpt);
 		this.companyService.getCompanyById(0);
-		Mockito.verify(companyDao).get(0);
+		Mockito.verify(companyRepository).findById(0);
 	}
 
 	@Test
 	public void testDeleteCompany() throws DAOException, ItemNotFoundException, ItemNotDeletedException {
 		Company company = new Company.Builder().withId(0).withName("Company_0").build();
 		Optional<Company> companyOpt = Optional.of(company);
-		Mockito.when(companyDao.get(Mockito.anyInt())).thenReturn(companyOpt);
+		Mockito.when(companyRepository.findById(Mockito.anyInt())).thenReturn(companyOpt);
 
 		this.companyService.deleteCompany(company);
-		Mockito.verify(companyDao).delete(company);
+		Mockito.verify(companyRepository).delete(company);
 	}
 }

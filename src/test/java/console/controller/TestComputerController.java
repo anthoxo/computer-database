@@ -102,7 +102,7 @@ public class TestComputerController {
 	public void testCreateComputer() throws DAOException, ItemBadCreatedException {
 		Mockito.doNothing().when(computerService).createComputer(Mockito.any(Computer.class));
 
-		this.computerController.createComputer("Computer_1", "", "", 1);
+		this.computerController.createComputer("Computer_1", "", "", "1");
 
 		Mockito.verify(computerService).createComputer(Mockito.any(Computer.class));
 	}

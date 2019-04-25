@@ -21,7 +21,7 @@ public class TestComputer {
 		company = (new Company.Builder()).withId(1).withName("Apple").build();
 		computer = (new Computer.Builder()).withId(1).withName("MacBook")
 				.withIntroducedDate(Utils.stringToTimestamp("2000/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("2001/01/01").get()).withCompanyId(1).withCompany(company)
+				.withDiscontinuedDate(Utils.stringToTimestamp("2001/01/01").get()).withCompany(company)
 				.build();
 	}
 
@@ -31,7 +31,6 @@ public class TestComputer {
 		assertEquals(computer.getName(), "MacBook");
 		assertEquals(computer.getIntroduced(), Utils.stringToTimestamp("2000/01/01").get());
 		assertEquals(computer.getDiscontinued(), Utils.stringToTimestamp("2001/01/01").get());
-		assertEquals(computer.getCompanyId(), 1);
 		assertEquals(computer.getCompany(), company);
 	}
 
@@ -51,7 +50,7 @@ public class TestComputer {
 	public void testEquals3() {
 		Computer computer2 = (new Computer.Builder()).withId(1).withName("Macbook")
 				.withIntroducedDate(Utils.stringToTimestamp("2000/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("2001/01/01").get()).withCompanyId(1).withCompany(company)
+				.withDiscontinuedDate(Utils.stringToTimestamp("2001/01/01").get()).withCompany(company)
 				.build();
 		assertFalse(computer.equals(computer2));
 	}
@@ -60,7 +59,7 @@ public class TestComputer {
 	public void testEquals4() {
 		Computer computer2 = (new Computer.Builder()).withId(1).withName("MacBook")
 				.withIntroducedDate(Utils.stringToTimestamp("2000/01/01").get())
-				.withDiscontinuedDate(Utils.stringToTimestamp("2001/01/01").get()).withCompanyId(1).withCompany(company)
+				.withDiscontinuedDate(Utils.stringToTimestamp("2001/01/01").get()).withCompany(company)
 				.build();
 		assertTrue(computer.equals(computer2));
 	}
