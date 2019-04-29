@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,8 +50,9 @@ public class ComputerController {
 	String orderColumn;
 	String pattern = "";
 
-	public ComputerController(CompanyService companyService, ComputerService computerService, NotificationService notificationService,
-			CompanyMapper companyMapper, ComputerMapper computerMapper, MessageSource messageSource) {
+	public ComputerController(CompanyService companyService, ComputerService computerService,
+			NotificationService notificationService, CompanyMapper companyMapper, ComputerMapper computerMapper,
+			MessageSource messageSource) {
 		this.companyService = companyService;
 		this.computerService = computerService;
 		this.notificationService = notificationService;
@@ -147,7 +149,8 @@ public class ComputerController {
 						this.orderByOption = OrderByOption.ASC;
 					}
 					this.orderColumn = orderBy;
-					listComputers = this.computerService.getComputersByPatternOrderBy(pattern, orderBy, this.orderByOption);
+					listComputers = this.computerService.getComputersByPatternOrderBy(pattern, orderBy,
+							this.orderByOption);
 				} else {
 					listComputers = this.computerService.getComputersByPattern(pattern);
 					orderByOption = OrderByOption.NULL;
@@ -190,7 +193,7 @@ public class ComputerController {
 			messageNotification = "computer.add.notification.not_valid";
 		} else {
 			try {
-				Computer computer = this.computerMapper.createBean(computerDTO);
+				Computer computer = this.computerMapper.createEntity(computerDTO);
 				this.computerService.createComputer(computer);
 			} catch (ItemBadCreatedException e) {
 				levelNotification = Variable.DANGER;
@@ -233,7 +236,7 @@ public class ComputerController {
 			messageNotification = "computer.edit.notification.not_valid";
 		} else {
 			try {
-				Computer computer = this.computerMapper.createBean(computerDTO);
+				Computer computer = this.computerMapper.createEntity(computerDTO);
 				this.computerService.updateComputer(computer);
 			} catch (ItemNotUpdatedException e) {
 				levelNotification = Variable.DANGER;
@@ -248,16 +251,10 @@ public class ComputerController {
 		return "redirect:" + Variable.URL_COMPUTER;
 	}
 
-	@GetMapping(Variable.URL_EDIT)
-	public String getEditComputer(Model model,
-			@RequestParam(name = Variable.GET_PARAMETER_ID, required = false, defaultValue = "") String id,
-			Locale locale) {
-		int idComputer = 0;
-		if (!"".equals(id)) {
-			idComputer = Integer.valueOf(id);
-		}
+	@GetMapping("/{id}")
+	public String getEditComputer(Model model, @PathVariable Integer id, Locale locale) {
 		try {
-			Computer computer = this.computerService.getComputerById(idComputer);
+			Computer computer = this.computerService.getComputerById(id);
 			ComputerDTO cDTO = this.computerMapper.createDTO(computer);
 			List<CompanyDTO> listCompanies = this.companyService.getAllCompanies().stream()
 					.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList());

@@ -106,7 +106,7 @@
 			<tbody>
 				<c:forEach var="c" items="${page.entitiesPage}">
 					<tr id="Computer_${c.id}">
-						<td><a href="${context}/computer/edit?id=${c.id}"><c:out
+						<td><a href="${context}/computer/${c.id}"><c:out
 									value="${c.name}" /></a></td>
 						<td><c:out value="${c.introducedDate}" /></td>
 						<td><c:out value="${c.discontinuedDate}" /></td>

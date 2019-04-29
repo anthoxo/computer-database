@@ -1,6 +1,5 @@
 package service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -97,8 +96,7 @@ public class ComputerService {
 	 */
 	public List<Computer> getAllComputers() throws ItemNotFoundException {
 		try {
-			List<Computer> result = new ArrayList<Computer>();
-			result = this.computerRepository.findAll();
+			List<Computer> result = this.computerRepository.findAll();
 			return result;
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
@@ -108,7 +106,7 @@ public class ComputerService {
 
 	public List<Computer> getAllComputersOrderBy(String order, OrderByOption option) throws ItemNotFoundException {
 		try {
-			List<Computer> result = new ArrayList<Computer>();
+			List<Computer> result;
 			boolean isDesc = option == OrderByOption.DESC ? true : false;
 			List<String> orders = Arrays.asList("name", "introduced", "discontinued", "company");
 			if (orders.contains(order)) {
@@ -132,8 +130,7 @@ public class ComputerService {
 
 	public List<Computer> getComputersByPattern(String pattern) throws ItemNotFoundException {
 		try {
-			List<Computer> result = new ArrayList<Computer>();
-			result = this.computerRepository.findByNameContaining(pattern);
+			List<Computer> result = this.computerRepository.findByNameContaining(pattern);
 			return result;
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
@@ -144,7 +141,7 @@ public class ComputerService {
 	public List<Computer> getComputersByPatternOrderBy(String pattern, String order, OrderByOption option) throws ItemNotFoundException {
 		try {
 			boolean isDesc = option == OrderByOption.DESC ? true : false;
-			List<Computer> result = new ArrayList<Computer>();
+			List<Computer> result;
 			List<String> orders = Arrays.asList("name", "introduced", "discontinued", "company");
 			if (orders.contains(order)) {
 				if ("company".equals(order)) {

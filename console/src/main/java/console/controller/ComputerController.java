@@ -129,7 +129,7 @@ public class ComputerController {
 			computerDTO.setCompanyId(companyIndex);
 		} catch (NumberFormatException e) {}
 
-		Computer computer = this.computerMapper.createBean(computerDTO);
+		Computer computer = this.computerMapper.createEntity(computerDTO);
 		computerService.createComputer(computer);
 	}
 
@@ -141,7 +141,7 @@ public class ComputerController {
 		computerDTO.setIntroducedDate(introduced);
 		computerDTO.setDiscontinuedDate(discontinued);
 		computerDTO.setCompanyId(companyId);
-		Computer computer = this.computerMapper.createBean(computerDTO);
+		Computer computer = this.computerMapper.createEntity(computerDTO);
 		computerService.updateComputer(computer);
 	}
 

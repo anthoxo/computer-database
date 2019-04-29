@@ -1,18 +1,25 @@
 package persistence;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.sql.SQLException;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import core.model.Company;
 
 @ExtendWith(SpringExtension.class)
-// @ContextConfiguration(classes = {console.MainConfig.class})
+@ContextConfiguration(classes = {RepositoryConfig.class})
+@AutoConfigureTestDatabase(replace=Replace.NONE)
 @DataJpaTest
 public class TestCompanyDAO {
 
@@ -25,16 +32,16 @@ public class TestCompanyDAO {
 	@Test
 	public void testGetById() throws SQLException {
 		Company company = new Company.Builder().withId(3).withName("Company_5").build();
-//		entityManager.persist(company);
-//		entityManager.flush();
-//
-//		Optional<Company> found = companyRepository.findById(company.getId());
-//
-//		if (found.isPresent()) {
-//			assertTrue(company.equals(found.get()));
-//		} else {
-//			assertTrue(false);
-//		}
+		entityManager.persist(company);
+		entityManager.flush();
+
+		Optional<Company> found = companyRepository.findById(company.getId());
+
+		if (found.isPresent()) {
+			assertTrue(company.equals(found.get()));
+		} else {
+			assertTrue(false);
+		}
 		System.out.println("BONJOUR !");
 	}
 

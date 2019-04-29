@@ -56,7 +56,7 @@ public class TestCompanyMapper {
 		CompanyDTO companyDTO = new CompanyDTO();
 		companyDTO.setId(0);
 		companyDTO.setName("Apple");
-		Company company = companyMapper.createBean(companyDTO);
+		Company company = companyMapper.createEntity(companyDTO);
 		assertEquals(company.getId(), companyDTO.getId());
 		assertEquals(company.getName(), companyDTO.getName());
 	}

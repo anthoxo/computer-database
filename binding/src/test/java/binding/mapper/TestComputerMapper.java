@@ -75,7 +75,7 @@ public class TestComputerMapper {
 		computerDTO.setName("MacBook");
 		computerDTO.setIntroducedDate("2010/01/01");
 		computerDTO.setDiscontinuedDate("2020/01/01");
-		Computer computer = computerMapper.createBean(computerDTO);
+		Computer computer = computerMapper.createEntity(computerDTO);
 		assertEquals(computer.getId(), computerDTO.getId());
 		assertEquals(computer.getName(), computerDTO.getName());
 		assertEquals(computer.getIntroduced(), Utils.stringToTimestamp(computerDTO.getIntroducedDate()).get());

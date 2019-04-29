@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 
 import core.model.Company;
 import core.util.Utils.OrderByOption;
@@ -48,7 +50,7 @@ public class TestCompanyService {
 	@Test
 	public void testGetAllCompaniesOrderByName() throws DAOException, ItemNotFoundException {
 		this.companyService.getAllCompaniesOrderByName(OrderByOption.ASC);
-		Mockito.verify(companyRepository).findAllByOrderByNameAsc();
+		Mockito.verify(companyRepository).findAll(Sort.by(Direction.ASC, "name"));
 	}
 
 	@Test

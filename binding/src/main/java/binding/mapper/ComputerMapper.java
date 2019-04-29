@@ -46,7 +46,7 @@ public class ComputerMapper {
 	 * @param cDTO The DTO we want to transform.
 	 * @return A Company model.
 	 */
-	public Computer createBean(ComputerDTO cDTO) {
+	public Computer createEntity(ComputerDTO cDTO) {
 		Computer.Builder computerBuilder = new Computer.Builder();
 
 		Optional<Timestamp> intro = Utils.stringToTimestamp(cDTO.getIntroducedDate());

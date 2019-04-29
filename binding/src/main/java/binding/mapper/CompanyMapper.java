@@ -30,7 +30,7 @@ public class CompanyMapper {
 	 * @param cDTO The DTO we want to transform.
 	 * @return A Company model.
 	 */
-	public Company createBean(CompanyDTO cDTO) {
+	public Company createEntity(CompanyDTO cDTO) {
 		return (new Company.Builder()).withId(cDTO.getId()).withName(cDTO.getName()).build();
 	}
 }

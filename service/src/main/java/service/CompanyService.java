@@ -1,12 +1,13 @@
 package service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import core.model.Company;
@@ -34,8 +35,8 @@ public class CompanyService {
 	 */
 	public List<Company> getAllCompanies() throws ItemNotFoundException {
 		try {
-			List<Company> result = new ArrayList<Company>();
-			result = companyRepository.findAll();
+			List<Company> result = companyRepository.findAll();
+			;
 			return result;
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
@@ -45,13 +46,8 @@ public class CompanyService {
 
 	public List<Company> getAllCompaniesOrderByName(OrderByOption option) throws ItemNotFoundException {
 		try {
-			List<Company> result = new ArrayList<Company>();
 			boolean isDesc = option == OrderByOption.DESC ? true : false;
-			if (isDesc) {
-				result = companyRepository.findAllByOrderByNameDesc();
-			} else {
-				result = companyRepository.findAllByOrderByNameAsc();
-			}
+			List<Company> result = companyRepository.findAll(Sort.by(isDesc ? Direction.DESC : Direction.ASC, "name"));
 			return result;
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
@@ -84,8 +80,6 @@ public class CompanyService {
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotDeletedException("companyService");
-
 		}
 	}
-
 }

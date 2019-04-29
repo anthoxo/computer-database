@@ -66,11 +66,8 @@ public class CompanyController {
 			this.companyPage = new Page<CompanyDTO>(listCompanies.stream()
 					.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList()));
 		}
-
 		companyPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
-
 		model.addAttribute(Variable.PAGE, companyPage);
-
 		return Variable.VIEW_COMPANY;
 	}
 }
