@@ -1,16 +1,19 @@
 package core.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
@@ -18,6 +21,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class User implements UserDetails {
 
 	private static final long serialVersionUID = 333421094248290492L;
+
+	@Transient
+	private String token = "";
 
 	@Id
 	@Column(name = "id")
@@ -57,6 +63,10 @@ public class User implements UserDetails {
 		return this.role;
 	}
 
+	public String getToken() {
+		return this.token;
+	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -77,6 +87,10 @@ public class User implements UserDetails {
 		this.role = role;
 	}
 
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 	@Override
 	public String toString() {
 		ToStringBuilder ts = new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE);
@@ -85,6 +99,7 @@ public class User implements UserDetails {
 		ts.append("password", "HIDDEN");
 		ts.append("username", username);
 		ts.append("role", role);
+		ts.append("token", token);
 		return ts.toString();
 	}
 
@@ -113,6 +128,7 @@ public class User implements UserDetails {
 		private String password;
 		private String username;
 		private String role;
+		private String token;
 
 		public Builder() {
 		}
@@ -142,6 +158,12 @@ public class User implements UserDetails {
 			return this;
 		}
 
+		public Builder withToken(String token) {
+			this.token = token;
+			return this;
+		}
+
+
 		public User build() {
 			User user = new User();
 			user.setId(id);
@@ -149,13 +171,19 @@ public class User implements UserDetails {
 			user.setPassword(password);
 			user.setUsername(username);
 			user.setRole(role);
+			user.setToken(token);
 			return user;
 		}
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return AuthorityUtils.commaSeparatedStringToAuthorityList("USER,ADMIN");
+		List<SimpleGrantedAuthority> l = new ArrayList<SimpleGrantedAuthority>();
+		l.add(new SimpleGrantedAuthority("ROLE_USER"));
+		if ("ADMIN".equals(role)) {
+			l.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+		}
+		return l;
 	}
 
 	@Override

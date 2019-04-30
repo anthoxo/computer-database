@@ -16,6 +16,18 @@ public class ErrorController {
 		return Variable.VIEW_ERROR;
 	}
 
+	@GetMapping("/401")
+	public String handleError401(HttpServletRequest req, Model model, Exception exception) {
+		return "error/401";
+	}
+
+	@GetMapping("/403")
+	public String handleError403(HttpServletRequest req, Model model, Exception exception) {
+		return "error/401";
+	}
+
+
+
 	@GetMapping(Variable.URL_ERROR_404)
 	public String handleError404(HttpServletRequest req, Model model, Exception exception) {
 		return Variable.VIEW_ERROR_404;

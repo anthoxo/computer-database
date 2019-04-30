@@ -17,12 +17,12 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 
 @Service
-public class AuthentificationService {
+public class JwtService {
 
 	private String jwtSecret = "le one piece existe";
 	private int jwtExpirationInMs = 604800000;
 
-	private Logger logger = LoggerFactory.getLogger(AuthentificationService.class);
+	private Logger logger = LoggerFactory.getLogger(JwtService.class);
 
 	public String generateToken(Authentication auth) {
 		User user = (User) auth.getPrincipal();

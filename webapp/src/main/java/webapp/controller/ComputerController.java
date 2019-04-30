@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.springframework.context.MessageSource;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -62,6 +63,7 @@ public class ComputerController {
 	}
 
 	@GetMapping
+	@Secured("ROLE_USER")
 	public String getComputerList(Model model,
 			@RequestParam(name = Variable.GET_PARAMETER_ID, required = false, defaultValue = "") String id,
 			@RequestParam(name = Variable.GET_PARAMETER_ORDER_BY, required = false, defaultValue = "") String orderBy) {
@@ -117,6 +119,7 @@ public class ComputerController {
 	}
 
 	@PostMapping(Variable.URL_SEARCH)
+	@Secured("ROLE_USER")
 	public String postSearchComputers(
 			@RequestParam(name = Variable.GET_PARAMETER_SEARCH, required = false, defaultValue = "") String pattern) {
 		this.pattern = pattern;
@@ -124,6 +127,7 @@ public class ComputerController {
 	}
 
 	@GetMapping(Variable.URL_SEARCH)
+	@Secured("ROLE_USER")
 	public String getSearchComputers(Model model,
 			@RequestParam(name = Variable.GET_PARAMETER_ID, required = false, defaultValue = "") String id,
 			@RequestParam(name = Variable.GET_PARAMETER_ORDER_BY, required = false, defaultValue = "") String orderBy) {
@@ -179,6 +183,7 @@ public class ComputerController {
 	}
 
 	@PostMapping(Variable.URL_ADD)
+	@Secured("ROLE_ADMIN")
 	public String postAddComputer(@Validated @ModelAttribute("computerDTO") ComputerDTO computerDTO,
 			BindingResult result, Locale locale) {
 
@@ -206,6 +211,7 @@ public class ComputerController {
 	}
 
 	@GetMapping(Variable.URL_ADD)
+	@Secured("ROLE_ADMIN")
 	public String getAddComputer(Model model, Locale locale) {
 		List<CompanyDTO> companyList;
 		try {
@@ -222,6 +228,7 @@ public class ComputerController {
 	}
 
 	@PostMapping(Variable.URL_EDIT)
+	@Secured("ROLE_ADMIN")
 	public String postEditComputer(@Validated @ModelAttribute("computerDTO") ComputerDTO computerDTO,
 			BindingResult result, Locale locale) {
 
@@ -252,6 +259,7 @@ public class ComputerController {
 	}
 
 	@GetMapping("/{id}")
+	@Secured("ROLE_ADMIN")
 	public String getEditComputer(Model model, @PathVariable Integer id, Locale locale) {
 		try {
 			Computer computer = this.computerService.getComputerById(id);
@@ -271,6 +279,7 @@ public class ComputerController {
 	}
 
 	@PostMapping(Variable.URL_DELETE)
+	@Secured("ROLE_ADMIN")
 	public String deleteComputer(
 			@RequestParam(name = Variable.GET_PARAMETER_ID_DELETE, required = false, defaultValue = "") String id,
 			Locale locale) {
