@@ -69,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.authorizeRequests()
 			.anyRequest().permitAll()
 		.and()
-			.logout().logoutUrl("/logout").logoutSuccessUrl("/signin");
+			.logout().disable();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 	}

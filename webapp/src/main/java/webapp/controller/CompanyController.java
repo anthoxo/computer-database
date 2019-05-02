@@ -21,7 +21,7 @@ import persistence.exception.ItemNotFoundException;
 import service.CompanyService;
 
 @Controller
-@RequestMapping(Variable.URL_COMPANY)
+@RequestMapping("/company")
 public class CompanyController {
 
 	CompanyService companyService;
@@ -69,6 +69,8 @@ public class CompanyController {
 					.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList()));
 		}
 		companyPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
+		model.addAttribute(Variable.IS_USER, true);
+		model.addAttribute(Variable.IS_ADMIN, false);
 		model.addAttribute(Variable.PAGE, companyPage);
 		return Variable.VIEW_COMPANY;
 	}

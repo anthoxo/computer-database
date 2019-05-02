@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.MessageSource;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +26,7 @@ import binding.mapper.ComputerMapper;
 import binding.validator.ComputerDTOValidator;
 import core.model.Computer;
 import core.model.Page;
+import core.model.User;
 import core.util.Utils.OrderByOption;
 import core.util.Variable;
 import persistence.exception.ItemBadCreatedException;
@@ -36,7 +38,7 @@ import service.ComputerService;
 import service.NotificationService;
 
 @Controller
-@RequestMapping(Variable.URL_COMPUTER)
+@RequestMapping("/computer")
 public class ComputerController {
 
 	CompanyService companyService;
@@ -60,6 +62,15 @@ public class ComputerController {
 		this.companyMapper = companyMapper;
 		this.computerMapper = computerMapper;
 		this.messageSource = messageSource;
+	}
+
+	public boolean isAdmin() {
+		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (user == null) {
+			return false;
+		} else {
+			return user.getRole().equals("ADMIN");
+		}
 	}
 
 	@GetMapping
@@ -104,8 +115,10 @@ public class ComputerController {
 
 		computerPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
 
+		model.addAttribute(Variable.IS_USER, true);
+		model.addAttribute(Variable.IS_ADMIN, isAdmin());
 		model.addAttribute(Variable.PAGE, computerPage);
-		model.addAttribute(Variable.URL_PATH, Variable.URL_COMPUTER);
+		model.addAttribute(Variable.URL_PATH, "/computer");
 		model.addAttribute(Variable.IS_SEARCHING, false);
 
 		if (this.notificationService.isNotifying()) {
@@ -118,15 +131,15 @@ public class ComputerController {
 		return Variable.VIEW_COMPUTER;
 	}
 
-	@PostMapping(Variable.URL_SEARCH)
+	@PostMapping("/search")
 	@Secured("ROLE_USER")
 	public String postSearchComputers(
 			@RequestParam(name = Variable.GET_PARAMETER_SEARCH, required = false, defaultValue = "") String pattern) {
 		this.pattern = pattern;
-		return "redirect:" + Variable.URL_COMPUTER + Variable.URL_SEARCH;
+		return "redirect:/computer/search";
 	}
 
-	@GetMapping(Variable.URL_SEARCH)
+	@GetMapping("/search")
 	@Secured("ROLE_USER")
 	public String getSearchComputers(Model model,
 			@RequestParam(name = Variable.GET_PARAMETER_ID, required = false, defaultValue = "") String id,
@@ -168,8 +181,10 @@ public class ComputerController {
 
 		computerPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
 
+		model.addAttribute(Variable.IS_USER, true);
+		model.addAttribute(Variable.IS_ADMIN, isAdmin());
 		model.addAttribute(Variable.PAGE, computerPage);
-		model.addAttribute(Variable.URL_PATH, Variable.URL_COMPUTER + Variable.URL_SEARCH);
+		model.addAttribute(Variable.URL_PATH, "/computer/search");
 		model.addAttribute(Variable.IS_SEARCHING, true);
 
 		if (this.notificationService.isNotifying()) {
@@ -182,7 +197,7 @@ public class ComputerController {
 		return Variable.VIEW_COMPUTER;
 	}
 
-	@PostMapping(Variable.URL_ADD)
+	@PostMapping("/add")
 	@Secured("ROLE_ADMIN")
 	public String postAddComputer(@Validated @ModelAttribute("computerDTO") ComputerDTO computerDTO,
 			BindingResult result, Locale locale) {
@@ -207,27 +222,29 @@ public class ComputerController {
 		}
 		this.notificationService.generateNotification(levelNotification, this,
 				this.messageSource.getMessage(messageNotification, null, locale));
-		return "redirect:" + Variable.URL_COMPUTER;
+		return "redirect:/computer";
 	}
 
-	@GetMapping(Variable.URL_ADD)
+	@GetMapping("/add")
 	@Secured("ROLE_ADMIN")
 	public String getAddComputer(Model model, Locale locale) {
 		List<CompanyDTO> companyList;
 		try {
 			companyList = this.companyService.getAllCompanies().stream()
 					.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList());
+			model.addAttribute(Variable.IS_USER, true);
+			model.addAttribute(Variable.IS_ADMIN, true);
 			model.addAttribute(Variable.COMPANY_LIST, companyList);
 			model.addAttribute("computerDTO", new ComputerDTO());
 			return Variable.VIEW_COMPUTER_ADD;
 		} catch (ItemNotFoundException e) {
 			this.notificationService.generateNotification(Variable.DANGER, this,
 					this.messageSource.getMessage("computer.getCompanies.error", null, locale));
-			return "redirect:" + Variable.URL_COMPUTER;
+			return "redirect:/computer";
 		}
 	}
 
-	@PostMapping(Variable.URL_EDIT)
+	@PostMapping("/edit")
 	@Secured("ROLE_ADMIN")
 	public String postEditComputer(@Validated @ModelAttribute("computerDTO") ComputerDTO computerDTO,
 			BindingResult result, Locale locale) {
@@ -255,7 +272,7 @@ public class ComputerController {
 		}
 		this.notificationService.generateNotification(levelNotification, this,
 				this.messageSource.getMessage(messageNotification, null, locale));
-		return "redirect:" + Variable.URL_COMPUTER;
+		return "redirect:/computer";
 	}
 
 	@GetMapping("/{id}")
@@ -267,6 +284,8 @@ public class ComputerController {
 			List<CompanyDTO> listCompanies = this.companyService.getAllCompanies().stream()
 					.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList());
 
+			model.addAttribute(Variable.IS_USER, true);
+			model.addAttribute(Variable.IS_ADMIN, true);
 			model.addAttribute("computerDTO", cDTO);
 			model.addAttribute(Variable.COMPANY_LIST, listCompanies);
 
@@ -274,11 +293,11 @@ public class ComputerController {
 		} catch (ItemNotFoundException e) {
 			this.notificationService.generateNotification(Variable.DANGER, this,
 					this.messageSource.getMessage("computer.edit.notification.not_found", null, locale));
-			return "redirect:" + Variable.URL_COMPUTER;
+			return "redirect:/computer";
 		}
 	}
 
-	@PostMapping(Variable.URL_DELETE)
+	@PostMapping("/delete")
 	@Secured("ROLE_ADMIN")
 	public String deleteComputer(
 			@RequestParam(name = Variable.GET_PARAMETER_ID_DELETE, required = false, defaultValue = "") String id,
@@ -300,6 +319,6 @@ public class ComputerController {
 		}
 		this.notificationService.generateNotification(levelNotification, this,
 				this.messageSource.getMessage(messageNotification, null, locale));
-		return "redirect:" + Variable.URL_COMPUTER;
+		return "redirect:/computer";
 	}
 }

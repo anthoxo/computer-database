@@ -34,13 +34,12 @@ public class UserService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
-		User user = this.userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail).orElseThrow(() -> new UsernameNotFoundException(""));
-		return user;
+		return this.userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
+				.orElseThrow(() -> new UsernameNotFoundException(""));
 	}
 
 	public UserDetails loadUserById(int id) throws UsernameNotFoundException {
-		User user = this.userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(""));
-		return user;
+		return this.userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(""));
 	}
 
 }

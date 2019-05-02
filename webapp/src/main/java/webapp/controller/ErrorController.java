@@ -11,30 +11,33 @@ import core.util.Variable;
 @Controller
 public class ErrorController {
 
-	@GetMapping(Variable.URL_ERROR)
+	@GetMapping("/error")
 	public String handleError(HttpServletRequest req, Model model, Exception exception) {
+		model.addAttribute(Variable.IS_USER, false);
 		return Variable.VIEW_ERROR;
 	}
 
 	@GetMapping("/401")
 	public String handleError401(HttpServletRequest req, Model model, Exception exception) {
+		model.addAttribute(Variable.IS_USER, false);
 		return "error/401";
 	}
 
 	@GetMapping("/403")
 	public String handleError403(HttpServletRequest req, Model model, Exception exception) {
-		return "error/401";
+		model.addAttribute(Variable.IS_USER, false);
+		return "error/403";
 	}
 
-
-
-	@GetMapping(Variable.URL_ERROR_404)
+	@GetMapping("/404")
 	public String handleError404(HttpServletRequest req, Model model, Exception exception) {
+		model.addAttribute(Variable.IS_USER, false);
 		return Variable.VIEW_ERROR_404;
 	}
 
-	@GetMapping(Variable.URL_ERROR_500)
+	@GetMapping("/500")
 	public String handleError500(HttpServletRequest req, Model model, Exception exception) {
+		model.addAttribute(Variable.IS_USER, false);
 		return Variable.VIEW_ERROR_500;
 	}
 }

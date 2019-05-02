@@ -1,8 +1,13 @@
 package persistence;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -36,26 +41,35 @@ public class RepositoryConfig {
 	}
 
 	@Bean
-	public LocalSessionFactoryBean sessionFactory() {
+	public Properties hibernateProperties() throws IOException {
+		Properties prop = new Properties();
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		InputStream fichierProperties = classLoader.getResourceAsStream("hibernate.properties");
+		prop.load(fichierProperties);
+		return prop;
+	}
+
+	@Bean
+	public LocalSessionFactoryBean sessionFactory() throws IOException {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(dataSource());
 		sessionFactory.setPackagesToScan("core.model");
-		// sessionFactory.setHibernateProperties(hibernateProperties());
+		sessionFactory.setHibernateProperties(hibernateProperties());
 		return sessionFactory;
 	}
 
-    @Bean
-    public PlatformTransactionManager transactionManager() {
-        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-        transactionManager.setSessionFactory(sessionFactory().getObject());
-        return transactionManager;
-    }
+	@Bean
+	public PlatformTransactionManager transactionManager() throws IOException {
+		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+		transactionManager.setSessionFactory(sessionFactory().getObject());
+		return transactionManager;
+	}
 
-    @Bean
-    EntityManagerFactory entityManagerFactory() {
-    	Session session = sessionFactory().getObject().openSession();
-    	EntityManagerFactory entity = session.getEntityManagerFactory();
-    	session.close();
-    	return entity;
-    }
+	@Bean
+	EntityManagerFactory entityManagerFactory() throws HibernateException, IOException {
+		Session session = sessionFactory().getObject().openSession();
+		EntityManagerFactory entity = session.getEntityManagerFactory();
+		session.close();
+		return entity;
+	}
 }

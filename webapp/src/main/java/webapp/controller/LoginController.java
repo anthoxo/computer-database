@@ -53,6 +53,7 @@ public class LoginController {
 	@GetMapping("/signin")
 	public String getSignIn(Model model) {
 		model.addAttribute("userDTO", new UserDTO());
+		model.addAttribute(Variable.IS_USER, false);
 		if (this.notificationService.isNotifying()) {
 			model.addAttribute(Variable.IS_NOTIFYING, true);
 			model.addAttribute(Variable.NOTIFICATION, this.notificationService.getNotification());
@@ -64,23 +65,26 @@ public class LoginController {
 	}
 
 	@PostMapping("/signin")
-	public String postSignIn(@Validated @ModelAttribute("userDTO") UserDTO userDTO, BindingResult result) {
+	public String postSignIn(@Validated @ModelAttribute("userDTO") UserDTO userDTO, BindingResult result,
+			Locale locale) {
 		try {
 			Authentication auth = authenticationManager
 					.authenticate(new UsernamePasswordAuthenticationToken(userDTO.getEmail(), userDTO.getPassword()));
 
 			SecurityContextHolder.getContext().setAuthentication(auth);
-			((User)auth.getPrincipal()).setToken(this.jwtService.generateToken(auth));
+			((User) auth.getPrincipal()).setToken(this.jwtService.generateToken(auth));
 			return "redirect:/index";
 		} catch (AuthenticationException e) {
-			System.out.println(e.toString());
-			return "signin";
+			this.notificationService.generateNotification(Variable.DANGER, this,
+					this.messageSource.getMessage("login.signin.notification.bad_credentials", null, locale));
+			return "redirect:/signin";
 		}
 	}
 
 	@GetMapping("/signup")
 	public String getSignUp(Model model) {
 		model.addAttribute("userDTO", new UserDTO());
+		model.addAttribute(Variable.IS_USER, false);
 		return "signup";
 	}
 
@@ -111,5 +115,15 @@ public class LoginController {
 				this.messageSource.getMessage(messageNotification, null, locale));
 
 		return "redirect:/signin";
+	}
+
+	@GetMapping("/logout")
+	public String getLogout(Locale locale) {
+		this.notificationService.generateNotification(Variable.SUCCESS, this,
+				this.messageSource.getMessage("logout.notification.good", null, locale));
+
+		SecurityContextHolder.getContext().setAuthentication(null);
+
+		return "redirect:/index";
 	}
 }

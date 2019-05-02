@@ -55,12 +55,8 @@ public class ComputerService {
 	 */
 	public Computer getComputerByName(String name) throws ItemNotFoundException {
 		try {
-			List<Computer> listComputers = this.computerRepository.findByName(name);
-			if (listComputers.size() > 0) {
-				return listComputers.get(0);
-			} else {
-				throw new ItemNotFoundException("getComputerByName");
-			}
+			return this.computerRepository.findByName(name)
+					.orElseThrow(() -> new ItemNotFoundException("getComputerByName"));
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotFoundException("computerRepository");
@@ -76,12 +72,7 @@ public class ComputerService {
 	 */
 	public Computer getComputerById(int id) throws ItemNotFoundException {
 		try {
-			Optional<Computer> computerOpt = this.computerRepository.findById(id);
-			if (computerOpt.isPresent()) {
-				return computerOpt.get();
-			} else {
-				throw new ItemNotFoundException("getComputerById");
-			}
+			return this.computerRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("getComputerById"));
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotFoundException("dao");
@@ -96,8 +87,7 @@ public class ComputerService {
 	 */
 	public List<Computer> getAllComputers() throws ItemNotFoundException {
 		try {
-			List<Computer> result = this.computerRepository.findAll();
-			return result;
+			return this.computerRepository.findAll();
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotFoundException("computerService");
@@ -112,11 +102,10 @@ public class ComputerService {
 			if (orders.contains(order)) {
 				if (order.equals("company")) {
 					result = this.computerRepository.findAll(
-							Sort.by(new Sort.Order(isDesc ? Sort.Direction.DESC : Sort.Direction.ASC, "company.name")
-									.nullsLast()));
+							Sort.by(new Sort.Order(isDesc ? Sort.Direction.DESC : Sort.Direction.ASC, "company.name")));
 				} else {
-					result = this.computerRepository.findAll(Sort
-							.by(new Sort.Order(isDesc ? Sort.Direction.DESC : Sort.Direction.ASC, order).nullsLast()));
+					result = this.computerRepository
+							.findAll(Sort.by(new Sort.Order(isDesc ? Sort.Direction.DESC : Sort.Direction.ASC, order)));
 				}
 			} else {
 				result = this.getAllComputers();
@@ -130,15 +119,15 @@ public class ComputerService {
 
 	public List<Computer> getComputersByPattern(String pattern) throws ItemNotFoundException {
 		try {
-			List<Computer> result = this.computerRepository.findByNameContaining(pattern);
-			return result;
+			return this.computerRepository.findByNameContaining(pattern);
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotFoundException("computerService");
 		}
 	}
 
-	public List<Computer> getComputersByPatternOrderBy(String pattern, String order, OrderByOption option) throws ItemNotFoundException {
+	public List<Computer> getComputersByPatternOrderBy(String pattern, String order, OrderByOption option)
+			throws ItemNotFoundException {
 		try {
 			boolean isDesc = option == OrderByOption.DESC ? true : false;
 			List<Computer> result;
@@ -146,10 +135,10 @@ public class ComputerService {
 			if (orders.contains(order)) {
 				if ("company".equals(order)) {
 					result = this.computerRepository.findByNameContaining(pattern,
-							Sort.by(new Sort.Order(isDesc ? Sort.Direction.DESC : Sort.Direction.ASC, "company.name").nullsLast()));
+							Sort.by(new Sort.Order(isDesc ? Sort.Direction.DESC : Sort.Direction.ASC, "company.name")));
 				} else {
 					result = this.computerRepository.findByNameContaining(pattern,
-							Sort.by(new Sort.Order(isDesc ? Sort.Direction.DESC : Sort.Direction.ASC, order).nullsLast()));
+							Sort.by(new Sort.Order(isDesc ? Sort.Direction.DESC : Sort.Direction.ASC, order)));
 				}
 			} else {
 				result = this.getComputersByPattern(pattern);
@@ -163,8 +152,7 @@ public class ComputerService {
 
 	public void updateComputer(Computer computer) throws ItemNotUpdatedException, ItemNotFoundException {
 		try {
-			Optional<Computer> computerOpt = this.computerRepository.findById(computer.getId());
-			if (computerOpt.isPresent()) {
+			if (this.computerRepository.findById(computer.getId()).isPresent()) {
 				this.computerRepository.save(computer);
 			} else {
 				throw new ItemNotUpdatedException("dao");
@@ -177,8 +165,7 @@ public class ComputerService {
 
 	public void deleteComputer(Computer computer) throws ItemNotFoundException, ItemNotDeletedException {
 		try {
-			Optional<Computer> computerOpt = this.computerRepository.findById(computer.getId());
-			if (computerOpt.isPresent()) {
+			if (this.computerRepository.findById(computer.getId()).isPresent()) {
 				this.computerRepository.delete(computer);
 			} else {
 				throw new ItemNotFoundException("deleteComputer");

@@ -56,9 +56,11 @@
 			<div class="pull-right">
 				<c:choose>
 					<c:when test="${isSearching == false}">
-						<a class="btn btn-success" id="addComputerBtn" href="${context}/computer/add">
-							<spring:message code="computer.add" />
-						</a>
+						<c:if test="${isAdmin == true}">
+							<a class="btn btn-success" id="addComputerBtn" href="${context}/computer/add">
+								<spring:message code="computer.add" />
+							</a>
+						</c:if>
 					</c:when>
 					<c:otherwise>
 						<a class="btn btn-success" id="goBack" href="${context}/computer">
@@ -100,22 +102,36 @@
 							<span class="glyphicon glyphicon-sort"></span>
 						</a>&nbsp;<spring:message code="computer.table.company_name" />
 					</th>
-					<th></th>
+					<c:if test="${isAdmin == true}">
+						<th></th>
+					</c:if>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach var="c" items="${page.entitiesPage}">
 					<tr id="Computer_${c.id}">
-						<td><a href="${context}/computer/${c.id}"><c:out
-									value="${c.name}" /></a></td>
+						<td>
+						<c:choose>
+							<c:when test="${isAdmin == true}">
+								<a href="${context}/computer/${c.id}"><c:out value="${c.name}" /></a>
+							</c:when>
+							<c:otherwise>
+								<c:out value="${c.name}" />
+							</c:otherwise>
+						</c:choose>
+						</td>
 						<td><c:out value="${c.introducedDate}" /></td>
 						<td><c:out value="${c.discontinuedDate}" /></td>
 						<td><c:out value="${c.companyName}" /></td>
-						<td align="center"><a type="button" class="btn btn-danger btn-sm"
-							data-toggle="modal" data-target="#modalDelete_${c.id}"> <i
-								class="fa fa-trash-o fa-lg"></i>
-						</a>
-						</td>
+						<c:if test="${isAdmin == true}">
+							<td align="center">
+							<a type="button" class="btn btn-danger btn-sm"
+								data-toggle="modal" data-target="#modalDelete_${c.id}"> <i
+									class="fa fa-trash-o fa-lg"></i>
+							</a>
+							</td>
+						</c:if>
+						
 					</tr>
 					
 					<!--  Modal delete -->

@@ -1,6 +1,7 @@
 package persistence;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,7 +11,7 @@ import core.model.Computer;
 
 @Repository
 public interface ComputerRepository extends JpaRepository<Computer, Integer> {
-	List<Computer> findByName(String name);
+	Optional<Computer> findByName(String name);
 	List<Computer> findByNameContaining(String name);
 	List<Computer> findByNameContaining(String name, Sort sort);
 }

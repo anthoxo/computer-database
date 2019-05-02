@@ -11,11 +11,12 @@ import core.util.Variable;
 @Controller
 public class IndexController {
 
-	@GetMapping({Variable.URL_ROOT, Variable.URL_INDEX})
+	@GetMapping({"/", "/index"})
 	public String getIndex(Model model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null) {
 			if (auth.isAuthenticated() && !auth.getName().equals("anonymousUser")) {
+				model.addAttribute(Variable.IS_USER, true);
 				return Variable.VIEW_INDEX;
 			} else {
 				return "redirect:/signin";

@@ -9,6 +9,8 @@ public class Variable {
 	public static final String COMPANY_LIST = "companyList";
 	public static final String PAGE = "page";
 	public static final String IS_SEARCHING = "isSearching";
+	public static final String IS_USER = "isUser";
+	public static final String IS_ADMIN = "isAdmin";
 
 	public static final String SUCCESS = "success";
 	public static final String DANGER = "danger";
@@ -20,23 +22,6 @@ public class Variable {
 	public static final String REGEX_EMAIL = "(^[a-zA-Z0-9_.-]+[@][a-zA-Z]+[.][a-z]{2,6}$)";
 
 	public static final String URL_PATH = "urlPath";
-
-	public static final String URL_ROOT = "/";
-	public static final String URL_FRENCH = "/fr";
-	public static final String URL_ENGLISH = "/en";
-	public static final String URL_INDEX = "/index";
-
-	public static final String URL_COMPANY = "/company";
-	public static final String URL_COMPUTER = "/computer";
-
-	public static final String URL_ADD = "/add";
-	public static final String URL_SEARCH = "/search";
-	public static final String URL_EDIT = "/edit";
-	public static final String URL_DELETE = "/delete";
-
-	public static final String URL_ERROR = "/error";
-	public static final String URL_ERROR_404 = "/404";
-	public static final String URL_ERROR_500 = "/500";
 
 	public static final String VIEW_INDEX = "index";
 	public static final String VIEW_COMPANY = "listCompanies";

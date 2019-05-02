@@ -1,7 +1,6 @@
 package service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +35,6 @@ public class CompanyService {
 	public List<Company> getAllCompanies() throws ItemNotFoundException {
 		try {
 			List<Company> result = companyRepository.findAll();
-			;
 			return result;
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
@@ -57,12 +55,7 @@ public class CompanyService {
 
 	public Company getCompanyById(int id) throws ItemNotFoundException {
 		try {
-			Optional<Company> companyOpt = companyRepository.findById(id);
-			if (companyOpt.isPresent()) {
-				return companyOpt.get();
-			} else {
-				throw new ItemNotFoundException("getComputerById");
-			}
+			return companyRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("getComputerById"));
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotFoundException("companyService");
@@ -71,9 +64,8 @@ public class CompanyService {
 
 	public void deleteCompany(Company company) throws ItemNotFoundException, ItemNotDeletedException {
 		try {
-			Optional<Company> companyOpt = companyRepository.findById(company.getId());
-			if (companyOpt.isPresent()) {
-				this.companyRepository.delete(companyOpt.get());
+			if (companyRepository.findById(company.getId()).isPresent()) {
+				this.companyRepository.delete(company);
 			} else {
 				throw new ItemNotFoundException("deleteComputer");
 			}
