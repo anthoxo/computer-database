@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -56,11 +57,11 @@
 			<div class="pull-right">
 				<c:choose>
 					<c:when test="${isSearching == false}">
-						<c:if test="${isAdmin == true}">
+						<sec:authorize access="hasRole('ADMIN')">
 							<a class="btn btn-success" id="addComputerBtn" href="${context}/computer/add">
 								<spring:message code="computer.add" />
 							</a>
-						</c:if>
+						</sec:authorize>
 					</c:when>
 					<c:otherwise>
 						<a class="btn btn-success" id="goBack" href="${context}/computer">
@@ -102,36 +103,34 @@
 							<span class="glyphicon glyphicon-sort"></span>
 						</a>&nbsp;<spring:message code="computer.table.company_name" />
 					</th>
-					<c:if test="${isAdmin == true}">
+					<sec:authorize access="hasRole('ADMIN')">
 						<th></th>
-					</c:if>
+					</sec:authorize>					
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach var="c" items="${page.entitiesPage}">
 					<tr id="Computer_${c.id}">
 						<td>
-						<c:choose>
-							<c:when test="${isAdmin == true}">
-								<a href="${context}/computer/${c.id}"><c:out value="${c.name}" /></a>
-							</c:when>
-							<c:otherwise>
-								<c:out value="${c.name}" />
-							</c:otherwise>
-						</c:choose>
+						<sec:authorize access="hasRole('ADMIN')">
+							<a href="${context}/computer/${c.id}">
+						</sec:authorize>
+						<c:out value="${c.name}" />
+						<sec:authorize access="hasRole('ADMIN')">
+							</a>
+						</sec:authorize>						
 						</td>
 						<td><c:out value="${c.introducedDate}" /></td>
 						<td><c:out value="${c.discontinuedDate}" /></td>
 						<td><c:out value="${c.companyName}" /></td>
-						<c:if test="${isAdmin == true}">
+						<sec:authorize access="hasRole('ADMIN')">
 							<td align="center">
 							<a type="button" class="btn btn-danger btn-sm"
 								data-toggle="modal" data-target="#modalDelete_${c.id}"> <i
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 							</td>
-						</c:if>
-						
+						</sec:authorize>
 					</tr>
 					
 					<!--  Modal delete -->

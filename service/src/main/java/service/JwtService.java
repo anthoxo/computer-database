@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import core.model.User;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -33,14 +32,6 @@ public class JwtService {
 		return Jwts.builder().setSubject(Integer.toString(user.getId())).setIssuedAt(now).setExpiration(expiryDate)
 				.signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
 	}
-
-    public int getUserIdFromJWT(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-        return Integer.parseInt(claims.getSubject());
-    }
 
     public boolean validateToken(String token) {
     	try {

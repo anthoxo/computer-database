@@ -17,7 +17,6 @@ import org.springframework.data.domain.Sort.Direction;
 import core.model.Company;
 import core.util.Utils.OrderByOption;
 import persistence.CompanyRepository;
-import persistence.exception.DAOException;
 import persistence.exception.ItemNotDeletedException;
 import persistence.exception.ItemNotFoundException;
 
@@ -48,13 +47,13 @@ public class TestCompanyService {
 	}
 
 	@Test
-	public void testGetAllCompaniesOrderByName() throws DAOException, ItemNotFoundException {
+	public void testGetAllCompaniesOrderByName() throws ItemNotFoundException {
 		this.companyService.getAllCompaniesOrderByName(OrderByOption.ASC);
 		Mockito.verify(companyRepository).findAll(Sort.by(Direction.ASC, "name"));
 	}
 
 	@Test
-	public void testGetCompanyById() throws DAOException, ItemNotFoundException {
+	public void testGetCompanyById() throws ItemNotFoundException {
 		Optional<Company> companyOpt = Optional.of(new Company.Builder().build());
 		Mockito.when(companyRepository.findById(Mockito.anyInt())).thenReturn(companyOpt);
 		this.companyService.getCompanyById(0);
@@ -62,7 +61,7 @@ public class TestCompanyService {
 	}
 
 	@Test
-	public void testDeleteCompany() throws DAOException, ItemNotFoundException, ItemNotDeletedException {
+	public void testDeleteCompany() throws ItemNotFoundException, ItemNotDeletedException {
 		Company company = new Company.Builder().withId(0).withName("Company_0").build();
 		Optional<Company> companyOpt = Optional.of(company);
 		Mockito.when(companyRepository.findById(Mockito.anyInt())).thenReturn(companyOpt);

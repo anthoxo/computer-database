@@ -20,7 +20,6 @@ import binding.dto.ComputerDTO;
 import console.main.MainConfig;
 import core.model.Computer;
 import core.model.Page;
-import persistence.exception.DAOException;
 import persistence.exception.ItemBadCreatedException;
 import persistence.exception.ItemNotDeletedException;
 import persistence.exception.ItemNotFoundException;
@@ -99,7 +98,7 @@ public class TestComputerController {
 	}
 
 	@Test
-	public void testCreateComputer() throws DAOException, ItemBadCreatedException {
+	public void testCreateComputer() throws ItemBadCreatedException {
 		Mockito.doNothing().when(computerService).createComputer(Mockito.any(Computer.class));
 
 		this.computerController.createComputer("Computer_1", "", "", "1");
@@ -108,7 +107,7 @@ public class TestComputerController {
 	}
 
 	@Test
-	public void testUpdateComputer() throws DAOException, ItemNotUpdatedException, ItemNotFoundException {
+	public void testUpdateComputer() throws ItemNotUpdatedException, ItemNotFoundException {
 
 		Mockito.doNothing().when(computerService).updateComputer(Mockito.any(Computer.class));
 
@@ -118,7 +117,7 @@ public class TestComputerController {
 	}
 
 	@Test
-	public void testDeleteComputer() throws DAOException, ItemNotFoundException, ItemNotDeletedException {
+	public void testDeleteComputer() throws ItemNotFoundException, ItemNotDeletedException {
 
 		Mockito.doNothing().when(computerService).deleteComputer(Mockito.any());
 

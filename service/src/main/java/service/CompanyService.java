@@ -34,8 +34,7 @@ public class CompanyService {
 	 */
 	public List<Company> getAllCompanies() throws ItemNotFoundException {
 		try {
-			List<Company> result = companyRepository.findAll();
-			return result;
+			return companyRepository.findAll();
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotFoundException("companyService");
@@ -44,9 +43,7 @@ public class CompanyService {
 
 	public List<Company> getAllCompaniesOrderByName(OrderByOption option) throws ItemNotFoundException {
 		try {
-			boolean isDesc = option == OrderByOption.DESC ? true : false;
-			List<Company> result = companyRepository.findAll(Sort.by(isDesc ? Direction.DESC : Direction.ASC, "name"));
-			return result;
+			return companyRepository.findAll(Sort.by(option == OrderByOption.DESC ? Direction.DESC : Direction.ASC, "name"));
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotFoundException("companyService");

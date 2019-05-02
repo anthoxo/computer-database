@@ -19,7 +19,6 @@ import binding.dto.ComputerDTO;
 import core.model.Company;
 import core.model.Computer;
 import core.util.Utils;
-import persistence.exception.DAOException;
 
 @ExtendWith(MockitoExtension.class)
 public class TestComputerMapper {
@@ -69,7 +68,7 @@ public class TestComputerMapper {
 	}
 
 	@Test
-	public void testCreateBean() throws SQLException, DAOException {
+	public void testCreateBean() throws SQLException {
 		ComputerDTO computerDTO = new ComputerDTO();
 		computerDTO.setId(0);
 		computerDTO.setName("MacBook");

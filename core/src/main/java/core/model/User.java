@@ -118,8 +118,8 @@ public class User implements UserDetails {
 
 	@Override
 	public int hashCode() {
-		return this.getId() + this.getEmail().hashCode() + this.getPassword().hashCode()
-				+ this.getUsername().hashCode() + this.getRole().hashCode();
+		return this.getId() + this.getEmail().hashCode() + this.getPassword().hashCode() + this.getUsername().hashCode()
+				+ this.getRole().hashCode();
 	}
 
 	public static class Builder {
@@ -162,7 +162,6 @@ public class User implements UserDetails {
 			this.token = token;
 			return this;
 		}
-
 
 		public User build() {
 			User user = new User();

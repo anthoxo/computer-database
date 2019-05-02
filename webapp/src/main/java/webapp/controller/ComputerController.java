@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.MessageSource;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,7 +25,6 @@ import binding.mapper.ComputerMapper;
 import binding.validator.ComputerDTOValidator;
 import core.model.Computer;
 import core.model.Page;
-import core.model.User;
 import core.util.Utils.OrderByOption;
 import core.util.Variable;
 import persistence.exception.ItemBadCreatedException;
@@ -62,15 +60,6 @@ public class ComputerController {
 		this.companyMapper = companyMapper;
 		this.computerMapper = computerMapper;
 		this.messageSource = messageSource;
-	}
-
-	public boolean isAdmin() {
-		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if (user == null) {
-			return false;
-		} else {
-			return user.getRole().equals("ADMIN");
-		}
 	}
 
 	@GetMapping
@@ -116,7 +105,6 @@ public class ComputerController {
 		computerPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
 
 		model.addAttribute(Variable.IS_USER, true);
-		model.addAttribute(Variable.IS_ADMIN, isAdmin());
 		model.addAttribute(Variable.PAGE, computerPage);
 		model.addAttribute(Variable.URL_PATH, "/computer");
 		model.addAttribute(Variable.IS_SEARCHING, false);
@@ -182,7 +170,6 @@ public class ComputerController {
 		computerPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
 
 		model.addAttribute(Variable.IS_USER, true);
-		model.addAttribute(Variable.IS_ADMIN, isAdmin());
 		model.addAttribute(Variable.PAGE, computerPage);
 		model.addAttribute(Variable.URL_PATH, "/computer/search");
 		model.addAttribute(Variable.IS_SEARCHING, true);
@@ -233,7 +220,6 @@ public class ComputerController {
 			companyList = this.companyService.getAllCompanies().stream()
 					.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList());
 			model.addAttribute(Variable.IS_USER, true);
-			model.addAttribute(Variable.IS_ADMIN, true);
 			model.addAttribute(Variable.COMPANY_LIST, companyList);
 			model.addAttribute("computerDTO", new ComputerDTO());
 			return Variable.VIEW_COMPUTER_ADD;
@@ -285,7 +271,6 @@ public class ComputerController {
 					.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList());
 
 			model.addAttribute(Variable.IS_USER, true);
-			model.addAttribute(Variable.IS_ADMIN, true);
 			model.addAttribute("computerDTO", cDTO);
 			model.addAttribute(Variable.COMPANY_LIST, listCompanies);
 

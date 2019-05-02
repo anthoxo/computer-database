@@ -2,7 +2,6 @@ package service;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,15 +96,14 @@ public class ComputerService {
 	public List<Computer> getAllComputersOrderBy(String order, OrderByOption option) throws ItemNotFoundException {
 		try {
 			List<Computer> result;
-			boolean isDesc = option == OrderByOption.DESC ? true : false;
 			List<String> orders = Arrays.asList("name", "introduced", "discontinued", "company");
 			if (orders.contains(order)) {
 				if (order.equals("company")) {
 					result = this.computerRepository.findAll(
-							Sort.by(new Sort.Order(isDesc ? Sort.Direction.DESC : Sort.Direction.ASC, "company.name")));
+							Sort.by(new Sort.Order(option == OrderByOption.DESC ? Sort.Direction.DESC : Sort.Direction.ASC, "company.name")));
 				} else {
 					result = this.computerRepository
-							.findAll(Sort.by(new Sort.Order(isDesc ? Sort.Direction.DESC : Sort.Direction.ASC, order)));
+							.findAll(Sort.by(new Sort.Order(option == OrderByOption.DESC ? Sort.Direction.DESC : Sort.Direction.ASC, order)));
 				}
 			} else {
 				result = this.getAllComputers();
@@ -129,16 +127,15 @@ public class ComputerService {
 	public List<Computer> getComputersByPatternOrderBy(String pattern, String order, OrderByOption option)
 			throws ItemNotFoundException {
 		try {
-			boolean isDesc = option == OrderByOption.DESC ? true : false;
 			List<Computer> result;
 			List<String> orders = Arrays.asList("name", "introduced", "discontinued", "company");
 			if (orders.contains(order)) {
 				if ("company".equals(order)) {
 					result = this.computerRepository.findByNameContaining(pattern,
-							Sort.by(new Sort.Order(isDesc ? Sort.Direction.DESC : Sort.Direction.ASC, "company.name")));
+							Sort.by(new Sort.Order(option == OrderByOption.DESC ? Sort.Direction.DESC : Sort.Direction.ASC, "company.name")));
 				} else {
 					result = this.computerRepository.findByNameContaining(pattern,
-							Sort.by(new Sort.Order(isDesc ? Sort.Direction.DESC : Sort.Direction.ASC, order)));
+							Sort.by(new Sort.Order(option == OrderByOption.DESC ? Sort.Direction.DESC : Sort.Direction.ASC, order)));
 				}
 			} else {
 				result = this.getComputersByPattern(pattern);

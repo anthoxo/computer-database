@@ -70,7 +70,6 @@ public class CompanyController {
 		}
 		companyPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
 		model.addAttribute(Variable.IS_USER, true);
-		model.addAttribute(Variable.IS_ADMIN, false);
 		model.addAttribute(Variable.PAGE, companyPage);
 		return Variable.VIEW_COMPANY;
 	}

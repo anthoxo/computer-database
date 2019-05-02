@@ -1,8 +1,6 @@
 package service;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +15,6 @@ import org.springframework.data.domain.Sort;
 import core.model.Computer;
 import core.util.Utils.OrderByOption;
 import persistence.ComputerRepository;
-import persistence.exception.DAOException;
 import persistence.exception.ItemBadCreatedException;
 import persistence.exception.ItemNotDeletedException;
 import persistence.exception.ItemNotFoundException;
@@ -32,8 +29,8 @@ public class TestComputerService {
 	ComputerService computerService;
 
 	@BeforeEach
-	public void init() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException,
-			DAOException {
+	public void init()
+			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		Field field = ComputerService.class.getDeclaredField("computerRepository");
 		field.setAccessible(true);
 		field.set(computerService, computerRepository);
@@ -53,15 +50,14 @@ public class TestComputerService {
 
 	@Test
 	public void testGetByName() throws ItemNotFoundException {
-		List<Computer> listComputers = new ArrayList<Computer>();
-		listComputers.add(new Computer.Builder().build());
-		Mockito.when(computerRepository.findByName(Mockito.anyString())).thenReturn(listComputers);
+		Optional<Computer> computer = Optional.of(new Computer.Builder().build());
+		Mockito.when(computerRepository.findByName(Mockito.anyString())).thenReturn(computer);
 		this.computerService.getComputerByName("ouais");
 		Mockito.verify(computerRepository).findByName(Mockito.anyString());
 	}
 
 	@Test
-	public void testGetByNameThrow() throws DAOException {
+	public void testGetByNameThrow() {
 		try {
 			this.computerService.getComputerByName("ouais");
 		} catch (ItemNotFoundException e) {
@@ -70,7 +66,7 @@ public class TestComputerService {
 	}
 
 	@Test
-	public void testGetById() throws DAOException, ItemNotFoundException {
+	public void testGetById() throws ItemNotFoundException {
 		Optional<Computer> computerOpt = Optional.of(new Computer.Builder().build());
 		Mockito.when(computerRepository.findById(Mockito.anyInt())).thenReturn(computerOpt);
 		this.computerService.getComputerById(1);
@@ -78,7 +74,7 @@ public class TestComputerService {
 	}
 
 	@Test
-	public void testGetByIdThrow() throws DAOException {
+	public void testGetByIdThrow() {
 		try {
 			this.computerService.getComputerById(1);
 		} catch (ItemNotFoundException e) {
@@ -87,21 +83,21 @@ public class TestComputerService {
 	}
 
 	@Test
-	public void testCreate() throws DAOException, ItemBadCreatedException {
+	public void testCreate() throws ItemBadCreatedException {
 		Computer computer = new Computer.Builder().withName("oui").build();
 		this.computerService.createComputer(computer);
 		Mockito.verify(computerRepository).save(Mockito.any());
 	}
 
 	@Test
-	public void testUpdate() throws DAOException, ItemNotUpdatedException, ItemNotFoundException {
+	public void testUpdate() throws ItemNotUpdatedException, ItemNotFoundException {
 		Computer computer = new Computer.Builder().withName("oui").build();
 		this.computerService.updateComputer(computer);
 		Mockito.verify(computerRepository).save(Mockito.any());
 	}
 
 	@Test
-	public void testDelete() throws DAOException, ItemNotFoundException, ItemNotDeletedException {
+	public void testDelete() throws ItemNotFoundException, ItemNotDeletedException {
 		Optional<Computer> computerOpt = Optional.of(new Computer.Builder().build());
 		Mockito.when(computerRepository.findById(Mockito.anyInt())).thenReturn(computerOpt);
 		this.computerService.deleteComputer(computerOpt.get());

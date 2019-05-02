@@ -10,7 +10,6 @@ public class Variable {
 	public static final String PAGE = "page";
 	public static final String IS_SEARCHING = "isSearching";
 	public static final String IS_USER = "isUser";
-	public static final String IS_ADMIN = "isAdmin";
 
 	public static final String SUCCESS = "success";
 	public static final String DANGER = "danger";
