@@ -27,7 +27,7 @@ public class Company {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "company", cascade = CascadeType.REMOVE)
 	public Set<Computer> computers;
 
-	public Company() {
+	private Company() {
 	}
 
 	public int getId() {
@@ -72,9 +72,6 @@ public class Company {
 	public static class Builder {
 		private int id;
 		private String name;
-
-		public Builder() {
-		}
 
 		public Builder withId(int id) {
 			this.id = id;

@@ -41,6 +41,9 @@ public class User implements UserDetails {
 	@Column(name = "role")
 	private String role;
 
+	private User() {
+	}
+
 	public int getId() {
 		return this.id;
 	}
@@ -129,9 +132,6 @@ public class User implements UserDetails {
 		private String username;
 		private String role;
 		private String token;
-
-		public Builder() {
-		}
 
 		public Builder withId(int id) {
 			this.id = id;

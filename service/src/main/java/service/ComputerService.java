@@ -74,7 +74,7 @@ public class ComputerService {
 			return this.computerRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("getComputerById"));
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("dao");
+			throw new ItemNotFoundException("computerRepository");
 		}
 	}
 
@@ -89,7 +89,7 @@ public class ComputerService {
 			return this.computerRepository.findAll();
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("computerService");
+			throw new ItemNotFoundException("computerRepository");
 		}
 	}
 
@@ -97,13 +97,12 @@ public class ComputerService {
 		try {
 			List<Computer> result;
 			List<String> orders = Arrays.asList("name", "introduced", "discontinued", "company");
+			Sort.Direction direction = option == OrderByOption.DESC ? Sort.Direction.DESC : Sort.Direction.ASC;
 			if (orders.contains(order)) {
 				if (order.equals("company")) {
-					result = this.computerRepository.findAll(
-							Sort.by(new Sort.Order(option == OrderByOption.DESC ? Sort.Direction.DESC : Sort.Direction.ASC, "company.name")));
+					result = this.computerRepository.findAll(Sort.by(new Sort.Order(direction, "company.name")));
 				} else {
-					result = this.computerRepository
-							.findAll(Sort.by(new Sort.Order(option == OrderByOption.DESC ? Sort.Direction.DESC : Sort.Direction.ASC, order)));
+					result = this.computerRepository.findAll(Sort.by(new Sort.Order(direction, order)));
 				}
 			} else {
 				result = this.getAllComputers();
@@ -111,7 +110,7 @@ public class ComputerService {
 			return result;
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("computerService");
+			throw new ItemNotFoundException("computerRepository");
 		}
 	}
 
@@ -120,7 +119,7 @@ public class ComputerService {
 			return this.computerRepository.findByNameContaining(pattern);
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("computerService");
+			throw new ItemNotFoundException("computerRepository");
 		}
 	}
 
@@ -129,13 +128,14 @@ public class ComputerService {
 		try {
 			List<Computer> result;
 			List<String> orders = Arrays.asList("name", "introduced", "discontinued", "company");
+			Sort.Direction direction = option == OrderByOption.DESC ? Sort.Direction.DESC : Sort.Direction.ASC;
 			if (orders.contains(order)) {
 				if ("company".equals(order)) {
 					result = this.computerRepository.findByNameContaining(pattern,
-							Sort.by(new Sort.Order(option == OrderByOption.DESC ? Sort.Direction.DESC : Sort.Direction.ASC, "company.name")));
+							Sort.by(new Sort.Order(direction, "company.name")));
 				} else {
 					result = this.computerRepository.findByNameContaining(pattern,
-							Sort.by(new Sort.Order(option == OrderByOption.DESC ? Sort.Direction.DESC : Sort.Direction.ASC, order)));
+							Sort.by(new Sort.Order(direction, order)));
 				}
 			} else {
 				result = this.getComputersByPattern(pattern);
@@ -143,7 +143,7 @@ public class ComputerService {
 			return result;
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("computerService");
+			throw new ItemNotFoundException("computerRepository");
 		}
 	}
 
@@ -152,11 +152,11 @@ public class ComputerService {
 			if (this.computerRepository.findById(computer.getId()).isPresent()) {
 				this.computerRepository.save(computer);
 			} else {
-				throw new ItemNotUpdatedException("dao");
+				throw new ItemNotUpdatedException("updateComputer");
 			}
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotUpdatedException("dao");
+			throw new ItemNotUpdatedException("computerRepository");
 		}
 	}
 
@@ -169,7 +169,7 @@ public class ComputerService {
 			}
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotDeletedException("dao");
+			throw new ItemNotDeletedException("computerRepository");
 		}
 	}
 }

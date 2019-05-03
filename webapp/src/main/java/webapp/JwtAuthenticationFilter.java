@@ -30,8 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		if (auth != null) {
 			User user = (User)auth.getPrincipal();
 			if (user != null) {
-				if (!user.getToken().isEmpty() && jwtService.validateToken(user.getToken())) {
-				} else {
+				if (user.getToken().isEmpty() || !jwtService.validateToken(user.getToken())) {
 					SecurityContextHolder.getContext().setAuthentication(null);
 				}
 			}

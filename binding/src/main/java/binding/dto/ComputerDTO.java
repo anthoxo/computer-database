@@ -9,13 +9,6 @@ public class ComputerDTO {
 	private int companyId;
 	private String companyName;
 
-	/**
-	 * Default constructor.
-	 */
-	public ComputerDTO() {
-
-	}
-
 	public int getId() {
 		return this.id;
 	}

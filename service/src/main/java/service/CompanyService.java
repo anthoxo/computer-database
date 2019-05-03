@@ -43,7 +43,8 @@ public class CompanyService {
 
 	public List<Company> getAllCompaniesOrderByName(OrderByOption option) throws ItemNotFoundException {
 		try {
-			return companyRepository.findAll(Sort.by(option == OrderByOption.DESC ? Direction.DESC : Direction.ASC, "name"));
+			Sort.Direction direction = option == OrderByOption.DESC ? Direction.DESC : Direction.ASC;
+			return companyRepository.findAll(Sort.by(direction, "name"));
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotFoundException("companyService");

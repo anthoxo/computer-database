@@ -12,3 +12,5 @@
 
 # maven
 /target/
+
+/service/src/main/resources/jwt.properties

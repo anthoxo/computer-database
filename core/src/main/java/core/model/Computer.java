@@ -146,9 +146,6 @@ public class Computer {
 		private Timestamp discontinued;
 		private Company company;
 
-		public Builder() {
-		}
-
 		public Builder withId(int id) {
 			this.id = id;
 			return this;

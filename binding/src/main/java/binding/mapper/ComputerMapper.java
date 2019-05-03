@@ -1,7 +1,6 @@
 package binding.mapper;
 
 import java.sql.Timestamp;
-import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
@@ -47,16 +46,16 @@ public class ComputerMapper {
 	 * @return A Company model.
 	 */
 	public Computer createEntity(ComputerDTO cDTO) {
-		Computer.Builder computerBuilder = new Computer.Builder();
+		Timestamp intro = Utils.stringToTimestamp(cDTO.getIntroducedDate()).orElse(null);
+		Timestamp discontinued = Utils.stringToTimestamp(cDTO.getDiscontinuedDate()).orElse(null);
+		Company company = this.companyRepository.findById(cDTO.getCompanyId()).orElse(null);
 
-		Optional<Timestamp> intro = Utils.stringToTimestamp(cDTO.getIntroducedDate());
-		Optional<Timestamp> discontinued = Utils.stringToTimestamp(cDTO.getDiscontinuedDate());
-
-		Optional<Company> companyOpt = this.companyRepository.findById(cDTO.getCompanyId());
-
-		computerBuilder = computerBuilder.withIntroducedDate(intro.orElse(null))
-				.withDiscontinuedDate(discontinued.orElse(null));
-
-		return computerBuilder.withId(cDTO.getId()).withName(cDTO.getName()).withCompany(companyOpt.orElse(null)).build();
+		return (new Computer.Builder())
+				.withId(cDTO.getId())
+				.withName(cDTO.getName())
+				.withIntroducedDate(intro)
+				.withCompany(company)
+				.withDiscontinuedDate(discontinued)
+				.build();
 	}
 }

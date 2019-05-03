@@ -1,6 +1,7 @@
 package service;
 
 import java.util.Date;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +19,21 @@ import io.jsonwebtoken.UnsupportedJwtException;
 @Service
 public class JwtService {
 
-	private String jwtSecret = "le one piece existe";
-	private int jwtExpirationInMs = 604800000;
+	public static final String SECRET_KEY = "secret.key";
+	public static final String EXPIRED_TIME = "expired.time";
+
+	private String jwtSecret = "";
+	private int jwtExpirationInMs = 1;
+
+	private Properties jwtProperties;
 
 	private Logger logger = LoggerFactory.getLogger(JwtService.class);
+
+	public JwtService(Properties jwtProperties) {
+		this.jwtProperties = jwtProperties;
+		this.jwtSecret = this.jwtProperties.getProperty(SECRET_KEY);
+		this.jwtExpirationInMs = Integer.valueOf(this.jwtProperties.getProperty(EXPIRED_TIME));
+	}
 
 	public String generateToken(Authentication auth) {
 		User user = (User) auth.getPrincipal();
