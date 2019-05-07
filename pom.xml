@@ -36,10 +36,25 @@
 		<junit.engine.version>5.4.0</junit.engine.version>
 		<mockito.version>2.23.0</mockito.version>
 		<commons.lang.version>2.5</commons.lang.version>
+
 		<spring.version>5.1.6.RELEASE</spring.version>
 		<spring.boot.version>2.1.4.RELEASE</spring.boot.version>
+		<spring.security.taglibs.version>5.1.5.RELEASE</spring.security.taglibs.version>
+
+		<jstl.version>1.2</jstl.version>
+		<selenium.version>2.27.0</selenium.version>
+		<servlet.api.version>4.0.1</servlet.api.version>
+
 		<jjwt.version>0.9.1</jjwt.version>
 		<jackson.version>2.9.8</jackson.version>
+
+		<javax.persistence.version>2.2</javax.persistence.version>
+
+		<mysql.connector.version>8.0.15</mysql.connector.version>
+		<spring.data.jpa.version>2.1.6.RELEASE</spring.data.jpa.version>
+		<hikaricp.version>3.3.1</hikaricp.version>
+		<hibernate.version>5.4.2.Final</hibernate.version>
+		<h2.version>1.4.199</h2.version>
 	</properties>
 
 	<dependencies>
@@ -96,15 +111,15 @@
 		</dependency>
 
 		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt</artifactId>
-			<version>${jjwt.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
 			<version>${jackson.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>${jjwt.version}</version>
 		</dependency>
 	</dependencies>
 

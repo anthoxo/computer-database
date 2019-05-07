@@ -18,6 +18,7 @@ public class UserMapper {
 		userDTO.setPassword(user.getPassword());
 		userDTO.setUsername(user.getUsername());
 		userDTO.setRole(user.getRole());
+		userDTO.setToken(user.getToken());
 		return userDTO;
 	}
 
@@ -28,9 +29,14 @@ public class UserMapper {
 	 * @return A Company model.
 	 */
 	public User createEntity(UserDTO userDTO) {
-		return (new User.Builder()).withId(userDTO.getId()).withEmail(userDTO.getEmail())
-				.withHashPassword(userDTO.getPassword()).withUsername(userDTO.getUsername())
-				.withRole(userDTO.getRole()).build();
+		return (new User.Builder())
+				.withId(userDTO.getId())
+				.withEmail(userDTO.getEmail())
+				.withHashPassword(userDTO.getPassword())
+				.withUsername(userDTO.getUsername())
+				.withRole(userDTO.getRole())
+				.withToken(userDTO.getToken())
+				.build();
 	}
 
 }

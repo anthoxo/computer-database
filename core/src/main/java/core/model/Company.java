@@ -13,8 +13,6 @@ import javax.persistence.Table;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 @Table(name = "company")
 public class Company {
@@ -26,7 +24,6 @@ public class Company {
 	@Column(name = "name")
 	private String name;
 
-	@JsonIgnore
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "company", cascade = CascadeType.REMOVE)
 	public Set<Computer> computers;
 

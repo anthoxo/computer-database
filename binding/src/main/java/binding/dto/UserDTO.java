@@ -7,6 +7,7 @@ public class UserDTO {
 	private String password;
 	private String username;
 	private String role;
+	private String token;
 
 	public int getId() {
 		return this.id;
@@ -28,6 +29,10 @@ public class UserDTO {
 		return this.role;
 	}
 
+	public String getToken() {
+		return this.token;
+	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -46,6 +51,10 @@ public class UserDTO {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 }

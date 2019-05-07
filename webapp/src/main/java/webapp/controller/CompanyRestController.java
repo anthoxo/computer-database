@@ -1,9 +1,11 @@
 package webapp.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import binding.dto.CompanyDTO;
+import binding.mapper.CompanyMapper;
 import core.model.Company;
 import persistence.exception.ItemNotDeletedException;
 import persistence.exception.ItemNotFoundException;
@@ -20,29 +24,35 @@ import service.CompanyService;
 @RequestMapping("/api/v1/company")
 public class CompanyRestController {
 	CompanyService companyService;
+	CompanyMapper companyMapper;
 
-	public CompanyRestController(CompanyService companyService) {
+	public CompanyRestController(CompanyService companyService, CompanyMapper companyMapper) {
 		this.companyService = companyService;
+		this.companyMapper = companyMapper;
 	}
 
-    @GetMapping
-    public ResponseEntity<List<Company>> getAll() {
-        try {
-			return new ResponseEntity<List<Company>>(this.companyService.getAllCompanies(), HttpStatus.OK);
+	@Secured("ROLE_USER")
+	@GetMapping
+	public ResponseEntity<List<CompanyDTO>> getAll() {
+		try {
+			List<CompanyDTO> listCompanies = this.companyService.getAllCompanies().stream()
+					.map((Company c) -> this.companyMapper.createDTO(c)).collect(Collectors.toList());
+			return new ResponseEntity<List<CompanyDTO>>(listCompanies, HttpStatus.OK);
 		} catch (ItemNotFoundException e) {
-			return new ResponseEntity<List<Company>>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<List<CompanyDTO>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-    }
+	}
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Company> deleteCompany(@RequestBody Company company, @PathVariable int id) {
-        try {
-        	this.companyService.deleteCompany(company);
-			return new ResponseEntity<Company>(company, HttpStatus.OK);
+	@Secured("ROLE_ADMIN")
+	@DeleteMapping("/{id}")
+	public ResponseEntity<CompanyDTO> deleteCompany(@RequestBody CompanyDTO companyDTO, @PathVariable int id) {
+		try {
+			this.companyService.deleteCompany(this.companyMapper.createEntity(companyDTO));
+			return new ResponseEntity<CompanyDTO>(companyDTO, HttpStatus.OK);
 		} catch (ItemNotFoundException e) {
-			return new ResponseEntity<Company>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<CompanyDTO>(HttpStatus.NOT_FOUND);
 		} catch (ItemNotDeletedException e) {
-			return new ResponseEntity<Company>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<CompanyDTO>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-    }
+	}
 }
