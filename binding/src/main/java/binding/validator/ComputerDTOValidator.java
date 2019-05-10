@@ -18,7 +18,7 @@ public class ComputerDTOValidator implements Validator {
 
 	@Override
 	public void validate(Object target, Errors errors) {
-		ComputerDTO computerDTO = (ComputerDTO)target;
+		ComputerDTO computerDTO = (ComputerDTO) target;
 		if (computerDTO.getName() == null || computerDTO.getName().isEmpty()) {
 			errors.rejectValue("name", "is null or empty");
 		}
@@ -41,11 +41,9 @@ public class ComputerDTOValidator implements Validator {
 		if (goodRegexIntroducedDate && goodRegexDiscontinuedDate) {
 			Timestamp introduced = Utils.stringToTimestamp(computerDTO.getIntroducedDate()).orElse(null);
 			Timestamp discontinued = Utils.stringToTimestamp(computerDTO.getDiscontinuedDate()).orElse(null);
-			if (introduced != null && discontinued != null) {
-				if (discontinued.getTime() - introduced.getTime() < 0) {
-					errors.rejectValue("introducedDate", "after discontinued");
-					errors.rejectValue("discontinuedDate", "before introduced");
-				}
+			if (introduced != null && discontinued != null && discontinued.getTime() - introduced.getTime() < 0) {
+				errors.rejectValue("introducedDate", "after discontinued");
+				errors.rejectValue("discontinuedDate", "before introduced");
 			}
 		}
 	}

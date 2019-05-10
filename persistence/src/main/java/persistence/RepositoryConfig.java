@@ -7,9 +7,7 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,8 +28,11 @@ public class RepositoryConfig {
 	public static final String PASSWORD_PROPERTY = "spring.datasource.password";
 	public static final String DRIVER_CLASS_PROPERTY = "driverClassName";
 
-	@Autowired
 	Environment env;
+
+	RepositoryConfig(Environment env) {
+		this.env = env;
+	}
 
 	@Bean(destroyMethod = "close")
 	public DataSource dataSource() {
@@ -66,7 +67,7 @@ public class RepositoryConfig {
 	}
 
 	@Bean
-	EntityManagerFactory entityManagerFactory() throws HibernateException, IOException {
+	EntityManagerFactory entityManagerFactory() throws IOException {
 		Session session = sessionFactory().getObject().openSession();
 		EntityManagerFactory entity = session.getEntityManagerFactory();
 		session.close();

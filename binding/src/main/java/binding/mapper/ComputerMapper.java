@@ -15,7 +15,7 @@ public class ComputerMapper {
 
 	CompanyRepository companyRepository;
 
-	private ComputerMapper(CompanyRepository companyRepository) {
+	ComputerMapper(CompanyRepository companyRepository) {
 		this.companyRepository = companyRepository;
 	}
 

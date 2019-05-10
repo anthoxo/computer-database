@@ -24,7 +24,10 @@ public class ComputerService {
 
 	private Logger logger = LoggerFactory.getLogger(ComputerService.class);
 
-	private ComputerService(ComputerRepository computerRepository) {
+	private static final String COMPUTER_REPOSITORY = "computerRepository";
+
+
+	ComputerService(ComputerRepository computerRepository) {
 		this.computerRepository = computerRepository;
 	}
 
@@ -41,7 +44,7 @@ public class ComputerService {
 			this.computerRepository.save(computer);
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemBadCreatedException("computerRepository");
+			throw new ItemBadCreatedException(COMPUTER_REPOSITORY);
 		}
 	}
 
@@ -58,7 +61,7 @@ public class ComputerService {
 					.orElseThrow(() -> new ItemNotFoundException("getComputerByName"));
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("computerRepository");
+			throw new ItemNotFoundException(COMPUTER_REPOSITORY);
 		}
 	}
 
@@ -74,7 +77,7 @@ public class ComputerService {
 			return this.computerRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("getComputerById"));
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("computerRepository");
+			throw new ItemNotFoundException(COMPUTER_REPOSITORY);
 		}
 	}
 
@@ -89,7 +92,7 @@ public class ComputerService {
 			return this.computerRepository.findAll();
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("computerRepository");
+			throw new ItemNotFoundException(COMPUTER_REPOSITORY);
 		}
 	}
 
@@ -110,7 +113,7 @@ public class ComputerService {
 			return result;
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("computerRepository");
+			throw new ItemNotFoundException(COMPUTER_REPOSITORY);
 		}
 	}
 
@@ -119,7 +122,7 @@ public class ComputerService {
 			return this.computerRepository.findByNameContaining(pattern);
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("computerRepository");
+			throw new ItemNotFoundException(COMPUTER_REPOSITORY);
 		}
 	}
 
@@ -143,7 +146,7 @@ public class ComputerService {
 			return result;
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("computerRepository");
+			throw new ItemNotFoundException(COMPUTER_REPOSITORY);
 		}
 	}
 
@@ -156,7 +159,7 @@ public class ComputerService {
 			}
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotUpdatedException("computerRepository");
+			throw new ItemNotUpdatedException(COMPUTER_REPOSITORY);
 		}
 	}
 
@@ -169,7 +172,7 @@ public class ComputerService {
 			}
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotDeletedException("computerRepository");
+			throw new ItemNotDeletedException(COMPUTER_REPOSITORY);
 		}
 	}
 }

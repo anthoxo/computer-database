@@ -49,6 +49,7 @@
 			modelAttribute="computerDTO">
 			<form:hidden path="id" value="${computerDTO.id}" />
 			<fieldset>
+			<legend></legend>
 				<div class="form-group">
 					<spring:message code="computer.table.name" var="computer_table_name" />
 					<form:input name="name" id="name" class="form-control" path="name"

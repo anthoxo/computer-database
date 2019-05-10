@@ -20,8 +20,8 @@ public class TestCompany {
 
 	@Test
 	public void testParam() {
-		assertEquals(company.getId(), 1);
-		assertEquals(company.getName(), "Apple");
+		assertEquals(1, company.getId());
+		assertEquals("Apple", company.getName());
 	}
 
 	@Test

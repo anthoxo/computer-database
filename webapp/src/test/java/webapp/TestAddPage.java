@@ -27,7 +27,7 @@ public class TestAddPage {
 		driver.navigate().to("http://localhost:8080/computer/add");
 
 		List<WebElement> l = driver.findElements(By.className("form-group"));
-		assertEquals(l.size(), 4);
+		assertEquals(4, l.size());
 
 		driver.close();
 		driver.quit();

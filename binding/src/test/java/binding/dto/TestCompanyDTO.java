@@ -17,7 +17,7 @@ public class TestCompanyDTO {
 
 	@Test
 	public void testParam() {
-		assertEquals(companyDTO.getId(), 1);
-		assertEquals(companyDTO.getName(), "Apple");
+		assertEquals(1, companyDTO.getId());
+		assertEquals("Apple", companyDTO.getName());
 	}
 }

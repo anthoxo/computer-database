@@ -27,11 +27,11 @@ public class TestComputer {
 
 	@Test
 	public void testParam() {
-		assertEquals(computer.getId(), 1);
-		assertEquals(computer.getName(), "MacBook");
-		assertEquals(computer.getIntroduced(), Utils.stringToTimestamp("2000/01/01").get());
-		assertEquals(computer.getDiscontinued(), Utils.stringToTimestamp("2001/01/01").get());
-		assertEquals(computer.getCompany(), company);
+		assertEquals(1, computer.getId());
+		assertEquals("MacBook", computer.getName());
+		assertEquals(Utils.stringToTimestamp("2000/01/01").get(), computer.getIntroduced());
+		assertEquals(Utils.stringToTimestamp("2001/01/01").get(), computer.getDiscontinued());
+		assertEquals(company, computer.getCompany());
 	}
 
 	@Test

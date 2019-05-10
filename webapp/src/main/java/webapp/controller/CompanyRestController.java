@@ -9,7 +9,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,9 +36,9 @@ public class CompanyRestController {
 		try {
 			List<CompanyDTO> listCompanies = this.companyService.getAllCompanies().stream()
 					.map((Company c) -> this.companyMapper.createDTO(c)).collect(Collectors.toList());
-			return new ResponseEntity<List<CompanyDTO>>(listCompanies, HttpStatus.OK);
+			return new ResponseEntity<>(listCompanies, HttpStatus.OK);
 		} catch (ItemNotFoundException e) {
-			return new ResponseEntity<List<CompanyDTO>>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -48,28 +47,28 @@ public class CompanyRestController {
 	public ResponseEntity<CompanyDTO> getCompany(@PathVariable int id) {
 		try {
 			CompanyDTO companyDTO = this.companyMapper.createDTO(this.companyService.getCompanyById(id));
-			return new ResponseEntity<CompanyDTO>(companyDTO, HttpStatus.OK);
+			return new ResponseEntity<>(companyDTO, HttpStatus.OK);
 		} catch (ItemNotFoundException e) {
-			return new ResponseEntity<CompanyDTO>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 
 	@Secured("ROLE_ADMIN")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<CompanyDTO> deleteCompany(@RequestBody CompanyDTO companyDTO, @PathVariable int id) {
+	public ResponseEntity<CompanyDTO> deleteCompany(@PathVariable int id) {
 		try {
 			Company company = this.companyService.getCompanyById(id);
 			if (company != null) {
 				this.companyService.deleteCompany(company);
-				return new ResponseEntity<CompanyDTO>(companyDTO, HttpStatus.OK);
+				return new ResponseEntity<>(this.companyMapper.createDTO(company), HttpStatus.OK);
 			} else {
-				return new ResponseEntity<CompanyDTO>(HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
 		} catch (ItemNotFoundException e) {
-			return new ResponseEntity<CompanyDTO>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} catch (ItemNotDeletedException e) {
-			return new ResponseEntity<CompanyDTO>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }

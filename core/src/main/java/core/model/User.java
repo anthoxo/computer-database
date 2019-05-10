@@ -99,7 +99,6 @@ public class User implements UserDetails {
 		ToStringBuilder ts = new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE);
 		ts.append("id", id);
 		ts.append("email", email);
-		ts.append("password", "HIDDEN");
 		ts.append("username", username);
 		ts.append("role", role);
 		ts.append("token", token);
@@ -177,7 +176,7 @@ public class User implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		List<SimpleGrantedAuthority> l = new ArrayList<SimpleGrantedAuthority>();
+		List<SimpleGrantedAuthority> l = new ArrayList<>();
 		l.add(new SimpleGrantedAuthority("ROLE_USER"));
 		if ("ADMIN".equals(role)) {
 			l.add(new SimpleGrantedAuthority("ROLE_ADMIN"));

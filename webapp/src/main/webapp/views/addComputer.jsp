@@ -40,6 +40,7 @@
 		<form:form action="${context}/computer/add" method="POST"
 			modelAttribute="computerDTO">
 			<fieldset>
+			<legend></legend>
 				<div class="form-group">
 					<form:label path="companyId">
 						<spring:message code="computer.table.name" var="computer_table_name" />

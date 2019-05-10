@@ -10,6 +10,8 @@ import binding.dto.CompanyDTO;
 import console.controller.CompanyController;
 import core.model.User;
 import core.util.Utils;
+import persistence.exception.ItemNotDeletedException;
+import persistence.exception.ItemNotFoundException;
 
 public class CompanyView {
 
@@ -30,8 +32,12 @@ public class CompanyView {
 		Utils.ChoiceActionCompany action = Utils.stringToEnum(Utils.ChoiceActionCompany.class, prompt);
 		switch (action) {
 		case GET_ALL:
-			companyController.refreshCompanyPage();
-			printCompanies(sc);
+			try {
+				companyController.refreshCompanyPage();
+				printCompanies(sc);
+			} catch (ItemNotFoundException e) {
+				logger.error("don't find company list");
+			}
 			break;
 		case DELETE:
 			chooseDelete(sc);
@@ -73,23 +79,25 @@ public class CompanyView {
 		logger.info("Quel id de Company voulez-vous détruire ?");
 
 		String prompt = sc.nextLine();
-		int id = Integer.valueOf(prompt);
+		int id = Integer.parseInt(prompt);
 
-		CompanyDTO company = this.companyController.getCompanyById(id);
-		if (company == null) {
-			logger.warn("company not found");
-		} else {
+		try {
+			CompanyDTO company = this.companyController.getCompanyById(id);
 			logger.info(company.toString());
 			logger.info("Voulez-vous vraiment détruire cet objet ? (y/n)");
 
 			prompt = sc.nextLine();
 
 			if (prompt.equals("y")) {
-				;
-				logger.info(this.companyController.deleteCompany(company.getId()) ? "Computer deleted !"
-						: "Computer not deleted");
+				try {
+					this.companyController.deleteCompany(company.getId());
+					logger.info("Computer deleted !");
+				} catch (ItemNotDeletedException e) {
+					logger.warn("Computer not deleted.");
+				}
 			}
+		} catch (ItemNotFoundException e) {
+			logger.warn("company not found");
 		}
-
 	}
 }

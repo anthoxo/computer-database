@@ -10,9 +10,9 @@
 		</div>
 		<div class="navbar-right">
 			<a class="navbar-brand" href="/fr"><img
-				src="${context}/img/blank.gif" class="flag flag-fr" /></a> <a
+				src="${context}/img/blank.gif" class="flag flag-fr" alt="French flag"/></a> <a
 				class="navbar-brand" href="/en"><img
-				src="${context}/img/blank.gif" class="flag flag-gb" /></a>
+				src="${context}/img/blank.gif" class="flag flag-gb" alt="English flag"/></a>
 		</div>
 	</div>
 </header>

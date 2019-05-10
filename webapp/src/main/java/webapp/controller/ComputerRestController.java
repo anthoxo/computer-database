@@ -35,21 +35,15 @@ public class ComputerRestController {
 		this.computerMapper = computerMapper;
 	}
 
-	@GetMapping("/test")
-	public ResponseEntity<String> test() {
-		return new ResponseEntity<String>("OUAIS", HttpStatus.OK);
-	}
-
-
 	@Secured("ROLE_USER")
 	@GetMapping
 	public ResponseEntity<List<ComputerDTO>> getAll() {
 		try {
 			List<ComputerDTO> listComputers = this.computerService.getAllComputers().stream()
 					.map((Computer c) -> this.computerMapper.createDTO(c)).collect(Collectors.toList());
-			return new ResponseEntity<List<ComputerDTO>>(listComputers, HttpStatus.OK);
+			return new ResponseEntity<>(listComputers, HttpStatus.OK);
 		} catch (ItemNotFoundException e) {
-			return new ResponseEntity<List<ComputerDTO>>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -58,9 +52,9 @@ public class ComputerRestController {
 	public ResponseEntity<ComputerDTO> addComputer(@RequestBody ComputerDTO computerDTO) {
 		try {
 			this.computerService.createComputer(this.computerMapper.createEntity(computerDTO));
-			return new ResponseEntity<ComputerDTO>(computerDTO, HttpStatus.OK);
+			return new ResponseEntity<>(computerDTO, HttpStatus.OK);
 		} catch (ItemBadCreatedException e) {
-			return new ResponseEntity<ComputerDTO>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -69,9 +63,9 @@ public class ComputerRestController {
 	public ResponseEntity<ComputerDTO> getComputer(@PathVariable int id) {
 		try {
 			ComputerDTO computerDTO = this.computerMapper.createDTO(this.computerService.getComputerById(id));
-			return new ResponseEntity<ComputerDTO>(computerDTO, HttpStatus.OK);
+			return new ResponseEntity<>(computerDTO, HttpStatus.OK);
 		} catch (ItemNotFoundException e) {
-			return new ResponseEntity<ComputerDTO>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -81,11 +75,11 @@ public class ComputerRestController {
 		try {
 			Computer computer = this.computerMapper.createEntity(computerDTO);
 			this.computerService.updateComputer(computer);
-			return new ResponseEntity<ComputerDTO>(computerDTO, HttpStatus.OK);
+			return new ResponseEntity<>(computerDTO, HttpStatus.OK);
 		} catch (ItemNotUpdatedException e) {
-			return new ResponseEntity<ComputerDTO>(HttpStatus.NOT_MODIFIED);
+			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 		} catch (ItemNotFoundException e) {
-			return new ResponseEntity<ComputerDTO>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -96,14 +90,14 @@ public class ComputerRestController {
 			Computer computer = this.computerService.getComputerById(id);
 			if (computer != null) {
 				this.computerService.deleteComputer(computer);
-				return new ResponseEntity<ComputerDTO>(this.computerMapper.createDTO(computer), HttpStatus.OK);
+				return new ResponseEntity<>(this.computerMapper.createDTO(computer), HttpStatus.OK);
 			} else {
-				return new ResponseEntity<ComputerDTO>(HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
 		} catch (ItemNotFoundException e) {
-			return new ResponseEntity<ComputerDTO>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} catch (ItemNotDeletedException e) {
-			return new ResponseEntity<ComputerDTO>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

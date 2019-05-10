@@ -40,9 +40,9 @@ public class LoginRestController {
 		if (auth.isAuthenticated()) {
 			User user = (User) auth.getPrincipal();
 			user.setToken(this.jwtService.generateToken(auth));
-			return new ResponseEntity<UserDTO>(this.userMapper.createDTO(user), HttpStatus.OK);
+			return new ResponseEntity<>(this.userMapper.createDTO(user), HttpStatus.OK);
 		} else {
-			return new ResponseEntity<UserDTO>(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 	}
 }

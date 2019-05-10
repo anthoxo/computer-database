@@ -50,13 +50,10 @@ public class CompanyController {
 			List<Company> listCompanies;
 			try {
 				if ("name".equals(orderBy)) {
-					switch (this.orderByOption) {
-					case ASC:
+					if (this.orderByOption == OrderByOption.ASC) {
 						this.orderByOption = OrderByOption.DESC;
-						break;
-					default:
+					} else {
 						this.orderByOption = OrderByOption.ASC;
-						break;
 					}
 					listCompanies = this.companyService.getAllCompaniesOrderByName(orderByOption);
 				} else {
@@ -65,7 +62,7 @@ public class CompanyController {
 			} catch (ItemNotFoundException e) {
 				listCompanies = new ArrayList<Company>();
 			}
-			this.companyPage = new Page<CompanyDTO>(listCompanies.stream()
+			this.companyPage = new Page<>(listCompanies.stream()
 					.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList()));
 		}
 		companyPage.goTo(index * Page.NB_ITEMS_PER_PAGE);

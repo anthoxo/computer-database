@@ -103,19 +103,19 @@ public class Computer {
 			Computer computer = (Computer) obj;
 			boolean result = this.id == computer.id && this.name.equals(computer.name);
 			if (this.getIntroduced() == null) {
-				result = result & computer.getIntroduced() == null;
+				result = result && computer.getIntroduced() == null;
 			} else {
-				result = result & this.introduced.equals(computer.introduced);
+				result = result && this.introduced.equals(computer.introduced);
 			}
 			if (this.getDiscontinued() == null) {
-				result = result & computer.getDiscontinued() == null;
+				result = result && computer.getDiscontinued() == null;
 			} else {
-				result = result & this.discontinued.equals(computer.discontinued);
+				result = result && this.discontinued.equals(computer.discontinued);
 			}
 			if (this.getCompany() == null) {
-				result = result & computer.getCompany() == null;
+				result = result && computer.getCompany() == null;
 			} else {
-				result = result & this.company.equals(computer.company);
+				result = result && this.company.equals(computer.company);
 			}
 			return result;
 		}

@@ -24,8 +24,8 @@ public class TestNotificationService {
 	public void testGenerateNotification() {
 		assertFalse(this.notificationService.isNotifying());
 		this.notificationService.generateNotification("test", this, "this is a test");
-		assertEquals(this.notificationService.getLevel(), "test");
-		assertEquals(this.notificationService.getMessage(), "this is a test");
+		assertEquals("test", this.notificationService.getLevel());
+		assertEquals("this is a test", this.notificationService.getMessage());
 		assertTrue(this.notificationService.isNotifying());
 	}
 }

@@ -78,13 +78,10 @@ public class ComputerController {
 			List<Computer> listComputers;
 			try {
 				if (!orderBy.equals("")) {
-					switch (this.orderByOption) {
-					case ASC:
+					if (this.orderByOption == OrderByOption.ASC) {
 						this.orderByOption = OrderByOption.DESC;
-						break;
-					default:
+					} else {
 						this.orderByOption = OrderByOption.ASC;
-						break;
 					}
 					if (!orderBy.equals(orderColumn)) {
 						this.orderByOption = OrderByOption.ASC;
@@ -96,9 +93,9 @@ public class ComputerController {
 					orderByOption = OrderByOption.NULL;
 				}
 			} catch (ItemNotFoundException e) {
-				listComputers = new ArrayList<Computer>();
+				listComputers = new ArrayList<>();
 			}
-			this.computerPage = new Page<ComputerDTO>(listComputers.stream()
+			this.computerPage = new Page<>(listComputers.stream()
 					.map(computer -> this.computerMapper.createDTO(computer)).collect(Collectors.toList()));
 		}
 
@@ -142,13 +139,10 @@ public class ComputerController {
 			List<Computer> listComputers;
 			try {
 				if (!orderBy.equals("")) {
-					switch (this.orderByOption) {
-					case ASC:
+					if (this.orderByOption == OrderByOption.ASC) {
 						this.orderByOption = OrderByOption.DESC;
-						break;
-					default:
+					} else {
 						this.orderByOption = OrderByOption.ASC;
-						break;
 					}
 					if (!orderBy.equals(orderColumn)) {
 						this.orderByOption = OrderByOption.ASC;
@@ -161,9 +155,9 @@ public class ComputerController {
 					orderByOption = OrderByOption.NULL;
 				}
 			} catch (ItemNotFoundException e) {
-				listComputers = new ArrayList<Computer>();
+				listComputers = new ArrayList<>();
 			}
-			this.computerPage = new Page<ComputerDTO>(listComputers.stream()
+			this.computerPage = new Page<>(listComputers.stream()
 					.map(computer -> this.computerMapper.createDTO(computer)).collect(Collectors.toList()));
 		}
 

@@ -9,19 +9,19 @@ public class Utils {
 
 	public enum ChoiceDatabase {
 		COMPANY, COMPUTER, QUIT, NULL
-	};
+	}
 
 	public enum ChoiceActionPage {
 		NEXT, PREVIOUS, BACK, NULL
-	};
+	}
 
 	public enum ChoiceActionComputer {
 		GET_ALL, GET_ID, CREATE, UPDATE, DELETE, BACK, NULL
-	};
+	}
 
 	public enum ChoiceActionCompany {
 		GET_ALL, DELETE, BACK, NULL
-	};
+	}
 
 	public enum OrderByOption {
 		ASC, DESC, NULL

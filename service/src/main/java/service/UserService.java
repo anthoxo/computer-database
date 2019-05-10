@@ -19,7 +19,7 @@ public class UserService implements UserDetailsService {
 
 	private Logger logger = LoggerFactory.getLogger(UserService.class);
 
-	private UserService(UserRepository userRepository) {
+	UserService(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
 
@@ -33,7 +33,7 @@ public class UserService implements UserDetailsService {
 	}
 
 	@Override
-	public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String usernameOrEmail) {
 		return this.userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
 				.orElseThrow(() -> {
 					logger.error("user not found");

@@ -26,9 +26,9 @@ public class TestPage {
 
 	@Test
 	public void testParam() {
-		assertEquals(page.getIndexItem(), 50);
-		assertEquals(page.getData(), this.list);
-		assertEquals(page.getLength(), this.list.size());
+		assertEquals(50, page.getIndexItem());
+		assertEquals(this.list, page.getData());
+		assertEquals(this.list.size(), page.getLength());
 	}
 
 	@Test
@@ -72,9 +72,9 @@ public class TestPage {
 		int length = this.page.length;
 		this.page.next();
 		int nextIndex = this.page.indexItem;
-		assertEquals(previousIndex, 0);
-		assertEquals(length, 0);
-		assertEquals(nextIndex, 0);
+		assertEquals(0, previousIndex);
+		assertEquals(0, length);
+		assertEquals(0, nextIndex);
 	}
 
 	@Test
@@ -84,15 +84,15 @@ public class TestPage {
 		int length = this.page.length;
 		this.page.previous();
 		int nextIndex = this.page.indexItem;
-		assertEquals(previousIndex, 0);
-		assertEquals(length, 0);
-		assertEquals(nextIndex, 0);
+		assertEquals(0, previousIndex);
+		assertEquals(0, length);
+		assertEquals(0, nextIndex);
 	}
 
 	@Test
 	public void testGetEntitiesPage() {
 		List<Integer> list = this.page.getEntitiesPage();
-		assertEquals(list.size(), Page.NB_ITEMS_PER_PAGE);
+		assertEquals(Page.NB_ITEMS_PER_PAGE, list.size());
 		for (int i = 0; i < Page.NB_ITEMS_PER_PAGE; ++i) {
 			assertEquals(list.get(i), 50 + i);
 		}
@@ -100,7 +100,7 @@ public class TestPage {
 
 	@Test
 	public void testNbPages1() {
-		assertEquals(page.getNbPages(), 10);
+		assertEquals(10, page.getNbPages());
 	}
 
 	@Test
@@ -111,17 +111,17 @@ public class TestPage {
 		}
 		this.page = new Page<Integer>(list);
 
-		assertEquals(page.getNbPages(), 6);
+		assertEquals(6, page.getNbPages());
 	}
 
 	@Test
 	public void testGoTo() {
 		this.page.goTo(0);
-		assertEquals(this.page.getIndexItem(), 0);
+		assertEquals(0, this.page.getIndexItem());
 		this.page.goTo(71);
-		assertEquals(this.page.getIndexItem(), 71);
+		assertEquals(71, this.page.getIndexItem());
 		this.page.goTo(-10);
-		assertEquals(this.page.getIndexItem(), 0);
+		assertEquals(0, this.page.getIndexItem());
 		this.page.goTo(list.size() + 100);
 		assertEquals(this.page.getIndexItem(), list.size() - 1);
 	}

@@ -126,8 +126,8 @@
 						<sec:authorize access="hasRole('ADMIN')">
 							<td align="center">
 							<a type="button" class="btn btn-danger btn-sm"
-								data-toggle="modal" data-target="#modalDelete_${c.id}"> <i
-									class="fa fa-trash-o fa-lg"></i>
+								data-toggle="modal" data-target="#modalDelete_${c.id}"> <em
+									class="fa fa-trash-o fa-lg"></em>
 							</a>
 							</td>
 						</sec:authorize>

@@ -1,6 +1,10 @@
 package core.util;
 
 public class Variable {
+
+	private Variable() {
+	}
+
 	public static final String GET_PARAMETER_ID = "id";
 	public static final String GET_PARAMETER_ID_DELETE = "id_delete";
 	public static final String GET_PARAMETER_ORDER_BY = "orderBy";

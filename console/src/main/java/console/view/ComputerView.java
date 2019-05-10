@@ -77,22 +77,25 @@ public class ComputerView {
 
 		boolean stop = false;
 
-		this.computerController.refreshComputerPage();
+		try {
+			this.computerController.refreshComputerPage();
+			while (!stop) {
+				List<ComputerDTO> listComputers = this.computerController.getComputerPage().getEntitiesPage();
+				listComputers.forEach(
+						(ComputerDTO computer) -> logger.info(computer == null ? "null" : computer.toString()));
+				logger.info("next // previous // back ?");
 
-		while (!stop) {
-			List<ComputerDTO> listComputers = this.computerController.getComputerPage().getEntitiesPage();
-			listComputers
-					.forEach((ComputerDTO computer) -> logger.info(computer == null ? "null" : computer.toString()));
-			logger.info("next // previous // back ?");
+				String prompt = sc.nextLine();
 
-			String prompt = sc.nextLine();
+				boolean choice = this.computerController.selectAction(prompt);
 
-			boolean choice = this.computerController.selectAction(prompt);
-
-			if (!choice) {
-				logger.warn("Mauvaise commande...");
+				if (!choice) {
+					logger.warn("Mauvaise commande...");
+				}
+				stop = this.computerController.isGoingBack();
 			}
-			stop = this.computerController.isGoingBack();
+		} catch (ItemNotFoundException e) {
+			logger.error("don't find computer list");
 		}
 	}
 
@@ -105,13 +108,13 @@ public class ComputerView {
 		logger.info("Quel id de Computer voulez-vous chercher ?");
 
 		String prompt = sc.nextLine();
-		int id = Integer.valueOf(prompt);
+		int id = Integer.parseInt(prompt);
 
-		ComputerDTO computer = this.computerController.getComputerById(id);
-		if (computer == null) {
-			logger.info("Computer not found.");
-		} else {
+		try {
+			ComputerDTO computer = this.computerController.getComputerById(id);
 			logger.info(computer.toString());
+		} catch (ItemNotFoundException e) {
+			logger.info("Computer not found.");
 		}
 	}
 
@@ -121,19 +124,17 @@ public class ComputerView {
 	 * @param sc The scanner that used to ask user.
 	 */
 	public void chooseCreate(Scanner sc) {
-		String name, introduced, discontinued, companyId;
-
 		logger.info("Name ?");
-		name = sc.nextLine();
+		String name = sc.nextLine();
 
 		logger.info("Introduced ? (yyyy/mm/dd)");
-		introduced = sc.nextLine();
+		String introduced = sc.nextLine();
 
 		logger.info("Discontinued ? (yyyy/mm/dd)");
-		discontinued = sc.nextLine();
+		String discontinued = sc.nextLine();
 
 		logger.info("Id of Company ?");
-		companyId = sc.nextLine();
+		String companyId = sc.nextLine();
 
 		try {
 			this.computerController.createComputer(name, introduced, discontinued, companyId);
@@ -151,30 +152,28 @@ public class ComputerView {
 	public void chooseUpdate(Scanner sc) {
 		logger.info("Quel id de Computer voulez-vous modifier ?");
 		String prompt = sc.nextLine();
-		int id = Integer.valueOf(prompt);
-		ComputerDTO c;
+		int id = Integer.parseInt(prompt);
 		try {
-			c = this.computerController.getComputerById(id);
-			String name, introduced, discontinued, companyId;
-			logger.info("Name ? Previous: " + c.getName());
-			name = sc.nextLine();
-			name = name == "" ? c.getName() : name;
+			ComputerDTO c = this.computerController.getComputerById(id);
+			logger.info("Name ? Previous: {0}", c.getName());
+			String name = sc.nextLine();
+			name = "".equals(name) ? c.getName() : name;
 
 			logger.info("Introduced (yyyy/mm/dd)? Previous: {}", c.getIntroducedDate());
-			introduced = sc.nextLine();
-			introduced = introduced == "" ? c.getIntroducedDate() : introduced;
+			String introduced = sc.nextLine();
+			introduced = "".equals(introduced) ? c.getIntroducedDate() : introduced;
 
 			logger.info("Discontinued (yyyy/mm/dd)? Previous: {}", c.getDiscontinuedDate());
-			discontinued = sc.nextLine();
-			discontinued = discontinued == "" ? c.getDiscontinuedDate() : discontinued;
+			String discontinued = sc.nextLine();
+			discontinued = "".equals(discontinued) ? c.getDiscontinuedDate() : discontinued;
 
 			logger.info("Id of Company? Previous: {}", c.getCompanyName());
-			companyId = sc.nextLine();
-			companyId = companyId == "" ? String.valueOf(c.getCompanyId()) : companyId;
+			String companyId = sc.nextLine();
+			companyId = "".equals(companyId) ? String.valueOf(c.getCompanyId()) : companyId;
 
 			try {
 				this.computerController.updateComputer(c.getId(), name, introduced, discontinued,
-						Integer.valueOf(companyId));
+						Integer.parseInt(companyId));
 				logger.info("Done !");
 			} catch (ItemNotUpdatedException e) {
 				logger.warn("Object not updated !");
@@ -194,11 +193,10 @@ public class ComputerView {
 		logger.info("Quel id de Computer voulez-vous détruire ?");
 
 		String prompt = sc.nextLine();
-		int id = Integer.valueOf(prompt);
+		int id = Integer.parseInt(prompt);
 
-		ComputerDTO computer;
 		try {
-			computer = this.computerController.getComputerById(id);
+			ComputerDTO computer = this.computerController.getComputerById(id);
 			logger.info(computer.toString());
 			logger.info("Voulez-vous vraiment détruire cet objet ? (y/n)");
 
@@ -212,7 +210,6 @@ public class ComputerView {
 					logger.warn("Computer not deleted.");
 				}
 			}
-
 		} catch (ItemNotFoundException e) {
 			logger.warn("Computer introuvable.");
 		}

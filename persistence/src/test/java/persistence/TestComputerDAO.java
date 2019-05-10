@@ -34,8 +34,8 @@ public class TestComputerDAO {
 		Optional<Computer> computerOpt = this.computerRepository.findById(1);
 		if (computerOpt.isPresent()) {
 			Computer computer = computerOpt.get();
-			assertEquals(computer.getId(), 1);
-			assertEquals(computer.getName(), "MacBook Pro 15.4 inch");
+			assertEquals(1, computer.getId());
+			assertEquals("MacBook Pro 15.4 inch", computer.getName());
 		} else {
 			assertTrue(false);
 		}
@@ -46,8 +46,8 @@ public class TestComputerDAO {
 		Optional<Computer> computerOpt = this.computerRepository.findByName("CM-2a");
 		if (computerOpt.isPresent()) {
 			Computer computer = computerOpt.get();
-			assertEquals(computer.getId(), 2);
-			assertEquals(computer.getName(), "CM-2a");
+			assertEquals(2, computer.getId(), 2);
+			assertEquals("CM-2a", computer.getName());
 		} else {
 			assertTrue(false);
 		}
@@ -56,7 +56,7 @@ public class TestComputerDAO {
 	@Test
 	public void testGetAll() throws SQLException {
 		List<Computer> list = this.computerRepository.findAll();
-		assertEquals(list.size(), 4);
+		assertEquals(4, list.size());
 	}
 
 	@Test
@@ -91,10 +91,10 @@ public class TestComputerDAO {
 		Computer computer = new Computer.Builder().withName("Computer_test").build();
 		this.computerRepository.save(computer);
 		List<Computer> list = this.computerRepository.findAll();
-		assertEquals(list.size(), 5);
+		assertEquals(5, list.size());
 		this.computerRepository.delete(this.computerRepository.findByName("Computer_test").get());
 		list = this.computerRepository.findAll();
-		assertEquals(list.size(), 4);
+		assertEquals(4, list.size());
 	}
 
 	@Test
@@ -102,17 +102,17 @@ public class TestComputerDAO {
 		Computer computer = new Computer.Builder().withName("Computer_test").build();
 		this.computerRepository.save(computer);
 		List<Computer> list = this.computerRepository.findAll();
-		assertEquals(list.size(), 5);
+		assertEquals(5, list.size());
 		computer = this.computerRepository.findByName("Computer_test").get();
 		computer.setIntroduced(Utils.stringToTimestamp("1999/01/01").get());
 		computer.setDiscontinued(Utils.stringToTimestamp("2000/01/01").get());
 		this.computerRepository.save(computer);
 		computer = this.computerRepository.findByName("Computer_test").get();
-		assertEquals(computer.getName(), "Computer_test");
-		assertEquals(computer.getIntroduced(), Utils.stringToTimestamp("1999/01/01").get());
-		assertEquals(computer.getDiscontinued(), Utils.stringToTimestamp("2000/01/01").get());
+		assertEquals("Computer_test", computer.getName());
+		assertEquals(Utils.stringToTimestamp("1999/01/01").get(), computer.getIntroduced());
+		assertEquals(Utils.stringToTimestamp("2000/01/01").get(), computer.getDiscontinued());
 		this.computerRepository.delete(this.computerRepository.findByName("Computer_test").get());
 		list = this.computerRepository.findAll();
-		assertEquals(list.size(), 4);
+		assertEquals(4, list.size());
 	}
 }

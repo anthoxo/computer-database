@@ -33,7 +33,7 @@ public class TestHomePage {
 
 		List<?> l = driver.findElements(By.className("btn"));
 
-		assertEquals(l.size(), 2);
+		assertEquals(2, l.size());
 
 		driver.close();
 		driver.quit();

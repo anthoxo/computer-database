@@ -22,7 +22,9 @@ public class CompanyService {
 
 	private Logger logger = LoggerFactory.getLogger(CompanyService.class);
 
-	private CompanyService(CompanyRepository companyRepository) {
+	private static final String COMPANY_SERVICE = "companyService";
+
+	CompanyService(CompanyRepository companyRepository) {
 		this.companyRepository = companyRepository;
 	}
 
@@ -37,7 +39,7 @@ public class CompanyService {
 			return companyRepository.findAll();
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("companyService");
+			throw new ItemNotFoundException(COMPANY_SERVICE);
 		}
 	}
 
@@ -47,7 +49,7 @@ public class CompanyService {
 			return companyRepository.findAll(Sort.by(direction, "name"));
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("companyService");
+			throw new ItemNotFoundException(COMPANY_SERVICE);
 		}
 	}
 
@@ -56,7 +58,7 @@ public class CompanyService {
 			return companyRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("getComputerById"));
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotFoundException("companyService");
+			throw new ItemNotFoundException(COMPANY_SERVICE);
 		}
 	}
 
@@ -65,11 +67,11 @@ public class CompanyService {
 			if (companyRepository.findById(company.getId()).isPresent()) {
 				this.companyRepository.delete(company);
 			} else {
-				throw new ItemNotFoundException("deleteComputer");
+				throw new ItemNotFoundException(COMPANY_SERVICE);
 			}
 		} catch (DataAccessException e) {
 			logger.error(e.getMessage());
-			throw new ItemNotDeletedException("companyService");
+			throw new ItemNotDeletedException(COMPANY_SERVICE);
 		}
 	}
 }

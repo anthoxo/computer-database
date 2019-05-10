@@ -42,6 +42,7 @@
 		</h1>
 		<form:form action="/signup" method="POST" modelAttribute="userDTO">
 			<fieldset>
+			<legend></legend>
 				<div class="form-group">
 					<form:label path="email">
 						<spring:message code="login.email" var="login_email" />

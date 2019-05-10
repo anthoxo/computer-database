@@ -1,8 +1,24 @@
 package console.controller;
 
+import java.io.IOException;
 import java.util.List;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+
+import org.glassfish.jersey.client.HttpUrlConnectorProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import binding.dto.ComputerDTO;
 import binding.mapper.ComputerMapper;
@@ -18,8 +34,12 @@ import persistence.exception.ItemNotUpdatedException;
 @Component
 public class ComputerController {
 
-	RestController restController;
 	ComputerMapper computerMapper;
+
+	private Client client;
+	private WebTarget webTarget;
+
+	private static Logger logger = LoggerFactory.getLogger(ComputerController.class);
 
 	Page<ComputerDTO> computerPage;
 	boolean isGoingBack;
@@ -28,9 +48,10 @@ public class ComputerController {
 	/**
 	 * Default constructor.
 	 */
-	private ComputerController(RestController restController, ComputerMapper computerMapper) {
-		this.restController = restController;
+	ComputerController(ComputerMapper computerMapper) {
 		this.computerMapper = computerMapper;
+		this.client = ClientBuilder.newClient().property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true);
+		this.webTarget = client.target("http://localhost:8080/api/v1/computer");
 		this.isGoingBack = false;
 	}
 
@@ -40,10 +61,27 @@ public class ComputerController {
 
 	/**
 	 * Fetch computer list and fill controller field.
+	 *
+	 * @throws ItemNotFoundException
 	 */
-	public void refreshComputerPage() {
-		List<ComputerDTO> computerList = this.restController.getAllComputers(user);
-		this.computerPage = new Page<ComputerDTO>(computerList);
+	public void refreshComputerPage() throws ItemNotFoundException {
+		List<ComputerDTO> listComputers;
+		String result = this.webTarget.request().header("Authorization", "Bearer " + user.getToken()).get(String.class);
+		ObjectMapper obj = new ObjectMapper();
+		try {
+			listComputers = obj.readValue(result, new TypeReference<List<ComputerDTO>>() {
+			});
+		} catch (JsonParseException e) {
+			logger.error(e.getMessage());
+			throw new ItemNotFoundException(e.getMessage());
+		} catch (JsonMappingException e) {
+			logger.error(e.getMessage());
+			throw new ItemNotFoundException(e.getMessage());
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+			throw new ItemNotFoundException(e.getMessage());
+		}
+		this.computerPage = new Page<>(listComputers);
 	}
 
 	public Page<ComputerDTO> getComputerPage() {
@@ -87,8 +125,22 @@ public class ComputerController {
 	 * @return The computer that we want.
 	 * @throws ItemNotFoundException
 	 */
-	public ComputerDTO getComputerById(int id) {
-		return this.restController.getComputer(user, id);
+	public ComputerDTO getComputerById(int id) throws ItemNotFoundException {
+		try {
+			String result = this.webTarget.path("/" + id).request(MediaType.APPLICATION_JSON)
+					.header("Authorization", "Bearer " + user.getToken()).get(String.class);
+			ObjectMapper obj = new ObjectMapper();
+			return obj.readValue(result, ComputerDTO.class);
+		} catch (JsonParseException e) {
+			logger.error(e.getMessage());
+			throw new ItemNotFoundException(e.getMessage());
+		} catch (JsonMappingException e) {
+			logger.error(e.getMessage());
+			throw new ItemNotFoundException(e.getMessage());
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+			throw new ItemNotFoundException(e.getMessage());
+		}
 	}
 
 	/**
@@ -107,13 +159,25 @@ public class ComputerController {
 		computerDTO.setName(name);
 		computerDTO.setIntroducedDate(introduced);
 		computerDTO.setDiscontinuedDate(discontinued);
-
+		int companyIdInt = 0;
 		try {
-			int companyIndex = Integer.valueOf(companyId);
-			computerDTO.setCompanyId(companyIndex);
-		} catch (NumberFormatException e) {}
+			companyIdInt = Integer.parseInt(companyId);
+		} catch (NumberFormatException e) {
+			companyIdInt = 0;
+		}
+		computerDTO.setCompanyId(companyIdInt);
 
-		this.restController.addComputer(user, computerDTO);
+		ObjectMapper obj = new ObjectMapper();
+		try {
+			String json = obj.writeValueAsString(computerDTO);
+			if (this.webTarget.request().header("Authorization", "Bearer " + user.getToken())
+					.post(Entity.entity(json, MediaType.APPLICATION_JSON)).getStatus() != 200) {
+				throw new ItemBadCreatedException("computerController");
+			}
+		} catch (JsonProcessingException e) {
+			logger.error(e.getMessage());
+			throw new ItemBadCreatedException(e.getMessage());
+		}
 	}
 
 	public void updateComputer(int id, String name, String introduced, String discontinued, int companyId)
@@ -124,7 +188,17 @@ public class ComputerController {
 		computerDTO.setIntroducedDate(introduced);
 		computerDTO.setDiscontinuedDate(discontinued);
 		computerDTO.setCompanyId(companyId);
-		this.restController.updateComputer(user, computerDTO);
+		ObjectMapper obj = new ObjectMapper();
+		try {
+			String json = obj.writeValueAsString(computerDTO);
+			if (this.webTarget.path("/" + id).request().header("Authorization", "Bearer " + user.getToken())
+					.build("PATCH", Entity.entity(json, MediaType.APPLICATION_JSON)).invoke().getStatus() != 200) {
+				throw new ItemNotUpdatedException("computerController");
+			}
+		} catch (JsonProcessingException e) {
+			logger.error(e.getMessage());
+			throw new ItemNotUpdatedException(e.getMessage());
+		}
 	}
 
 	/**
@@ -134,9 +208,10 @@ public class ComputerController {
 	 * @throws ItemNotFoundException
 	 * @throws ItemNotDeletedException
 	 */
-	public void deleteComputer(int id) throws ItemNotFoundException, ItemNotDeletedException {
-		ComputerDTO computerDTO = new ComputerDTO();
-		computerDTO.setId(id);
-		this.restController.deleteComputer(user, computerDTO);
+	public void deleteComputer(int id) throws ItemNotDeletedException {
+		if (this.webTarget.path("/" + id).request().header("Authorization", "Bearer " + user.getToken()).delete()
+				.getStatus() != 200) {
+			throw new ItemNotDeletedException("computerController");
+		}
 	}
 }
