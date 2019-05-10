@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import binding.dto.ComputerDTO;
 import console.controller.ComputerController;
+import core.model.User;
 import core.util.Utils;
 import persistence.exception.ItemBadCreatedException;
 import persistence.exception.ItemNotDeletedException;
@@ -23,8 +24,9 @@ public class ComputerView {
 	/**
 	 * Default constructor.
 	 */
-	public ComputerView(ComputerController computerController) {
+	public ComputerView(ComputerController computerController, User user) {
 		this.computerController = computerController;
+		this.computerController.setUser(user);
 	}
 
 	/**
@@ -44,9 +46,6 @@ public class ComputerView {
 		switch (action) {
 		case GET_ALL:
 			chooseGetAll(sc);
-			break;
-		case GET_NAME:
-			chooseComputerName(sc);
 			break;
 		case GET_ID:
 			chooseComputerId(sc);
@@ -98,23 +97,6 @@ public class ComputerView {
 	}
 
 	/**
-	 * Method to print computer by giving name.
-	 *
-	 * @param sc The scanner to tell user to give the computer name.
-	 */
-	public void chooseComputerName(Scanner sc) {
-		logger.info("Quel nom de Computer voulez-vous chercher ?");
-		String prompt = sc.nextLine();
-		ComputerDTO computer;
-		try {
-			computer = this.computerController.getComputerByName(prompt);
-			logger.info(computer.toString());
-		} catch (ItemNotFoundException e) {
-			logger.info("Computer not found.");
-		}
-	}
-
-	/**
 	 * Method to print computer by giving id.
 	 *
 	 * @param sc The scanner to tell user to give the computer id.
@@ -125,12 +107,11 @@ public class ComputerView {
 		String prompt = sc.nextLine();
 		int id = Integer.valueOf(prompt);
 
-		ComputerDTO computer;
-		try {
-			computer = this.computerController.getComputerById(id);
-			logger.info(computer.toString());
-		} catch (ItemNotFoundException e) {
+		ComputerDTO computer = this.computerController.getComputerById(id);
+		if (computer == null) {
 			logger.info("Computer not found.");
+		} else {
+			logger.info(computer.toString());
 		}
 	}
 

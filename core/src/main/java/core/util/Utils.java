@@ -16,7 +16,7 @@ public class Utils {
 	};
 
 	public enum ChoiceActionComputer {
-		GET_ALL, GET_ID, GET_NAME, CREATE, UPDATE, DELETE, BACK, NULL
+		GET_ALL, GET_ID, CREATE, UPDATE, DELETE, BACK, NULL
 	};
 
 	public enum ChoiceActionCompany {

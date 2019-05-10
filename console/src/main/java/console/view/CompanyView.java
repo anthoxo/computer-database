@@ -8,9 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import binding.dto.CompanyDTO;
 import console.controller.CompanyController;
+import core.model.User;
 import core.util.Utils;
-import persistence.exception.ItemNotDeletedException;
-import persistence.exception.ItemNotFoundException;
 
 public class CompanyView {
 
@@ -20,8 +19,9 @@ public class CompanyView {
 	/**
 	 * Default constructor.
 	 */
-	public CompanyView(CompanyController companyController) {
+	public CompanyView(CompanyController companyController, User user) {
 		this.companyController = companyController;
+		this.companyController.setUser(user);
 	}
 
 	public void chooseAction(Scanner sc) {
@@ -75,24 +75,20 @@ public class CompanyView {
 		String prompt = sc.nextLine();
 		int id = Integer.valueOf(prompt);
 
-		CompanyDTO company;
-		try {
-			company = this.companyController.getCompanyById(id);
+		CompanyDTO company = this.companyController.getCompanyById(id);
+		if (company == null) {
+			logger.warn("company not found");
+		} else {
 			logger.info(company.toString());
 			logger.info("Voulez-vous vraiment détruire cet objet ? (y/n)");
 
 			prompt = sc.nextLine();
 
 			if (prompt.equals("y")) {
-				try {
-					this.companyController.deleteCompany(company.getId());
-					logger.info("Computer deleted !");
-				} catch (ItemNotDeletedException e) {
-					logger.warn("Computer not deleted.");
-				}
+				;
+				logger.info(this.companyController.deleteCompany(company.getId()) ? "Computer deleted !"
+						: "Computer not deleted");
 			}
-		} catch (ItemNotFoundException e) {
-			logger.warn("Computer introuvable.");
 		}
 
 	}

@@ -1,47 +1,41 @@
 package console.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
 import binding.dto.CompanyDTO;
 import binding.mapper.CompanyMapper;
-import core.model.Company;
 import core.model.Page;
+import core.model.User;
 import core.util.Utils;
 import core.util.Utils.ChoiceActionPage;
-import persistence.exception.ItemNotDeletedException;
-import persistence.exception.ItemNotFoundException;
-import service.CompanyService;
 
 @Component
 public class CompanyController {
 
-	CompanyService companyService;
+	RestController restController;
 	CompanyMapper companyMapper;
 
 	Page<CompanyDTO> companyPage;
 	boolean isGoingBack;
+	User user;
 
-	private CompanyController(CompanyService companyService, CompanyMapper companyMapper) {
-		this.companyService = companyService;
+	private CompanyController(RestController restController, CompanyMapper companyMapper) {
+		this.restController = restController;
 		this.companyMapper = companyMapper;
 		this.isGoingBack = false;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	/**
 	 * Fetch company list and fill controller field.
 	 */
 	public void refreshCompanyPage() {
-		List<CompanyDTO> listCompanies;
-		try {
-			listCompanies = companyService.getAllCompanies().stream()
-					.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList());
-		} catch (ItemNotFoundException e) {
-			listCompanies = new ArrayList<CompanyDTO>();
-		}
+		List<CompanyDTO> listCompanies = getAllCompanies();
 		this.companyPage = new Page<CompanyDTO>(listCompanies);
 	}
 
@@ -50,22 +44,17 @@ public class CompanyController {
 	}
 
 	public List<CompanyDTO> getAllCompanies() {
-		try {
-			return this.companyService.getAllCompanies().stream()
-					.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList());
-		} catch (ItemNotFoundException e) {
-			return new ArrayList<CompanyDTO>();
-		}
+		return this.restController.getAllCompanies(user);
 	}
 
-	public CompanyDTO getCompanyById(int id) throws ItemNotFoundException {
-		Company company = this.companyService.getCompanyById(id);
-		return this.companyMapper.createDTO(company);
+	public CompanyDTO getCompanyById(int id) {
+		return this.restController.getCompany(user, id);
 	}
 
-	public void deleteCompany(int id) throws ItemNotFoundException, ItemNotDeletedException {
-		Company company = new Company.Builder().withId(id).build();
-		this.companyService.deleteCompany(company);
+	public boolean deleteCompany(int id) {
+		CompanyDTO companyDTO = new CompanyDTO();
+		companyDTO.setId(id);
+		return this.restController.deleteCompany(user, companyDTO);
 	}
 
 	/**

@@ -55,6 +55,9 @@
 		<hikaricp.version>3.3.1</hikaricp.version>
 		<hibernate.version>5.4.2.Final</hibernate.version>
 		<h2.version>1.4.199</h2.version>
+
+		<jax.rs.version>2.1.1</jax.rs.version>
+		<glassfish.jersey.client.version>2.28</glassfish.jersey.client.version>
 	</properties>
 
 	<dependencies>

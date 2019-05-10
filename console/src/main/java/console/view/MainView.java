@@ -9,6 +9,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import console.controller.CompanyController;
 import console.controller.ComputerController;
 import console.controller.MainController;
+import core.model.User;
 import core.util.Utils;
 
 public class MainView {
@@ -40,7 +41,7 @@ public class MainView {
 	/**
 	 * Method to invite the user to choose a database.
 	 */
-	public void chooseDatabase() {
+	public void chooseDatabase(User user) {
 		boolean stop = false;
 
 		while (!stop) {
@@ -54,11 +55,10 @@ public class MainView {
 			if (choice) {
 				Utils.ChoiceDatabase database = this.mainController.getDatabase();
 				if (database.equals(Utils.ChoiceDatabase.COMPANY)) {
-					CompanyView companyView = new CompanyView(context.getBean(CompanyController.class));
+					CompanyView companyView = new CompanyView(context.getBean(CompanyController.class), user);
 					companyView.chooseAction(sc);
-					// companyView.printCompanies(sc);
 				} else if (database.equals(Utils.ChoiceDatabase.COMPUTER)) {
-					ComputerView computerView = new ComputerView(context.getBean(ComputerController.class));
+					ComputerView computerView = new ComputerView(context.getBean(ComputerController.class), user);
 					computerView.chooseAction(sc);
 				} else {
 					logger.info("Bye");

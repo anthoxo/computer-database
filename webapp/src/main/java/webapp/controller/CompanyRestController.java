@@ -43,12 +43,29 @@ public class CompanyRestController {
 		}
 	}
 
+	@Secured("ROLE_USER")
+	@GetMapping("/{id}")
+	public ResponseEntity<CompanyDTO> getCompany(@PathVariable int id) {
+		try {
+			CompanyDTO companyDTO = this.companyMapper.createDTO(this.companyService.getCompanyById(id));
+			return new ResponseEntity<CompanyDTO>(companyDTO, HttpStatus.OK);
+		} catch (ItemNotFoundException e) {
+			return new ResponseEntity<CompanyDTO>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+
 	@Secured("ROLE_ADMIN")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<CompanyDTO> deleteCompany(@RequestBody CompanyDTO companyDTO, @PathVariable int id) {
 		try {
-			this.companyService.deleteCompany(this.companyMapper.createEntity(companyDTO));
-			return new ResponseEntity<CompanyDTO>(companyDTO, HttpStatus.OK);
+			Company company = this.companyService.getCompanyById(id);
+			if (company != null) {
+				this.companyService.deleteCompany(company);
+				return new ResponseEntity<CompanyDTO>(companyDTO, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<CompanyDTO>(HttpStatus.NOT_FOUND);
+			}
 		} catch (ItemNotFoundException e) {
 			return new ResponseEntity<CompanyDTO>(HttpStatus.NOT_FOUND);
 		} catch (ItemNotDeletedException e) {

@@ -35,6 +35,12 @@ public class ComputerRestController {
 		this.computerMapper = computerMapper;
 	}
 
+	@GetMapping("/test")
+	public ResponseEntity<String> test() {
+		return new ResponseEntity<String>("OUAIS", HttpStatus.OK);
+	}
+
+
 	@Secured("ROLE_USER")
 	@GetMapping
 	public ResponseEntity<List<ComputerDTO>> getAll() {
@@ -85,11 +91,15 @@ public class ComputerRestController {
 
 	@Secured("ROLE_ADMIN")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<ComputerDTO> deleteComputer(@RequestBody ComputerDTO computerDTO, @PathVariable int id) {
+	public ResponseEntity<ComputerDTO> deleteComputer(@PathVariable int id) {
 		try {
-			Computer computer = this.computerMapper.createEntity(computerDTO);
-			this.computerService.deleteComputer(computer);
-			return new ResponseEntity<ComputerDTO>(computerDTO, HttpStatus.OK);
+			Computer computer = this.computerService.getComputerById(id);
+			if (computer != null) {
+				this.computerService.deleteComputer(computer);
+				return new ResponseEntity<ComputerDTO>(this.computerMapper.createDTO(computer), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<ComputerDTO>(HttpStatus.NOT_FOUND);
+			}
 		} catch (ItemNotFoundException e) {
 			return new ResponseEntity<ComputerDTO>(HttpStatus.NOT_FOUND);
 		} catch (ItemNotDeletedException e) {

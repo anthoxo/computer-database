@@ -1,52 +1,48 @@
 package console.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
 import binding.dto.ComputerDTO;
 import binding.mapper.ComputerMapper;
-import core.model.Computer;
 import core.model.Page;
+import core.model.User;
 import core.util.Utils;
 import core.util.Utils.ChoiceActionPage;
 import persistence.exception.ItemBadCreatedException;
 import persistence.exception.ItemNotDeletedException;
 import persistence.exception.ItemNotFoundException;
 import persistence.exception.ItemNotUpdatedException;
-import service.ComputerService;
 
 @Component
 public class ComputerController {
 
-	ComputerService computerService;
+	RestController restController;
 	ComputerMapper computerMapper;
 
 	Page<ComputerDTO> computerPage;
 	boolean isGoingBack;
+	User user;
 
 	/**
 	 * Default constructor.
 	 */
-	private ComputerController(ComputerService computerService, ComputerMapper computerMapper) {
-		this.computerService = computerService;
+	private ComputerController(RestController restController, ComputerMapper computerMapper) {
+		this.restController = restController;
 		this.computerMapper = computerMapper;
 		this.isGoingBack = false;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	/**
 	 * Fetch computer list and fill controller field.
 	 */
 	public void refreshComputerPage() {
-		List<ComputerDTO> computerList;
-		try {
-			computerList = computerService.getAllComputers().stream()
-					.map(computer -> this.computerMapper.createDTO(computer)).collect(Collectors.toList());
-		} catch (ItemNotFoundException e) {
-			computerList = new ArrayList<ComputerDTO>();
-		}
+		List<ComputerDTO> computerList = this.restController.getAllComputers(user);
 		this.computerPage = new Page<ComputerDTO>(computerList);
 	}
 
@@ -87,24 +83,12 @@ public class ComputerController {
 
 	/**
 	 *
-	 * @param name Name of the wanted computer.
-	 * @return The computer that we want.
-	 * @throws ItemNotFoundException
-	 */
-	public ComputerDTO getComputerByName(String name) throws ItemNotFoundException {
-		Computer computer = this.computerService.getComputerByName(name);
-		return this.computerMapper.createDTO(computer);
-	}
-
-	/**
-	 *
 	 * @param id The id of the wanted computer.
 	 * @return The computer that we want.
 	 * @throws ItemNotFoundException
 	 */
-	public ComputerDTO getComputerById(int id) throws ItemNotFoundException {
-		Computer computer = this.computerService.getComputerById(id);
-		return this.computerMapper.createDTO(computer);
+	public ComputerDTO getComputerById(int id) {
+		return this.restController.getComputer(user, id);
 	}
 
 	/**
@@ -129,8 +113,7 @@ public class ComputerController {
 			computerDTO.setCompanyId(companyIndex);
 		} catch (NumberFormatException e) {}
 
-		Computer computer = this.computerMapper.createEntity(computerDTO);
-		computerService.createComputer(computer);
+		this.restController.addComputer(user, computerDTO);
 	}
 
 	public void updateComputer(int id, String name, String introduced, String discontinued, int companyId)
@@ -141,8 +124,7 @@ public class ComputerController {
 		computerDTO.setIntroducedDate(introduced);
 		computerDTO.setDiscontinuedDate(discontinued);
 		computerDTO.setCompanyId(companyId);
-		Computer computer = this.computerMapper.createEntity(computerDTO);
-		computerService.updateComputer(computer);
+		this.restController.updateComputer(user, computerDTO);
 	}
 
 	/**
@@ -153,7 +135,8 @@ public class ComputerController {
 	 * @throws ItemNotDeletedException
 	 */
 	public void deleteComputer(int id) throws ItemNotFoundException, ItemNotDeletedException {
-		Computer computer = new Computer.Builder().withId(id).build();
-		computerService.deleteComputer(computer);
+		ComputerDTO computerDTO = new ComputerDTO();
+		computerDTO.setId(id);
+		this.restController.deleteComputer(user, computerDTO);
 	}
 }
