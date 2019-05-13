@@ -102,22 +102,28 @@ public class Computer {
 		} else {
 			Computer computer = (Computer) obj;
 			boolean result = this.id == computer.id && this.name.equals(computer.name);
+			boolean boolIntroduced;
 			if (this.getIntroduced() == null) {
-				result = result && computer.getIntroduced() == null;
+				boolIntroduced = computer.getIntroduced() == null;
 			} else {
-				result = result && this.introduced.equals(computer.introduced);
+				boolIntroduced = this.introduced.equals(computer.introduced);
 			}
+
+			boolean boolDiscontinued;
 			if (this.getDiscontinued() == null) {
-				result = result && computer.getDiscontinued() == null;
+				boolDiscontinued = computer.getDiscontinued() == null;
 			} else {
-				result = result && this.discontinued.equals(computer.discontinued);
+				boolDiscontinued = this.discontinued.equals(computer.discontinued);
 			}
+
+			boolean boolCompany;
 			if (this.getCompany() == null) {
-				result = result && computer.getCompany() == null;
+				boolCompany = computer.getCompany() == null;
 			} else {
-				result = result && this.company.equals(computer.company);
+				boolCompany = this.company.equals(computer.company);
 			}
-			return result;
+
+			return result && boolIntroduced && boolDiscontinued && boolCompany;
 		}
 	}
 

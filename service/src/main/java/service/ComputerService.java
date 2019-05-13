@@ -25,6 +25,7 @@ public class ComputerService {
 	private Logger logger = LoggerFactory.getLogger(ComputerService.class);
 
 	private static final String COMPUTER_REPOSITORY = "computerRepository";
+	private static final List<String> ORDERS = Arrays.asList("name", "introduced", "discontinued", "company");
 
 
 	ComputerService(ComputerRepository computerRepository) {
@@ -99,10 +100,10 @@ public class ComputerService {
 	public List<Computer> getAllComputersOrderBy(String order, OrderByOption option) throws ItemNotFoundException {
 		try {
 			List<Computer> result;
-			List<String> orders = Arrays.asList("name", "introduced", "discontinued", "company");
 			Sort.Direction direction = option == OrderByOption.DESC ? Sort.Direction.DESC : Sort.Direction.ASC;
-			if (orders.contains(order)) {
-				if (order.equals("company")) {
+			if (ORDERS.contains(order)) {
+				if (order.equals(ORDERS.get(3))) {
+					//company
 					result = this.computerRepository.findAll(Sort.by(new Sort.Order(direction, "company.name")));
 				} else {
 					result = this.computerRepository.findAll(Sort.by(new Sort.Order(direction, order)));
@@ -130,10 +131,10 @@ public class ComputerService {
 			throws ItemNotFoundException {
 		try {
 			List<Computer> result;
-			List<String> orders = Arrays.asList("name", "introduced", "discontinued", "company");
 			Sort.Direction direction = option == OrderByOption.DESC ? Sort.Direction.DESC : Sort.Direction.ASC;
-			if (orders.contains(order)) {
-				if ("company".equals(order)) {
+			if (ORDERS.contains(order)) {
+				if (order.equals(ORDERS.get(3))) {
+					// company
 					result = this.computerRepository.findByNameContaining(pattern,
 							Sort.by(new Sort.Order(direction, "company.name")));
 				} else {

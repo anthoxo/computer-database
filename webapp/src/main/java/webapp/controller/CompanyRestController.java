@@ -20,7 +20,7 @@ import persistence.exception.ItemNotFoundException;
 import service.CompanyService;
 
 @RestController
-@RequestMapping("/api/v1/company")
+@RequestMapping("/api/v1/companies")
 public class CompanyRestController {
 	CompanyService companyService;
 	CompanyMapper companyMapper;
@@ -49,7 +49,7 @@ public class CompanyRestController {
 			CompanyDTO companyDTO = this.companyMapper.createDTO(this.companyService.getCompanyById(id));
 			return new ResponseEntity<>(companyDTO, HttpStatus.OK);
 		} catch (ItemNotFoundException e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 

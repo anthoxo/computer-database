@@ -60,7 +60,11 @@ public class Company {
 			return false;
 		} else {
 			Company company = (Company) obj;
-			return this.id == company.id && this.name.equals(company.name);
+			if (this.name == null) {
+				return this.id == company.id && company.name == null;
+			} else {
+				return this.id == company.id && this.name.equals(company.name);
+			}
 		}
 	}
 

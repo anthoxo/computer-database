@@ -43,7 +43,11 @@ public class ComputerController {
 
 	Page<ComputerDTO> computerPage;
 	boolean isGoingBack;
+	ObjectMapper objectMapper;
 	User user;
+
+	private String authorizationHeader = "Authorization";
+	private String authorizationToken;
 
 	/**
 	 * Default constructor.
@@ -51,12 +55,14 @@ public class ComputerController {
 	ComputerController(ComputerMapper computerMapper) {
 		this.computerMapper = computerMapper;
 		this.client = ClientBuilder.newClient().property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true);
-		this.webTarget = client.target("http://localhost:8080/api/v1/computer");
+		this.webTarget = client.target("http://localhost:8080/api/v1/computers");
 		this.isGoingBack = false;
+		this.objectMapper = new ObjectMapper();
 	}
 
 	public void setUser(User user) {
 		this.user = user;
+		this.authorizationToken = String.format("Bearer %s", user.getToken());
 	}
 
 	/**
@@ -65,12 +71,12 @@ public class ComputerController {
 	 * @throws ItemNotFoundException
 	 */
 	public void refreshComputerPage() throws ItemNotFoundException {
-		List<ComputerDTO> listComputers;
-		String result = this.webTarget.request().header("Authorization", "Bearer " + user.getToken()).get(String.class);
-		ObjectMapper obj = new ObjectMapper();
 		try {
-			listComputers = obj.readValue(result, new TypeReference<List<ComputerDTO>>() {
-			});
+			String result = this.webTarget.request().header(authorizationHeader, authorizationToken).get(String.class);
+			List<ComputerDTO> listComputers = this.objectMapper.readValue(result,
+					new TypeReference<List<ComputerDTO>>() {
+					});
+			this.computerPage = new Page<>(listComputers);
 		} catch (JsonParseException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotFoundException(e.getMessage());
@@ -81,7 +87,6 @@ public class ComputerController {
 			logger.error(e.getMessage());
 			throw new ItemNotFoundException(e.getMessage());
 		}
-		this.computerPage = new Page<>(listComputers);
 	}
 
 	public Page<ComputerDTO> getComputerPage() {
@@ -128,9 +133,8 @@ public class ComputerController {
 	public ComputerDTO getComputerById(int id) throws ItemNotFoundException {
 		try {
 			String result = this.webTarget.path("/" + id).request(MediaType.APPLICATION_JSON)
-					.header("Authorization", "Bearer " + user.getToken()).get(String.class);
-			ObjectMapper obj = new ObjectMapper();
-			return obj.readValue(result, ComputerDTO.class);
+					.header(authorizationHeader, authorizationToken).get(String.class);
+			return this.objectMapper.readValue(result, ComputerDTO.class);
 		} catch (JsonParseException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotFoundException(e.getMessage());
@@ -167,10 +171,9 @@ public class ComputerController {
 		}
 		computerDTO.setCompanyId(companyIdInt);
 
-		ObjectMapper obj = new ObjectMapper();
 		try {
-			String json = obj.writeValueAsString(computerDTO);
-			if (this.webTarget.request().header("Authorization", "Bearer " + user.getToken())
+			String json = this.objectMapper.writeValueAsString(computerDTO);
+			if (this.webTarget.request().header(authorizationHeader, authorizationToken)
 					.post(Entity.entity(json, MediaType.APPLICATION_JSON)).getStatus() != 200) {
 				throw new ItemBadCreatedException("computerController");
 			}
@@ -188,10 +191,9 @@ public class ComputerController {
 		computerDTO.setIntroducedDate(introduced);
 		computerDTO.setDiscontinuedDate(discontinued);
 		computerDTO.setCompanyId(companyId);
-		ObjectMapper obj = new ObjectMapper();
 		try {
-			String json = obj.writeValueAsString(computerDTO);
-			if (this.webTarget.path("/" + id).request().header("Authorization", "Bearer " + user.getToken())
+			String json = this.objectMapper.writeValueAsString(computerDTO);
+			if (this.webTarget.path("/" + id).request().header(authorizationHeader, authorizationToken)
 					.build("PATCH", Entity.entity(json, MediaType.APPLICATION_JSON)).invoke().getStatus() != 200) {
 				throw new ItemNotUpdatedException("computerController");
 			}
@@ -209,7 +211,7 @@ public class ComputerController {
 	 * @throws ItemNotDeletedException
 	 */
 	public void deleteComputer(int id) throws ItemNotDeletedException {
-		if (this.webTarget.path("/" + id).request().header("Authorization", "Bearer " + user.getToken()).delete()
+		if (this.webTarget.path("/" + id).request().header(authorizationHeader, authorizationToken).delete()
 				.getStatus() != 200) {
 			throw new ItemNotDeletedException("computerController");
 		}

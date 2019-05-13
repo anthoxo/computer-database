@@ -78,11 +78,8 @@ public class ComputerController {
 			List<Computer> listComputers;
 			try {
 				if (!orderBy.equals("")) {
-					if (this.orderByOption == OrderByOption.ASC) {
-						this.orderByOption = OrderByOption.DESC;
-					} else {
-						this.orderByOption = OrderByOption.ASC;
-					}
+					this.orderByOption = this.orderByOption == OrderByOption.ASC ? OrderByOption.DESC
+							: OrderByOption.ASC;
 					if (!orderBy.equals(orderColumn)) {
 						this.orderByOption = OrderByOption.ASC;
 					}

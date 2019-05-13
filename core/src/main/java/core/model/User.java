@@ -113,8 +113,36 @@ public class User implements UserDetails {
 			return false;
 		} else {
 			User user = (User) obj;
-			return this.id == user.id && this.email.equals(user.email) && this.password.equals(user.password)
-					&& this.username.equals(user.username) && this.role.equals(user.role);
+			boolean result = this.id == user.id;
+			boolean boolEmail;
+			if (this.email == null) {
+				boolEmail = user.getEmail() == null;
+			} else {
+				boolEmail = this.email.equals(user.getEmail());
+			}
+
+			boolean boolPassword;
+			if (this.password == null) {
+				boolPassword = user.getPassword() == null;
+			} else {
+				boolPassword = this.password.equals(user.getPassword());
+			}
+
+			boolean boolUsername;
+			if (this.username == null) {
+				boolUsername = user.getUsername() == null;
+			} else {
+				boolUsername = this.username.equals(user.getUsername());
+			}
+
+			boolean boolRole;
+			if (this.role == null) {
+				 boolRole = user.getRole() == null;
+			} else {
+				boolRole = this.role.equals(user.role);
+			}
+
+			return result && boolEmail && boolPassword && boolUsername && boolRole;
 		}
 	}
 

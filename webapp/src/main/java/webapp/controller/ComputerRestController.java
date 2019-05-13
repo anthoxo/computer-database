@@ -25,7 +25,7 @@ import persistence.exception.ItemNotUpdatedException;
 import service.ComputerService;
 
 @RestController
-@RequestMapping("/api/v1/computer")
+@RequestMapping("/api/v1/computers")
 public class ComputerRestController {
 	ComputerService computerService;
 	ComputerMapper computerMapper;

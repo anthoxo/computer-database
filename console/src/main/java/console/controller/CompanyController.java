@@ -35,16 +35,22 @@ public class CompanyController {
 
 	Page<CompanyDTO> companyPage;
 	boolean isGoingBack;
+	ObjectMapper objectMapper;
 	User user;
+
+	private String authorizationHeader = "Authorization";
+	private String authorizationToken;
 
 	CompanyController() {
 		this.client = ClientBuilder.newClient().property(HttpUrlConnectorProvider.SET_METHOD_WORKAROUND, true);
-		this.webTarget = this.client.target("http://localhost:8080/api/v1/company");
+		this.webTarget = this.client.target("http://localhost:8080/api/v1/companies");
 		this.isGoingBack = false;
+		this.objectMapper = new ObjectMapper();
 	}
 
 	public void setUser(User user) {
 		this.user = user;
+		this.authorizationToken = String.format("Bearer %s", user.getToken());
 	}
 
 	/**
@@ -53,24 +59,18 @@ public class CompanyController {
 	 * @throws ItemNotFoundException
 	 */
 	public void refreshCompanyPage() throws ItemNotFoundException {
-		String result = this.webTarget.request().header("Authorization", "Bearer " + user.getToken()).get(String.class);
-		ObjectMapper obj = new ObjectMapper();
-		List<CompanyDTO> listCompanies;
 		try {
-			listCompanies = obj.readValue(result, new TypeReference<List<CompanyDTO>>() {
+			String result = this.webTarget.request().header(authorizationHeader, authorizationToken).get(String.class);
+			List<CompanyDTO> listCompanies = this.objectMapper.readValue(result, new TypeReference<List<CompanyDTO>>() {
 			});
-		} catch (JsonParseException e) {
-			logger.error(e.getMessage());
-			throw new ItemNotFoundException(e.getMessage());
-		} catch (JsonMappingException e) {
+			this.companyPage = new Page<>(listCompanies);
+		} catch (JsonParseException | JsonMappingException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotFoundException(e.getMessage());
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotFoundException(e.getMessage());
 		}
-
-		this.companyPage = new Page<>(listCompanies);
 	}
 
 	public Page<CompanyDTO> getCompanyPage() {
@@ -79,14 +79,10 @@ public class CompanyController {
 
 	public CompanyDTO getCompanyById(int id) throws ItemNotFoundException {
 		try {
-			String result = this.webTarget.path("/" + id).request().header("Authorization", "Bearer " + user.getToken())
+			String result = this.webTarget.path("/" + id).request().header(authorizationHeader, authorizationToken)
 					.get(String.class);
-			ObjectMapper obj = new ObjectMapper();
-			return obj.readValue(result, CompanyDTO.class);
-		} catch (JsonParseException e) {
-			logger.error(e.getMessage());
-			throw new ItemNotFoundException(e.getMessage());
-		} catch (JsonMappingException e) {
+			return this.objectMapper.readValue(result, CompanyDTO.class);
+		} catch (JsonParseException | JsonMappingException e) {
 			logger.error(e.getMessage());
 			throw new ItemNotFoundException(e.getMessage());
 		} catch (IOException e) {
@@ -96,8 +92,8 @@ public class CompanyController {
 	}
 
 	public void deleteCompany(int id) throws ItemNotDeletedException {
-		if (this.webTarget.path("/" + id).request().header("Authorization", "Bearer " + user.getToken())
-				.delete().getStatus() != 200) {
+		if (this.webTarget.path("/" + id).request().header(authorizationHeader, authorizationToken).delete()
+				.getStatus() != 200) {
 			throw new ItemNotDeletedException("companyController");
 		}
 	}

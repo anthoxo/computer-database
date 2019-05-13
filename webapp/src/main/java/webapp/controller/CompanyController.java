@@ -60,7 +60,7 @@ public class CompanyController {
 					listCompanies = this.companyService.getAllCompanies();
 				}
 			} catch (ItemNotFoundException e) {
-				listCompanies = new ArrayList<Company>();
+				listCompanies = new ArrayList<>();
 			}
 			this.companyPage = new Page<>(listCompanies.stream()
 					.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList()));
