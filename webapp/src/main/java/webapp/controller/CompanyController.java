@@ -1,73 +1,65 @@
 package webapp.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import binding.dto.CompanyDTO;
 import binding.mapper.CompanyMapper;
 import core.model.Company;
-import core.model.Page;
-import core.util.Utils.OrderByOption;
-import core.util.Variable;
+import persistence.exception.ItemNotDeletedException;
 import persistence.exception.ItemNotFoundException;
 import service.CompanyService;
 
-@Controller
-@RequestMapping("/company")
+@RestController
+@RequestMapping("/api/v1/companies")
 public class CompanyController {
-
 	CompanyService companyService;
 	CompanyMapper companyMapper;
-
-	OrderByOption orderByOption = OrderByOption.NULL;
-	Page<CompanyDTO> companyPage;
 
 	public CompanyController(CompanyService companyService, CompanyMapper companyMapper) {
 		this.companyService = companyService;
 		this.companyMapper = companyMapper;
 	}
 
-	@GetMapping
 	@Secured("ROLE_USER")
-	public String getCompanyList(Model model,
-			@RequestParam(name = Variable.GET_PARAMETER_ID, required = false, defaultValue = "") String id,
-			@RequestParam(name = Variable.GET_PARAMETER_ORDER_BY, required = false, defaultValue = "") String orderBy) {
-		int index = -1;
+	@GetMapping
+	public ResponseEntity<List<CompanyDTO>> getAll() {
 		try {
-			index = Math.max(Integer.valueOf(id) - 1, 0);
-		} catch (NumberFormatException e) {
-			index = -1;
+			List<CompanyDTO> listCompanies = this.companyService.getAllCompanies().stream()
+					.map((Company c) -> this.companyMapper.createDTO(c)).collect(Collectors.toList());
+			return new ResponseEntity<>(listCompanies, HttpStatus.OK);
+		} catch (ItemNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		if (index == -1) {
-			List<Company> listCompanies;
-			try {
-				if ("name".equals(orderBy)) {
-					if (this.orderByOption == OrderByOption.ASC) {
-						this.orderByOption = OrderByOption.DESC;
-					} else {
-						this.orderByOption = OrderByOption.ASC;
-					}
-					listCompanies = this.companyService.getAllCompaniesOrderByName(orderByOption);
-				} else {
-					listCompanies = this.companyService.getAllCompanies();
-				}
-			} catch (ItemNotFoundException e) {
-				listCompanies = new ArrayList<>();
-			}
-			this.companyPage = new Page<>(listCompanies.stream()
-					.map(company -> this.companyMapper.createDTO(company)).collect(Collectors.toList()));
+	}
+
+	@Secured("ROLE_USER")
+	@GetMapping("/{id}")
+	public ResponseEntity<CompanyDTO> getCompany(@PathVariable int id) throws ItemNotFoundException {
+		CompanyDTO companyDTO = this.companyMapper.createDTO(this.companyService.getCompanyById(id));
+		return new ResponseEntity<>(companyDTO, HttpStatus.OK);
+	}
+
+	@Secured("ROLE_ADMIN")
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> deleteCompany(@PathVariable int id)
+			throws ItemNotFoundException, ItemNotDeletedException {
+		Company company = this.companyService.getCompanyById(id);
+		if (company != null) {
+			this.companyService.deleteCompany(company);
+			return new ResponseEntity<>("Company deleted.", HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		companyPage.goTo(index * Page.NB_ITEMS_PER_PAGE);
-		model.addAttribute(Variable.IS_USER, true);
-		model.addAttribute(Variable.PAGE, companyPage);
-		return Variable.VIEW_COMPANY;
+
 	}
 }

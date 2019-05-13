@@ -1,129 +1,48 @@
 package webapp.controller;
 
-import java.util.Locale;
-
-import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import binding.dto.UserDTO;
 import binding.mapper.UserMapper;
-import binding.validator.UserDTOValidator;
 import core.model.User;
-import core.util.Variable;
-import persistence.exception.ItemBadCreatedException;
 import service.JwtService;
-import service.NotificationService;
 import service.UserService;
 
-@Controller
+@RestController
+@RequestMapping("/api/v1/auth")
 public class LoginController {
 
 	AuthenticationManager authenticationManager;
 	UserService userService;
 	JwtService jwtService;
-	NotificationService notificationService;
 	UserMapper userMapper;
-	PasswordEncoder passwordEncoder;
-	MessageSource messageSource;
 
 	public LoginController(AuthenticationManager authenticationManager, UserService userService, JwtService jwtService,
-			NotificationService notificationService, UserMapper userMapper, PasswordEncoder passwordEncoder,
-			MessageSource messageSource) {
+			UserMapper userMapper) {
 		this.authenticationManager = authenticationManager;
 		this.userService = userService;
 		this.jwtService = jwtService;
-		this.notificationService = notificationService;
 		this.userMapper = userMapper;
-		this.passwordEncoder = passwordEncoder;
-		this.messageSource = messageSource;
 	}
 
-	@GetMapping("/signin")
-	public String getSignIn(Model model) {
-		model.addAttribute("userDTO", new UserDTO());
-		model.addAttribute(Variable.IS_USER, false);
-		if (this.notificationService.isNotifying()) {
-			model.addAttribute(Variable.IS_NOTIFYING, true);
-			model.addAttribute(Variable.NOTIFICATION, this.notificationService.getNotification());
-			this.notificationService.clean();
+	@PostMapping("")
+	public ResponseEntity<UserDTO> postLogin(@RequestBody UserDTO userDTO) {
+		Authentication auth = authenticationManager
+				.authenticate(new UsernamePasswordAuthenticationToken(userDTO.getEmail(), userDTO.getPassword()));
+		if (auth.isAuthenticated()) {
+			User user = (User) auth.getPrincipal();
+			user.setToken(this.jwtService.generateToken(auth));
+			return new ResponseEntity<>(this.userMapper.createDTO(user), HttpStatus.OK);
 		} else {
-			model.addAttribute(Variable.IS_NOTIFYING, false);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
-		return "signin";
-	}
-
-	@PostMapping("/signin")
-	public String postSignIn(@Validated @ModelAttribute("userDTO") UserDTO userDTO, BindingResult result,
-			Locale locale) {
-		try {
-			Authentication auth = authenticationManager
-					.authenticate(new UsernamePasswordAuthenticationToken(userDTO.getEmail(), userDTO.getPassword()));
-
-			SecurityContextHolder.getContext().setAuthentication(auth);
-			((User) auth.getPrincipal()).setToken(this.jwtService.generateToken(auth));
-			return "redirect:/index";
-		} catch (AuthenticationException e) {
-			this.notificationService.generateNotification(Variable.DANGER, this,
-					this.messageSource.getMessage("login.signin.notification.bad_credentials", null, locale));
-			return "redirect:/signin";
-		}
-	}
-
-	@GetMapping("/signup")
-	public String getSignUp(Model model) {
-		model.addAttribute("userDTO", new UserDTO());
-		model.addAttribute(Variable.IS_USER, false);
-		return "signup";
-	}
-
-	@PostMapping("/signup")
-	public String postSignUp(@Validated @ModelAttribute("userDTO") UserDTO userDTO, BindingResult result,
-			Locale locale) {
-		String levelNotification = Variable.SUCCESS;
-		String messageNotification = "login.signup.notification.good";
-
-		userDTO.setRole("USER");
-		UserDTOValidator userValidator = new UserDTOValidator();
-		userValidator.validate(userDTO, result);
-
-		if (result.hasErrors()) {
-			levelNotification = Variable.DANGER;
-			messageNotification = "login.signup.notification.not_valid";
-		} else {
-			try {
-				String password = passwordEncoder.encode(userDTO.getPassword());
-				userDTO.setPassword(password);
-				this.userService.createUser(this.userMapper.createEntity(userDTO));
-			} catch (ItemBadCreatedException e) {
-				levelNotification = Variable.DANGER;
-				messageNotification = "login.signup.notification.not_created";
-			}
-		}
-		this.notificationService.generateNotification(levelNotification, this,
-				this.messageSource.getMessage(messageNotification, null, locale));
-
-		return "redirect:/signin";
-	}
-
-	@GetMapping("/logout")
-	public String getLogout(Locale locale) {
-		this.notificationService.generateNotification(Variable.SUCCESS, this,
-				this.messageSource.getMessage("logout.notification.good", null, locale));
-
-		SecurityContextHolder.getContext().setAuthentication(null);
-
-		return "redirect:/index";
 	}
 }

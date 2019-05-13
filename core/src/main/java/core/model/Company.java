@@ -70,7 +70,7 @@ public class Company {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(computers, id, name);
+		return Objects.hash(id, name);
 	}
 
 	public static class Builder {

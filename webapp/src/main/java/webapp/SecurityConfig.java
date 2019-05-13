@@ -27,12 +27,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private UserService userService;
 	private JwtService jwtService;
-	private JwtAuthenticationEntryPoint unauthorizedHandler;
 
-	public SecurityConfig(UserService userService, JwtService jwtService, JwtAuthenticationEntryPoint unauthorizedHandler) {
+	public SecurityConfig(UserService userService, JwtService jwtService) {
 		this.userService = userService;
 		this.jwtService = jwtService;
-		this.unauthorizedHandler = unauthorizedHandler;
 	}
 
 	@Bean
@@ -47,8 +45,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        return new JwtAuthenticationFilter(this.userService, this.jwtService);
+    public AuthenticationFilter jwtAuthenticationFilter() throws Exception {
+        return new AuthenticationFilter(this.userService, this.jwtService);
     }
 
 	@Override
@@ -63,9 +61,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
         .csrf()
         	.disable()
-		.exceptionHandling()
-			.authenticationEntryPoint(unauthorizedHandler)
-		.and()
 		.authorizeRequests()
 			.anyRequest().permitAll()
 		.and()
