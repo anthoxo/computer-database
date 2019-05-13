@@ -1,5 +1,6 @@
 package core.model;
 
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -56,21 +57,20 @@ public class Company {
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
-		} else if (obj == null || this.getClass() != obj.getClass()) {
-			return false;
-		} else {
-			Company company = (Company) obj;
-			if (this.name == null) {
-				return this.id == company.id && company.name == null;
-			} else {
-				return this.id == company.id && this.name.equals(company.name);
-			}
 		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Company other = (Company) obj;
+		return id == other.id && Objects.equals(name, other.name);
 	}
 
 	@Override
 	public int hashCode() {
-		return this.getId() + this.getName().hashCode();
+		return Objects.hash(computers, id, name);
 	}
 
 	public static class Builder {

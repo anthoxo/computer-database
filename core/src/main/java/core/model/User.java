@@ -3,6 +3,7 @@ package core.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -109,47 +110,22 @@ public class User implements UserDetails {
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
-		} else if (obj == null || this.getClass() != obj.getClass()) {
-			return false;
-		} else {
-			User user = (User) obj;
-			boolean result = this.id == user.id;
-			boolean boolEmail;
-			if (this.email == null) {
-				boolEmail = user.getEmail() == null;
-			} else {
-				boolEmail = this.email.equals(user.getEmail());
-			}
-
-			boolean boolPassword;
-			if (this.password == null) {
-				boolPassword = user.getPassword() == null;
-			} else {
-				boolPassword = this.password.equals(user.getPassword());
-			}
-
-			boolean boolUsername;
-			if (this.username == null) {
-				boolUsername = user.getUsername() == null;
-			} else {
-				boolUsername = this.username.equals(user.getUsername());
-			}
-
-			boolean boolRole;
-			if (this.role == null) {
-				 boolRole = user.getRole() == null;
-			} else {
-				boolRole = this.role.equals(user.role);
-			}
-
-			return result && boolEmail && boolPassword && boolUsername && boolRole;
 		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		User other = (User) obj;
+		return Objects.equals(email, other.email) && id == other.id && Objects.equals(password, other.password)
+				&& Objects.equals(role, other.role) && Objects.equals(token, other.token)
+				&& Objects.equals(username, other.username);
 	}
 
 	@Override
 	public int hashCode() {
-		return this.getId() + this.getEmail().hashCode() + this.getPassword().hashCode() + this.getUsername().hashCode()
-				+ this.getRole().hashCode();
+		return Objects.hash(email, id, password, role, token, username);
 	}
 
 	public static class Builder {
