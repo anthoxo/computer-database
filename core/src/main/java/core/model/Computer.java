@@ -1,6 +1,7 @@
 package core.model;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -97,52 +98,21 @@ public class Computer {
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
-		} else if (obj == null || this.getClass() != obj.getClass()) {
-			return false;
-		} else {
-			Computer computer = (Computer) obj;
-			boolean result = this.id == computer.id && this.name.equals(computer.name);
-			boolean boolIntroduced;
-			if (this.getIntroduced() == null) {
-				boolIntroduced = computer.getIntroduced() == null;
-			} else {
-				boolIntroduced = this.introduced.equals(computer.introduced);
-			}
-
-			boolean boolDiscontinued;
-			if (this.getDiscontinued() == null) {
-				boolDiscontinued = computer.getDiscontinued() == null;
-			} else {
-				boolDiscontinued = this.discontinued.equals(computer.discontinued);
-			}
-
-			boolean boolCompany;
-			if (this.getCompany() == null) {
-				boolCompany = computer.getCompany() == null;
-			} else {
-				boolCompany = this.company.equals(computer.company);
-			}
-
-			return result && boolIntroduced && boolDiscontinued && boolCompany;
 		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Computer other = (Computer) obj;
+		return Objects.equals(company, other.company) && Objects.equals(discontinued, other.discontinued)
+				&& id == other.id && Objects.equals(introduced, other.introduced) && Objects.equals(name, other.name);
 	}
 
 	@Override
 	public int hashCode() {
-		int hash = this.getId();
-		if (this.getName() != null) {
-			hash += this.getName().hashCode();
-		}
-		if (this.getIntroduced() != null) {
-			hash += this.getIntroduced().hashCode();
-		}
-		if (this.getDiscontinued() != null) {
-			hash += this.getDiscontinued().hashCode();
-		}
-		if (this.getCompany() != null) {
-			hash += this.getCompany().hashCode();
-		}
-		return hash;
+		return Objects.hash(company, discontinued, id, introduced, name);
 	}
 
 	public static class Builder {

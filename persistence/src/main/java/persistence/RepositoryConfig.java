@@ -25,7 +25,7 @@ public class RepositoryConfig {
 
 	public static final String JDBC_URL_PROPERTY = "spring.datasource.url";
 	public static final String USERNAME_PROPERTY = "spring.datasource.username";
-	public static final String PASSWORD_PROPERTY = "spring.datasource.password";
+	public static final String PSSWRD_PROPERTY = "spring.datasource.password";
 	public static final String DRIVER_CLASS_PROPERTY = "driverClassName";
 
 	Environment env;
@@ -37,7 +37,7 @@ public class RepositoryConfig {
 	@Bean(destroyMethod = "close")
 	public DataSource dataSource() {
 		return DataSourceBuilder.create().url(env.getProperty(JDBC_URL_PROPERTY))
-				.username(env.getProperty(USERNAME_PROPERTY)).password(env.getProperty(PASSWORD_PROPERTY))
+				.username(env.getProperty(USERNAME_PROPERTY)).password(env.getProperty(PSSWRD_PROPERTY))
 				.driverClassName(env.getProperty(DRIVER_CLASS_PROPERTY)).build();
 	}
 
